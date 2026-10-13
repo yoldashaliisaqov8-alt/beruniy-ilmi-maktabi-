@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zakovat savol-javob — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css"></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="zakovat.html" aria-label="Orqaga">←</a><span class="brand">ZAKOVAT SAVOL-JAVOB</span></div>
+
+<div id="setup">
+  <h1>Savol-javob</h1>
+  <p class="sub">Savol chiqadi, 1 daqiqa o'ylaysiz, so'ng javobni ochib o'zingizni baholaysiz</p>
+  <div class="card" style="padding:26px">
+    <div class="field"><label for="selPaket">Paket:</label><select id="selPaket"></select></div>
+    <div class="field"><label for="selTur">Savol turi:</label><select id="selTur"></select></div>
+    <button class="btn" id="startBtn">Boshlash</button>
+    <p id="cnt" style="color:var(--ink-soft);font-weight:600;margin:14px 0 0"></p>
+  </div>
+</div>
+
+<div id="play" class="hidden">
+  <div class="qbox card">
+    <div class="qmeta" id="meta"></div>
+    <div class="timer" id="timer">60</div>
+    <p class="qtext" id="qtext" style="margin-top:16px"></p>
+    <div id="ansBox"></div>
+    <div class="btnrow" id="btns"></div>
+  </div>
+</div>
+
+<div id="result" class="hidden">
+  <div class="card" style="padding:40px;text-align:center">
+    <h1 style="margin:0">Natija</h1>
+    <p style="font-size:48px;font-weight:800;margin:10px 0" id="resText"></p>
+    <div class="btnrow" style="justify-content:center"><button class="btn" id="again">Qayta boshlash</button><a class="btn ghost" href="zakovat.html" style="display:inline-block">Zakovat bo'limi</a></div>
+  </div>
+</div>
+</div>
+
+<!--
+  YANGI SAVOL QO'SHISH: pastdagi blokka shu shaklda yozing.
+  PAKET: paket nomi          (yangi paket boshlaydi)
+  TUR: savol turi            (ixtiyoriy: Oddiy, Initsialli, Matritsali, Anagramma ...) — undan keyingi savollarga amal qiladi
+  SAVOL: savol matni         (har bir savol shu so'zdan boshlanadi)
+  JAVOB: javob
+  QABUL: qabul qilinadigan boshqa yozilishlar (ixtiyoriy)
+  IZOH: izoh (ixtiyoriy)
+  MANBA: manba (ixtiyoriy)
+-->
+<script type="text/plain" id="data">
+PAKET: Namuna paket — Jahon tarixi
+TUR: Oddiy
+SAVOL: Qadimgi Mesopotamiyada loy lavhalarga qamish tayoqcha bilan bitilgan yozuv qanday nomlanadi?
+JAVOB: Mixxat yozuvi
+IZOH: Bu yozuv shumerlar orasida paydo bo'lgan.
+SAVOL: "Buyuk ipak yo'li" atamasini 1877-yilda fanga kiritgan nemis olimi kim?
+JAVOB: Ferdinand fon Rixtgofen
+QABUL: Rixtgofen
+SAVOL: "Tarix otasi" deb ataladigan qadimgi yunon tarixchisini ayting.
+JAVOB: Gerodot
+SAVOL: 1453-yilda Konstantinopolni egallagan Usmoniy sultoni kim?
+JAVOB: Mehmed II
+QABUL: Sulton Mehmed Fotih
+IZOH: Shahar egallanishi bilan Vizantiya imperiyasi tugatilgan.
+SAVOL: Al-Xorazmiyning qaysi asari nomidagi so'zdan "algebra" atamasi kelib chiqqan?
+JAVOB: "Al-jabr val-muqobala"
+SAVOL: 1789-yil 14-iyulda Parij xalqi egallagan qamoqxona qanday nomlanadi?
+JAVOB: Bastiliya
+IZOH: Bu voqea Buyuk Fransuz inqilobining boshlanishi sifatida eslanadi.
+</script>
+
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  // --- ma'lumotni o'qish ---
+  var all=[], paket='', tur='Oddiy', cur=null;
+  document.getElementById('data').textContent.split('\n').forEach(function(l){
+    l=l.trim(); if(!l) return; var m;
+    if(m=l.match(/^PAKET:\s*(.+)/i)){paket=m[1];}
+    else if(m=l.match(/^TUR:\s*(.+)/i)){tur=m[1];}
+    else if(m=l.match(/^SAVOL:\s*(.+)/i)){cur={paket:paket,tur:tur,q:m[1],a:'',acc:'',izoh:'',manba:''};all.push(cur);}
+    else if(cur && (m=l.match(/^JAVOB:\s*(.+)/i))){cur.a=m[1];}
+    else if(cur && (m=l.match(/^QABUL:\s*(.+)/i))){cur.acc=m[1];}
+    else if(cur && (m=l.match(/^IZOH:\s*(.+)/i))){cur.izoh=m[1];}
+    else if(cur && (m=l.match(/^MANBA:\s*(.+)/i))){cur.manba=m[1];}
+  });
+  var selP=document.getElementById('selPaket'), selT=document.getElementById('selTur');
+  function fill(sel,vals){sel.innerHTML='<option value="">Barchasi</option>'+vals.map(function(v){return '<option>'+esc(v)+'</option>';}).join('');}
+  function uniq(k){var r=[];all.forEach(function(x){if(r.indexOf(x[k])<0)r.push(x[k]);});return r;}
+  fill(selP,uniq('paket')); fill(selT,uniq('tur'));
+  function filtered(){return all.filter(function(x){return (!selP.value||x.paket===selP.value)&&(!selT.value||x.tur===selT.value);});}
+  function upd(){document.getElementById('cnt').textContent=filtered().length+' ta savol tanlangan';}
+  selP.onchange=selT.onchange=upd; upd();
+
+  // --- statistika (bosh sahifa uchun) ---
+  function recordAnswer(ok){try{var st;try{st=JSON.parse(localStorage.getItem('tm_stats'));}catch(e){}
+    if(!st||!st.days)st={total:0,correct:0,wrong:0,best:0,days:{}};
+    function k(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+    var d=new Date(),key=k(d);st.days[key]=(st.days[key]||0)+1;st.total++;if(ok)st.correct++;else st.wrong++;
+    var n=0,c=new Date();while(st.days[k(c)]){n++;c.setDate(c.getDate()-1);}if(n>(st.best||0))st.best=n;
+    localStorage.setItem('tm_stats',JSON.stringify(st));}catch(e){}}
+
+  // --- o'yin ---
+  var qs=[], i=0, score=0, tmr=null, left=60;
+  function show(id){['setup','play','result'].forEach(function(x){document.getElementById(x).classList.toggle('hidden',x!==id);});}
+  function startTimer(){clearInterval(tmr);left=60;draw();tmr=setInterval(function(){left--;draw();if(left<=0){clearInterval(tmr);reveal();}},1000);}
+  function draw(){var t=document.getElementById('timer');t.textContent=left;t.className='timer'+(left<=10?' low':'');}
+  function start(){qs=shuffle(filtered());if(!qs.length)return;i=0;score=0;show('play');next();}
+  function next(){
+    if(i>=qs.length){clearInterval(tmr);document.getElementById('resText').textContent=score+' / '+qs.length;show('result');return;}
+    var q=qs[i];
+    document.getElementById('meta').textContent=(i+1)+' / '+qs.length+' · '+q.tur+' · '+q.paket;
+    document.getElementById('qtext').textContent=q.q;
+    document.getElementById('ansBox').innerHTML='';
+    document.getElementById('btns').innerHTML='<button class="btn" id="showBtn">Javobni ko\'rsatish</button>';
+    document.getElementById('showBtn').onclick=reveal;
+    startTimer();
+  }
+  function reveal(){
+    clearInterval(tmr); var q=qs[i];
+    var h='<div class="ans">Javob: '+esc(q.a);
+    if(q.acc)h+='<small>Qabul: '+esc(q.acc)+'</small>';
+    if(q.izoh)h+='<small>Izoh: '+esc(q.izoh)+'</small>';
+    if(q.manba)h+='<small>Manba: '+esc(q.manba)+'</small>';
+    document.getElementById('ansBox').innerHTML=h+'</div>';
+    document.getElementById('btns').innerHTML='<button class="btn good" id="okB">To\'g\'ri topdim ✓</button><button class="btn bad" id="noB">Topolmadim ✗</button>';
+    document.getElementById('okB').onclick=function(){score++;recordAnswer(true);i++;next();};
+    document.getElementById('noB').onclick=function(){recordAnswer(false);i++;next();};
+  }
+  document.getElementById('startBtn').onclick=start;
+  document.getElementById('again').onclick=function(){show('setup');};
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('play').classList.contains('hidden'))return;
+    var s=document.getElementById('showBtn'); if(e.key===' '&&s){e.preventDefault();reveal();}
+  });
+</script></body></html>

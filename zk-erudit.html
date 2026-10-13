@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erudit-kvartet — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css"></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="zakovat.html" aria-label="Orqaga">←</a><span class="brand">ERUDIT-KVARTET</span></div>
+
+<div id="setup">
+  <h1>Erudit-kvartet</h1>
+  <p class="sub">4 o'yinchi, bir necha raund. Har savol navbat bilan bir o'yinchiga beriladi (+10 ball). Topolmasa, keyingi o'yinchi javob berishi mumkin (+5 ball).</p>
+  <div class="card" style="padding:26px">
+    <div class="field"><label>1-o'yinchi:</label><input class="txt" id="p0" value="1-o'yinchi"></div>
+    <div class="field"><label>2-o'yinchi:</label><input class="txt" id="p1" value="2-o'yinchi"></div>
+    <div class="field"><label>3-o'yinchi:</label><input class="txt" id="p2" value="3-o'yinchi"></div>
+    <div class="field"><label>4-o'yinchi:</label><input class="txt" id="p3" value="4-o'yinchi"></div>
+    <button class="btn" id="go">Boshlash</button>
+    <p style="color:var(--ink-soft);font-weight:600;margin:14px 0 0;font-size:15px">Eslatma: bu o'yin qoidalarining soddalashtirilgan varianti. Haqiqiy qoidalarni aytsangiz, moslab beraman.</p>
+  </div>
+</div>
+
+<div id="play" class="hidden">
+  <div class="score" id="score"></div>
+  <div class="qbox card">
+    <div class="qmeta" id="meta"></div>
+    <div class="timer" id="tm">20</div>
+    <div class="status" id="st" style="font-size:22px;font-weight:800;text-align:center;margin:10px 0"></div>
+    <p class="qtext" id="qt"></p>
+    <div id="ab"></div>
+    <div class="btnrow" id="host"></div>
+  </div>
+</div>
+
+<div id="result" class="hidden"><div class="card" style="padding:40px;text-align:center">
+  <h1 style="margin:0">O'yin tugadi</h1><div id="rank" style="font-size:24px;font-weight:700;margin:16px 0;line-height:1.8"></div>
+  <div class="btnrow" style="justify-content:center"><button class="btn" id="again">Qayta o'ynash</button><a class="btn ghost" href="zakovat.html" style="display:inline-block">Zakovat bo'limi</a></div>
+</div></div>
+</div>
+
+<!--
+  YANGI RAUND: RAUND: nomi, so'ng 4 ta savol (SAVOL: ... / JAVOB: ... / IZOH: ... ixtiyoriy).
+  Har raundda savollar soni 4 ta bo'lgani ma'qul, shunda har o'yinchiga bittadan tushadi.
+-->
+<script type="text/plain" id="data">
+RAUND: Sanalar
+SAVOL: Konstantinopol Usmoniylar tomonidan qaysi yilda egallangan?
+JAVOB: 1453-yil
+SAVOL: Xristofor Kolumb Amerikaga qaysi yilda yetib borgan?
+JAVOB: 1492-yil
+SAVOL: Buyuk Fransuz inqilobi qaysi yilda boshlangan?
+JAVOB: 1789-yil
+SAVOL: Ikkinchi jahon urushi qaysi yilda boshlangan?
+JAVOB: 1939-yil
+
+RAUND: Shaxslar
+SAVOL: "Tarix otasi" deb ataladigan qadimgi yunon tarixchisi kim?
+JAVOB: Gerodot
+SAVOL: Aleksandr Makedonskiyning ustozi bo'lgan qadimgi yunon faylasufi kim?
+JAVOB: Aristotel
+SAVOL: 1815-yilda Vaterloo jangida mag'lub bo'lgan Fransiya imperatorini ayting.
+JAVOB: Napoleon Bonapart
+SAVOL: Samarqandda rasadxona qurdirgan Amir Temurning nabirasi kim?
+JAVOB: Mirzo Ulug'bek
+
+RAUND: Joylar
+SAVOL: Qadimgi Olimpiya o'yinlari qaysi mamlakatda o'tkazilgan?
+JAVOB: Yunoniston
+SAVOL: Registon maydoni qaysi shaharda joylashgan?
+JAVOB: Samarqand
+SAVOL: Mashhur piramidalar qaysi mamlakatda joylashgan?
+JAVOB: Misr
+SAVOL: Parij shahri qaysi daryo bo'yida joylashgan?
+JAVOB: Sena
+</script>
+
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  var rounds=[],rd=null,c=null,m;
+  document.getElementById('data').textContent.split('\n').forEach(function(l){l=l.trim();if(!l)return;
+    if(m=l.match(/^RAUND:\s*(.+)/i)){rd={name:m[1],qs:[]};rounds.push(rd);}
+    else if(rd&&(m=l.match(/^SAVOL:\s*(.+)/i))){c={q:m[1],a:'',izoh:''};rd.qs.push(c);}
+    else if(c&&(m=l.match(/^JAVOB:\s*(.+)/i)))c.a=m[1];
+    else if(c&&(m=l.match(/^IZOH:\s*(.+)/i)))c.izoh=m[1];});
+  var P=[],r=0,k=0,tmr=null,left=20,own=0,cur=-1;
+  function show(id){['setup','play','result'].forEach(function(x){document.getElementById(x).classList.toggle('hidden',x!==id);});}
+  function drawScore(){document.getElementById('score').innerHTML=P.map(function(p,j){return '<div class="pl'+(cur===j?' act':'')+'"><span style="font-weight:800">'+esc(p.n)+'</span><b>'+p.s+'</b></div>';}).join('');}
+  function drawT(){var t=document.getElementById('tm');t.textContent=left;t.className='timer'+(left<=5?' low':'');}
+  function runTimer(sec){clearInterval(tmr);left=sec;drawT();tmr=setInterval(function(){left--;drawT();if(left<=0){clearInterval(tmr);}},1000);}
+  function startQ(){
+    if(r>=rounds.length){clearInterval(tmr);
+      var s=P.slice().sort(function(a,b){return b.s-a.s;});
+      document.getElementById('rank').innerHTML=s.map(function(p,j){return (j+1)+'. '+esc(p.n)+' — <b>'+p.s+'</b> ball';}).join('<br>');show('result');return;}
+    var q=rounds[r].qs[k]; own=(r+k)%4; cur=own;
+    document.getElementById('meta').textContent='Raund '+(r+1)+'/'+rounds.length+' · '+rounds[r].name+' · savol '+(k+1)+'/'+rounds[r].qs.length;
+    document.getElementById('st').textContent=P[own].n+', savol sizga! (+10)';
+    document.getElementById('qt').textContent=q.q;document.getElementById('ab').innerHTML='';
+    document.getElementById('host').innerHTML='<button class="btn good" id="ok">To\'g\'ri (+10)</button><button class="btn bad" id="no">Noto\'g\'ri</button>';
+    document.getElementById('ok').onclick=function(){P[own].s+=10;reveal(P[own].n+' to\'g\'ri javob berdi!');};
+    document.getElementById('no').onclick=steal;
+    drawScore();runTimer(20);
+  }
+  function steal(){
+    var o=(own+1)%4;cur=o;
+    document.getElementById('st').textContent=P[own].n+' topolmadi. '+P[o].n+', sizda imkoniyat! (+5)';
+    document.getElementById('host').innerHTML='<button class="btn good" id="ok">To\'g\'ri (+5)</button><button class="btn bad" id="no">Noto\'g\'ri</button>';
+    document.getElementById('ok').onclick=function(){P[o].s+=5;reveal(P[o].n+' to\'g\'ri javob berdi!');};
+    document.getElementById('no').onclick=function(){reveal('Hech kim topolmadi');};
+    drawScore();runTimer(15);
+  }
+  function reveal(msg){
+    clearInterval(tmr);cur=-1;var q=rounds[r].qs[k];
+    document.getElementById('st').textContent=msg;
+    document.getElementById('ab').innerHTML='<div class="ans">Javob: '+esc(q.a)+(q.izoh?'<small>Izoh: '+esc(q.izoh)+'</small>':'')+'</div>';
+    document.getElementById('host').innerHTML='<button class="btn" id="nx">Keyingi →</button>';
+    document.getElementById('nx').onclick=function(){k++;if(k>=rounds[r].qs.length){r++;k=0;}startQ();};
+    drawScore();
+  }
+  document.getElementById('go').onclick=function(){
+    P=[0,1,2,3].map(function(j){return {n:document.getElementById('p'+j).value||((j+1)+"-o'yinchi"),s:0};});
+    r=0;k=0;show('play');startQ();
+  };
+  document.getElementById('again').onclick=function(){show('setup');};
+</script></body></html>

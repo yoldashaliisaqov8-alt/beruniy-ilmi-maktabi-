@@ -26,3 +26,62 @@ h1{font-size:38px;font-weight:800;margin:18px 0 6px;}
 .pill{font-size:13px;font-weight:700;color:var(--ink-soft);background:#eef2f6;border-radius:10px;padding:3px 10px;}
 .hidden{display:none !important;}
 @media (max-width:600px){.wrap{padding:0 16px 40px;}h1{font-size:30px;}.row{padding:18px;font-size:18px;}}
+
+/* ---------- Zakovat bo'limi ---------- */
+.timer{font-size:56px;font-weight:800;text-align:center;color:var(--blue);line-height:1;}
+.timer.low{color:var(--red);}
+.qbox{padding:34px 40px;margin-bottom:18px;}
+.qmeta{font-weight:800;color:var(--blue);font-size:15px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.qtext{font-size:34px;font-weight:800;line-height:1.3;margin:0 0 18px;}
+.ans{margin-top:18px;padding:18px 22px;border-radius:18px;background:#eaf7ef;border:1.5px solid var(--green);font-size:20px;font-weight:700;}
+.ans small{display:block;font-weight:600;color:var(--ink-soft);font-size:16px;margin-top:6px;}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;}
+.btn.good{background:var(--green);}
+.btn.bad{background:var(--red);}
+.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+.pl{padding:12px 16px;border-radius:18px;background:#fff;border:1.5px solid var(--line);text-align:center;}
+.pl.act{border-color:var(--blue);background:#eaf2ff;}
+.pl input{width:100%;border:none;background:transparent;font-family:var(--font);font-weight:800;font-size:16px;text-align:center;color:var(--ink);}
+.pl b{display:block;font-size:30px;font-weight:800;}
+.field{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;}
+.field label{font-weight:700;}
+select,.txt{font-family:var(--font);font-size:17px;font-weight:600;padding:10px 14px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);}
+@media (min-width:1000px){.qtext{font-size:42px;}.timer{font-size:72px;}}
+@media (max-width:600px){.qbox{padding:22px;}.qtext{font-size:24px;}.timer{font-size:44px;}}
+
+/* ---------- Elektron doska (Akademiya suhbat) ---------- */
+.doska{position:fixed;inset:0;background:linear-gradient(135deg,#0d2a5c 0%,#1457c0 100%);color:#fff;z-index:40;display:flex;flex-direction:column;padding:22px 40px 26px;overflow:auto;}
+.doska.hidden{display:none !important;}
+.d-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-weight:700;opacity:.92;font-size:18px;}
+.d-top .sp{flex:1;}
+.d-tm{font-size:34px;font-weight:800;min-width:90px;text-align:right;}
+.d-tm.low{color:#ffc928;}
+.d-q{font-size:clamp(28px,4.6vw,66px);font-weight:800;line-height:1.25;margin:auto 0 22px;padding-top:24px;white-space:pre-line;}
+.d-a{background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.35);border-radius:24px;padding:22px 30px;font-size:clamp(20px,2.7vw,38px);font-weight:700;white-space:pre-line;margin-bottom:22px;line-height:1.35;}
+.d-bar{display:flex;gap:12px;flex-wrap:wrap;margin-top:auto;}
+.d-btn{font-family:var(--font);font-weight:800;font-size:18px;padding:14px 24px;border-radius:16px;border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:#fff;cursor:pointer;}
+.d-btn:hover{background:rgba(255,255,255,.25);}
+.d-btn.main{background:#ffc928;border-color:#ffc928;color:#10223d;}
+.d-btn:disabled{opacity:.4;cursor:not-allowed;}
+.d-tq{background:rgba(255,255,255,.1);border-radius:22px;padding:20px 26px;margin-bottom:16px;}
+.d-tq .t{font-size:clamp(22px,3vw,42px);font-weight:800;line-height:1.3;white-space:pre-line;}
+.d-tq .a{margin-top:12px;background:rgba(255,255,255,.16);border-radius:16px;padding:14px 20px;font-size:clamp(18px,2.2vw,32px);font-weight:700;white-space:pre-line;}
+.d-tq button{margin-top:12px;}
+.qitem{padding:18px 22px;margin-bottom:12px;cursor:pointer;display:flex;gap:16px;align-items:flex-start;}
+.qitem:hover{border-color:var(--blue);}
+.qitem .n{flex-shrink:0;width:40px;height:40px;border-radius:12px;background:#eaf2ff;color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;}
+.qitem .t{font-size:19px;font-weight:700;flex:1;white-space:pre-line;}
+.qitem .a{margin-top:10px;padding:12px 16px;border-radius:14px;background:#eaf7ef;border:1px solid var(--green);font-weight:600;font-size:16px;white-space:pre-line;}
+.qitem .tg{font-size:14px;font-weight:700;color:var(--blue);background:#eaf2ff;border-radius:10px;padding:3px 10px;white-space:nowrap;}
+.mv-head{font-weight:800;font-size:20px;margin:22px 0 10px;color:var(--ink);}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:14px;}
+.bcard{padding:22px 10px;text-align:center;cursor:pointer;font-family:var(--font);color:var(--ink);}
+.bcard:hover{border-color:var(--blue);background:#f4f8ff;}
+.bcard b{display:block;font-size:40px;font-weight:800;color:var(--blue);line-height:1;}
+.bcard span{font-size:14px;font-weight:700;color:var(--ink-soft);}
+@media (max-width:700px){.doska{padding:16px 18px 20px;}.d-btn{padding:12px 16px;font-size:16px;}}
+
+.d-tq .a.long{font-size:clamp(16px,1.9vw,28px);line-height:1.4;}
+.d-tq .a.xl{font-size:clamp(15px,1.5vw,22px);line-height:1.4;}
+.d-a.long{font-size:clamp(16px,1.9vw,28px);line-height:1.4;}
+.d-a.xl{font-size:clamp(15px,1.5vw,22px);line-height:1.4;}

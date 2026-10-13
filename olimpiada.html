@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olimpiada testlari — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;}
+  .mode{padding:26px;cursor:pointer;text-align:left;font-family:var(--font);color:var(--ink);border:1.5px solid var(--line);background:#fff;border-radius:24px;}
+  .mode:hover{border-color:var(--blue);background:#f4f8ff;}
+  .mode h3{margin:0 0 6px;font-size:24px;font-weight:800;}
+  .mode p{margin:0;color:var(--ink-soft);font-weight:600;font-size:16px;}
+  .qhead{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+  .qhead .tm{margin-left:auto;font-size:28px;font-weight:800;color:var(--blue);}
+  .qhead .tm.low{color:var(--red);}
+  .track{flex:1;min-width:140px;height:10px;border-radius:5px;background:#dde6f0;overflow:hidden;}
+  .fill{height:100%;background:var(--blue);width:0;transition:width .3s;}
+  .opt{display:flex;align-items:center;gap:16px;width:100%;text-align:left;padding:18px 22px;margin-bottom:12px;background:#fff;border:1.5px solid var(--line);border-radius:18px;font-family:var(--font);font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;}
+  .opt:hover{border-color:var(--blue);background:#f4f8ff;}
+  .opt .k{flex-shrink:0;width:38px;height:38px;border-radius:10px;border:1.5px solid var(--ink-soft);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--ink-soft);}
+  .opt.sel{border-color:var(--blue);background:#eaf2ff;}
+  .opt.sel .k{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .opt.ok{border-color:var(--green);background:rgba(47,154,95,.12);}
+  .opt.ok .k{background:var(--green);border-color:var(--green);color:#fff;}
+  .opt.no{border-color:var(--red);background:rgba(229,72,77,.08);}
+  .opt.no .k{background:var(--red);border-color:var(--red);color:#fff;}
+  .nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0;}
+  .nav button{width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-family:var(--font);font-weight:800;cursor:pointer;color:var(--ink-soft);}
+  .nav button.done{background:#dbe9ff;border-color:#9ec2ff;color:var(--blue-dark);}
+  .nav button.cur{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset;color:var(--blue);}
+  .rv{padding:18px 22px;margin-bottom:12px;border-radius:18px;border:1.5px solid var(--line);background:#fff;}
+  .rv.bad{border-color:var(--red);} .rv.good{border-color:var(--green);}
+  .rv b{font-weight:800;} .rv p{margin:6px 0 0;font-weight:600;color:var(--ink-soft);}
+  .warn{background:rgba(229,72,77,.08);border:1px solid var(--red);color:#9a3a30;padding:14px 18px;border-radius:14px;margin-bottom:14px;font-weight:600;}
+  @media (max-width:700px){.modes{grid-template-columns:1fr;}.opt{font-size:18px;padding:14px;}}
+  @media (min-width:1000px){.opt{font-size:24px;padding:20px 26px;}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">OLIMPIADA TESTLARI</span></div>
+
+<div id="sList">
+  <h1>Olimpiada testlari</h1>
+  <p class="sub">To'plamni tanlang va tayyorgarlikni boshlang</p>
+  <div id="warn"></div>
+  <div class="list" id="list"></div>
+</div>
+
+<div id="sMode" class="hidden">
+  <h1 id="mTitle" style="font-size:30px"></h1>
+  <p class="sub" id="mDesc"></p>
+  <div class="modes">
+    <button class="mode" id="modeP"><h3>Mashq</h3><p>Har javobdan keyin to'g'ri javob va izoh ko'rsatiladi. Vaqt cheklanmagan.</p></button>
+    <button class="mode" id="modeE"><h3>Imtihon</h3><p>Haqiqiy olimpiadadagidek: vaqt hisoblanadi, natija va xatolar faqat oxirida ko'rsatiladi.</p></button>
+  </div>
+  <p><button class="btn ghost" id="mBack">← To'plamlarga qaytish</button></p>
+</div>
+
+<div id="sQuiz" class="hidden">
+  <div class="qhead"><span id="qcount" style="font-weight:800"></span><div class="track"><div class="fill" id="fill"></div></div><span class="tm" id="tm"></span></div>
+  <div class="card qbox" style="padding:30px 34px">
+    <div id="media"></div>
+    <p class="qtext" id="qtext"></p>
+    <div id="opts"></div>
+    <div id="exp"></div>
+    <div class="btnrow" id="qbtns"></div>
+  </div>
+  <div class="nav" id="nav"></div>
+  <div class="hint" id="hint" style="color:var(--ink-soft);font-weight:600;font-size:14px">Klaviatura: A, B, C, D — javob; ← → — savollar orasida</div>
+</div>
+
+<div id="sRes" class="hidden">
+  <div class="card" style="padding:34px;text-align:center;margin-bottom:18px">
+    <h1 style="margin:0">Natija</h1>
+    <p style="font-size:56px;font-weight:800;margin:8px 0 0" id="rScore"></p>
+    <p style="font-size:20px;font-weight:700;color:var(--ink-soft);margin:6px 0" id="rPct"></p>
+    <p style="font-size:19px;font-weight:700;margin:6px 0" id="rMsg"></p>
+    <div class="btnrow" style="justify-content:center"><button class="btn" id="rAgain">Qayta urinish</button><button class="btn ghost" id="rList">Boshqa to'plam</button></div>
+  </div>
+  <h2 style="font-weight:800">Savollar tahlili</h2>
+  <div id="review"></div>
+</div>
+</div>
+
+<!--
+  YANGI TO'PLAM QO'SHISH: pastdagi blokni nusxalab, sarlavhani va savollarni o'zgartiring.
+  Atributlar: data-title (nom), data-desc (qisqa tavsif), data-time (imtihon vaqti, daqiqada; yozilmasa — har savolga 1 daqiqa).
+  Savollar bo'sh qator bilan ajratiladi. Har bir savol:
+      Savol matni
+      A) variant
+      B) variant
+      C) variant
+      D) variant
+      JAVOB: B
+      IZOH: izoh (ixtiyoriy)
+      RASM: rasmlar/fayl.jpg (ixtiyoriy)
+-->
+<script type="text/plain" class="set" data-title="Jahon tarixi — namuna to'plam" data-desc="O'rta asrlar va Yangi davr, 8 ta savol" data-time="10">
+Qadimgi Rimda respublika tuzumi bekor qilinib, imperiya o'rnatilgan davr qaysi?
+A) mil.avv. 509-yil
+B) mil.avv. 27-yil
+C) milodiy 117-yil
+D) milodiy 395-yil
+JAVOB: B
+IZOH: Oktavian "Avgust" unvonini olgan, bu imperiya davrining boshlanishi hisoblanadi.
+
+Konstantinopol Usmoniylar tomonidan qaysi yilda egallangan?
+A) 1389-yil
+B) 1453-yil
+C) 1492-yil
+D) 1526-yil
+JAVOB: B
+IZOH: Sulton Mehmed II shaharni egallagan, Vizantiya imperiyasi tugatilgan.
+
+Vasko da Gama Hindistonga dengiz yo'lini qaysi yilda ochgan?
+A) 1488-yil
+B) 1492-yil
+C) 1498-yil
+D) 1519-yil
+JAVOB: C
+
+Buyuk Fransuz inqilobi qaysi voqea bilan boshlangan hisoblanadi?
+A) Bastiliyaning olinishi
+B) Vaterloo jangi
+C) Versal sulhi
+D) Sali haqiqatining qabul qilinishi
+JAVOB: A
+IZOH: Voqea 1789-yil 14-iyulda bo'lgan.
+
+Yuz yillik urush (1337–1453) necha yil davom etgan?
+A) 100 yil
+B) 106 yil
+C) 116 yil
+D) 126 yil
+JAVOB: C
+IZOH: 1453 − 1337 = 116.
+
+1215-yilda ingliz qirol hokimiyatini cheklagan qaysi hujjat imzolangan?
+A) Verden shartnomasi
+B) Magna Karta
+C) Vestfal sulhi
+D) Sali haqiqati
+JAVOB: B
+
+Martin Lyuter o'zining 95 tezisini qaysi yilda e'lon qilgan?
+A) 1492-yil
+B) 1517-yil
+C) 1545-yil
+D) 1648-yil
+JAVOB: B
+IZOH: Bu voqea Reformatsiyaning boshlanishi hisoblanadi.
+
+Qaysi sulh bilan O'ttiz yillik urush tugagan?
+A) Verden sulhi
+B) Vestfal sulhi
+C) Versal sulhi
+D) Kyuchuk-Kaynarji sulhi
+JAVOB: B
+IZOH: Sulh 1648-yilda tuzilgan.
+</script>
+
+<script type="text/plain" class="set" data-title="O'zbekiston tarixi — namuna to'plam" data-desc="Temuriylardan mustaqillikkacha, 6 ta savol" data-time="6">
+Amir Temur qaysi yilda tug'ilgan?
+A) 1336-yil
+B) 1347-yil
+C) 1370-yil
+D) 1405-yil
+JAVOB: A
+
+Mirzo Ulug'bek tuzgan yulduzlar jadvali qanday nomlanadi?
+A) Qonuni Mas'udiy
+B) Ziji jadidi Ko'ragoniy
+C) Osor ul-boqiya
+D) Al-jabr val-muqobala
+JAVOB: B
+
+Zahiriddin Muhammad Bobur Hindistonda qaysi davlatga asos solgan?
+A) G'aznaviylar davlati
+B) Shayboniylar davlati
+C) Boburiylar davlati
+D) Ashtarxoniylar davlati
+JAVOB: C
+IZOH: Davlat 1526-yilda tashkil topgan.
+
+Turkiston general-gubernatorligi qaysi yilda tashkil etilgan?
+A) 1865-yil
+B) 1867-yil
+C) 1876-yil
+D) 1881-yil
+JAVOB: B
+
+Oliy Kengash O'zbekiston davlat mustaqilligi to'g'risidagi bayonotni qaysi sanada qabul qilgan?
+A) 1990-yil 20-iyun
+B) 1991-yil 31-avgust
+C) 1991-yil 8-dekabr
+D) 1992-yil 8-dekabr
+JAVOB: B
+IZOH: Mustaqillik bayrami esa 1-sentabrda nishonlanadi.
+
+O'zbekiston Respublikasi Konstitutsiyasi qaysi yilda qabul qilingan?
+A) 1991-yil
+B) 1992-yil
+C) 1993-yil
+D) 1995-yil
+JAVOB: B
+IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nishonlanadi.
+</script>
+
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  // ---- o'qish ----
+  var sets=[], warns=[];
+  document.querySelectorAll('script.set').forEach(function(sc){
+    var set={title:sc.dataset.title||'To\'plam',desc:sc.dataset.desc||'',time:+sc.dataset.time||0,qs:[]};
+    sc.textContent.trim().split(/\n\s*\n/).forEach(function(block,bi){
+      var q={text:[],opts:[],ans:-1,izoh:'',img:[]}, m;
+      block.split('\n').forEach(function(l){l=l.trim();if(!l)return;
+        if(m=l.match(/^([A-D])\)\s*(.+)$/))q.opts.push(m[2]);
+        else if(m=l.match(/^JAVOB:\s*([A-D])/i))q.ans='ABCD'.indexOf(m[1].toUpperCase());
+        else if(m=l.match(/^IZOH:\s*(.+)/i))q.izoh=m[1];
+        else if(m=l.match(/^RASM:\s*(.+)/i))q.img.push(m[1]);
+        else q.text.push(l);});
+      if(q.text.length&&q.opts.length>=2&&q.ans>=0&&q.ans<q.opts.length){q.text=q.text.join('\n');set.qs.push(q);}
+      else warns.push('"'+set.title+'": '+(bi+1)+'-blok o\'tkazib yuborildi (savol, kamida 2 variant va JAVOB: kerak).');
+    });
+    if(!set.time)set.time=Math.max(1,set.qs.length);
+    sets.push(set);
+  });
+  if(warns.length)document.getElementById('warn').innerHTML='<div class="warn">'+warns.map(esc).join('<br>')+'</div>';
+  var list=document.getElementById('list');
+  sets.forEach(function(s,i){
+    var d=document.createElement('div');d.className='card row';
+    d.innerHTML='<div>'+esc(s.title)+'<small>'+esc(s.desc)+' · '+s.qs.length+' savol · '+s.time+' daqiqa</small></div><span class="arrow">›</span>';
+    d.onclick=function(){pick(i);};list.appendChild(d);
+  });
+
+  // ---- statistika ----
+  function rec(ok){try{var st;try{st=JSON.parse(localStorage.getItem('tm_stats'));}catch(e){}
+    if(!st||!st.days)st={total:0,correct:0,wrong:0,best:0,days:{}};
+    function k(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+    var d=new Date(),key=k(d);st.days[key]=(st.days[key]||0)+1;st.total++;if(ok)st.correct++;else st.wrong++;
+    var n=0,c=new Date();while(st.days[k(c)]){n++;c.setDate(c.getDate()-1);}if(n>(st.best||0))st.best=n;
+    localStorage.setItem('tm_stats',JSON.stringify(st));}catch(e){}}
+
+  // ---- holat ----
+  var S=null, Q=[], picked=[], cur=0, mode='', tmr=null, left=0, finished=false, shown=[];
+  function screen(id){['sList','sMode','sQuiz','sRes'].forEach(function(x){document.getElementById(x).classList.toggle('hidden',x!==id);});window.scrollTo(0,0);}
+  function pick(i){S=sets[i];document.getElementById('mTitle').textContent=S.title;document.getElementById('mDesc').textContent=S.qs.length+' savol · imtihon vaqti: '+S.time+' daqiqa';screen('sMode');}
+  document.getElementById('mBack').onclick=function(){screen('sList');};
+  document.getElementById('modeP').onclick=function(){begin('P');};
+  document.getElementById('modeE').onclick=function(){begin('E');};
+  function begin(m){
+    mode=m;finished=false;cur=0;
+    // savollar va variantlar aralashtiriladi
+    Q=shuffle(S.qs).map(function(q){
+      var idx=shuffle(q.opts.map(function(_,i){return i;}));
+      return {text:q.text,img:q.img,izoh:q.izoh,opts:idx.map(function(i){return q.opts[i];}),ans:idx.indexOf(q.ans)};
+    });
+    picked=Q.map(function(){return -1;});shown=Q.map(function(){return false;});
+    screen('sQuiz');
+    clearInterval(tmr);
+    var tmEl=document.getElementById('tm');
+    if(m==='E'){left=S.time*60;drawT();tmr=setInterval(function(){left--;drawT();if(left<=0){clearInterval(tmr);finish();}},1000);}
+    else tmEl.textContent='';
+    render();
+  }
+  function drawT(){var t=document.getElementById('tm');var mm=Math.floor(left/60),ss=left%60;t.textContent=mm+':'+String(ss).padStart(2,'0');t.className='tm'+(left<=60?' low':'');}
+  function render(){
+    var q=Q[cur];
+    document.getElementById('qcount').textContent=(cur+1)+' / '+Q.length;
+    document.getElementById('fill').style.width=(picked.filter(function(x){return x>=0;}).length/Q.length*100)+'%';
+    document.getElementById('media').innerHTML=q.img.map(function(s){return '<img src="'+esc(s)+'" alt="" style="max-width:100%;border-radius:14px;margin-bottom:14px">';}).join('');
+    document.getElementById('qtext').innerHTML=esc(q.text).split('\n').join('<br>');
+    var o=document.getElementById('opts');o.innerHTML='';
+    q.opts.forEach(function(t,i){
+      var b=document.createElement('button');b.className='opt';
+      var cls='';
+      if(mode==='P'&&shown[cur]){cls=i===q.ans?' ok':(i===picked[cur]?' no':'');}
+      else if(picked[cur]===i)cls=' sel';
+      b.className+=cls;b.disabled=(mode==='P'&&shown[cur]);
+      b.innerHTML='<span class="k">'+'ABCD'[i]+'</span><span>'+esc(t)+'</span>';
+      b.onclick=function(){choose(i);};o.appendChild(b);
+    });
+    document.getElementById('exp').innerHTML=(mode==='P'&&shown[cur]&&q.izoh)?'<div class="ans">Izoh: '+esc(q.izoh)+'</div>':'';
+    var bt=document.getElementById('qbtns');bt.innerHTML='';
+    if(mode==='E'){
+      var p=document.createElement('button');p.className='btn ghost';p.textContent='← Oldingi';p.disabled=cur===0;p.onclick=function(){go(-1);};bt.appendChild(p);
+      var n=document.createElement('button');n.className='btn ghost';n.textContent='Keyingi →';n.disabled=cur===Q.length-1;n.onclick=function(){go(1);};bt.appendChild(n);
+      var f=document.createElement('button');f.className='btn good';f.textContent='Tugatish';f.onclick=function(){
+        var un=picked.filter(function(x){return x<0;}).length;
+        if(un&&!confirm(un+' ta savolga javob berilmagan. Baribir tugatilsinmi?'))return;finish();};bt.appendChild(f);
+    } else if(shown[cur]){
+      var nx=document.createElement('button');nx.className='btn';nx.textContent=cur===Q.length-1?'Natijani ko\'rish':'Keyingi →';nx.onclick=function(){if(cur===Q.length-1)finish();else go(1);};bt.appendChild(nx);
+    }
+    var nv=document.getElementById('nav');nv.innerHTML='';
+    Q.forEach(function(_,i){var b=document.createElement('button');b.textContent=i+1;
+      b.className=(i===cur?'cur ':'')+(picked[i]>=0?'done':'');
+      b.onclick=function(){if(mode==='E'){cur=i;render();}};nv.appendChild(b);});
+    nv.style.display=mode==='E'?'flex':'none';
+    document.getElementById('hint').style.display='block';
+  }
+  function go(d){var n=cur+d;if(n>=0&&n<Q.length){cur=n;render();}}
+  function choose(i){
+    if(finished)return;
+    if(mode==='P'){if(shown[cur])return;picked[cur]=i;shown[cur]=true;rec(i===Q[cur].ans);}
+    else picked[cur]=i;
+    render();
+  }
+  function finish(){
+    if(finished)return;finished=true;clearInterval(tmr);
+    var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++;if(mode==='E'&&picked[i]>=0)rec(picked[i]===q.ans);});
+    var pct=Math.round(ok/Q.length*100);
+    document.getElementById('rScore').textContent=ok+' / '+Q.length;
+    document.getElementById('rPct').textContent=pct+'%';
+    document.getElementById('rMsg').textContent=pct>=86?'Ajoyib natija! Olimpiadaga tayyorsiz.':pct>=60?'Yaxshi, lekin xatolar ustida ishlang.':'Mavzularni takrorlab, yana urinib ko\'ring.';
+    var rv=document.getElementById('review');rv.innerHTML='';
+    Q.forEach(function(q,i){
+      var good=picked[i]===q.ans;
+      var d=document.createElement('div');d.className='rv '+(good?'good':'bad');
+      d.innerHTML='<b>'+(i+1)+'. '+esc(q.text)+'</b><p>Sizning javobingiz: '+(picked[i]>=0?'ABCD'[picked[i]]+') '+esc(q.opts[picked[i]]):'javob berilmagan')+'</p>'+
+        (good?'':'<p>To\'g\'ri javob: <b>'+'ABCD'[q.ans]+') '+esc(q.opts[q.ans])+'</b></p>')+(q.izoh?'<p>Izoh: '+esc(q.izoh)+'</p>':'');
+      rv.appendChild(d);
+    });
+    screen('sRes');
+  }
+  document.getElementById('rAgain').onclick=function(){screen('sMode');};
+  document.getElementById('rList').onclick=function(){screen('sList');};
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('sQuiz').classList.contains('hidden'))return;
+    var k=e.key.toLowerCase(),map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+    if(map[k]!==undefined&&map[k]<Q[cur].opts.length){e.preventDefault();choose(map[k]);}
+    else if(e.key==='ArrowRight'&&mode==='E')go(1);
+    else if(e.key==='ArrowLeft'&&mode==='E')go(-1);
+    else if((e.key==='Enter'||e.key===' ')&&mode==='P'&&shown[cur]){e.preventDefault();if(cur===Q.length-1)finish();else go(1);}
+  });
+</script></body></html>

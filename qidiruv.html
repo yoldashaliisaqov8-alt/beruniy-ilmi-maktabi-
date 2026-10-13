@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qidiruv — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .res{padding:16px 20px;margin-bottom:10px;}
+  .res .m{color:var(--ink-soft);font-weight:700;font-size:14px;margin-bottom:4px;}
+  .res .t{font-weight:800;font-size:18px;line-height:1.4;}
+  .res .a{margin-top:10px;padding:12px 14px;background:#eaf2ff;border-radius:12px;font-weight:600;white-space:pre-wrap;max-height:40vh;overflow:auto;}
+  .res .a .src{font-size:13px;color:var(--ink-soft);margin-top:8px;}
+  .res .row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+  .res .row .btn{padding:7px 14px;font-size:14px;text-decoration:none;display:inline-block;}
+  mark{background:#ffe9a8;border-radius:4px;padding:0 2px;}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px;}
+  .chips button{font-family:var(--font);font-weight:700;border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:6px 14px;cursor:pointer;}
+  .chips button.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">QIDIRUV</span></div>
+<h1>Umumiy qidiruv</h1>
+<p class="sub">Suhbat savollari (Huquqshunoslik, O'zbekiston tarixi, Tarbiya) va svoyak savollari ichidan qidiradi</p>
+<div class="field"><input class="txt" id="q" placeholder="Masalan: Amir Temur, Konstitutsiya, vatanparvarlik..." style="flex:1;min-width:220px" autofocus></div>
+<div class="chips" id="chips"></div>
+<p id="cnt" style="color:var(--ink-soft);font-weight:700"></p>
+<div id="out"></div>
+</div>
+<script src="baza.js"></script>
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  var ALL=[],fanF='',timer=null;
+  function norm(s){return String(s).toLowerCase().replace(/[‘’ʻʼ`´]/g,"'");}
+  function hl(t,words){var h=esc(t);words.forEach(function(w){if(!w)return;var re=new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','ig');h=h.replace(re,'<mark>$1</mark>');});return h;}
+  function draw(){
+    var term=norm(document.getElementById('q').value.trim()),out=document.getElementById('out');out.innerHTML='';
+    if(term.length<2){document.getElementById('cnt').textContent=ALL.length?ALL.length+' ta savol bazada. Qidirish uchun kamida 2 ta harf yozing.':'';return;}
+    var words=term.split(/\s+/).filter(Boolean);
+    var R=ALL.filter(function(x){if(fanF&&x.fan!==fanF)return false;var h=norm(x.q+' '+x.a+' '+x.mavzu);return words.every(function(w){return h.indexOf(w)>=0;});});
+    document.getElementById('cnt').textContent=R.length+' ta natija'+(R.length>40?' (birinchi 40 tasi ko\'rsatilgan)':'');
+    R.slice(0,40).forEach(function(x){
+      var d=document.createElement('div');d.className='card res';
+      d.innerHTML='<div class="m">'+esc(x.fan)+' · '+esc(x.mavzu)+'</div><div class="t">'+hl(x.q,words)+'</div><div class="a hidden">'+hl(x.a||'(javob kiritilmagan)',words)+(x.m?'<div class="src">Izoh: '+esc(x.m)+'</div>':'')+'</div>'+
+        '<div class="row"><button class="btn ghost">Javobni ko\'rish</button><a class="btn" href="'+x.url+'">Sahifaga o\'tish</a></div>';
+      var b=d.querySelector('button'),a=d.querySelector('.a');b.onclick=function(){a.classList.toggle('hidden');b.textContent=a.classList.contains('hidden')?"Javobni ko'rish":'Yashirish';};
+      out.appendChild(d);
+    });
+  }
+  document.getElementById('q').oninput=function(){clearTimeout(timer);timer=setTimeout(draw,150);};
+  Baza.hammasi().then(function(a){
+    ALL=a;var fans=[];a.forEach(function(x){if(fans.indexOf(x.fan)<0)fans.push(x.fan);});
+    var c=document.getElementById('chips');
+    ['Hammasi'].concat(fans).forEach(function(f){var b=document.createElement('button');b.textContent=f;if(f==='Hammasi')b.className='on';
+      b.onclick=function(){fanF=f==='Hammasi'?'':f;[].forEach.call(c.children,function(x){x.className='';});b.className='on';draw();};c.appendChild(b);});
+    var p=new URLSearchParams(location.search).get('q');if(p)document.getElementById('q').value=p;draw();
+  }).catch(function(){document.getElementById('cnt').textContent="Ma'lumotni yuklab bo'lmadi. Sayt internetda (GitHub Pages) ochilganda ishlaydi.";});
+</script></body></html>

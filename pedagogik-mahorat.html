@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedagogik mahorat — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .modes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;}
+  .mode{padding:26px;cursor:pointer;text-align:left;font-family:var(--font);color:var(--ink);border:1.5px solid var(--line);background:#fff;border-radius:24px;}
+  .mode:hover{border-color:var(--blue);background:#f4f8ff;}
+  .mode h3{margin:0 0 6px;font-size:24px;font-weight:800;}
+  .mode p{margin:0;color:var(--ink-soft);font-weight:600;font-size:16px;}
+  .qhead{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+  .qhead .tm{margin-left:auto;font-size:28px;font-weight:800;color:var(--blue);}
+  .qhead .tm.low{color:var(--red);}
+  .track{flex:1;min-width:140px;height:10px;border-radius:5px;background:#dde6f0;overflow:hidden;}
+  .fill{height:100%;background:var(--blue);width:0;transition:width .3s;}
+  .opt{display:flex;align-items:center;gap:16px;width:100%;text-align:left;padding:18px 22px;margin-bottom:12px;background:#fff;border:1.5px solid var(--line);border-radius:18px;font-family:var(--font);font-size:22px;font-weight:700;color:var(--ink);cursor:pointer;}
+  .opt:hover{border-color:var(--blue);background:#f4f8ff;}
+  .opt .k{flex-shrink:0;width:38px;height:38px;border-radius:10px;border:1.5px solid var(--ink-soft);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--ink-soft);}
+  .opt.sel{border-color:var(--blue);background:#eaf2ff;}
+  .opt.sel .k{background:var(--blue);border-color:var(--blue);color:#fff;}
+  .opt.ok{border-color:var(--green);background:rgba(47,154,95,.12);}
+  .opt.ok .k{background:var(--green);border-color:var(--green);color:#fff;}
+  .opt.no{border-color:var(--red);background:rgba(229,72,77,.08);}
+  .opt.no .k{background:var(--red);border-color:var(--red);color:#fff;}
+  .nav{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0;}
+  .nav button{width:42px;height:42px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-family:var(--font);font-weight:800;cursor:pointer;color:var(--ink-soft);}
+  .nav button.done{background:#dbe9ff;border-color:#9ec2ff;color:var(--blue-dark);}
+  .nav button.cur{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset;color:var(--blue);}
+  .rv{padding:18px 22px;margin-bottom:12px;border-radius:18px;border:1.5px solid var(--line);background:#fff;}
+  .rv.bad{border-color:var(--red);} .rv.good{border-color:var(--green);}
+  .rv b{font-weight:800;} .rv p{margin:6px 0 0;font-weight:600;color:var(--ink-soft);}
+  .warn{background:rgba(229,72,77,.08);border:1px solid var(--red);color:#9a3a30;padding:14px 18px;border-radius:14px;margin-bottom:14px;font-weight:600;}
+  @media (max-width:700px){.modes{grid-template-columns:1fr;}.opt{font-size:18px;padding:14px;}}
+  @media (min-width:1000px){.opt{font-size:24px;padding:20px 26px;}}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">PEDAGOGIK MAHORAT</span></div>
+
+<div id="sList">
+  <h1>Pedagogik mahorat</h1>
+  <p class="sub">Pedagogik mahorat bo'yicha testlar: to'plamni tanlang, mashq qiling yoki imtihon rejimida sinab ko'ring</p>
+  <div id="warn"></div>
+  <div class="list" id="list"></div>
+</div>
+
+<div id="sMode" class="hidden">
+  <h1 id="mTitle" style="font-size:30px"></h1>
+  <p class="sub" id="mDesc"></p>
+  <div class="modes">
+    <button class="mode" id="modeP"><h3>Mashq</h3><p>Har javobdan keyin to'g'ri javob va izoh ko'rsatiladi. Vaqt cheklanmagan.</p></button>
+    <button class="mode" id="modeE"><h3>Imtihon</h3><p>Haqiqiy imtihondagidek: vaqt hisoblanadi, natija va xatolar faqat oxirida ko'rsatiladi.</p></button>
+  </div>
+  <p><button class="btn ghost" id="mBack">← To'plamlarga qaytish</button></p>
+</div>
+
+<div id="sQuiz" class="hidden">
+  <div class="qhead"><span id="qcount" style="font-weight:800"></span><div class="track"><div class="fill" id="fill"></div></div><span class="tm" id="tm"></span></div>
+  <div class="card qbox" style="padding:30px 34px">
+    <div id="media"></div>
+    <p class="qtext" id="qtext"></p>
+    <div id="opts"></div>
+    <div id="exp"></div>
+    <div class="btnrow" id="qbtns"></div>
+  </div>
+  <div class="nav" id="nav"></div>
+  <div class="hint" id="hint" style="color:var(--ink-soft);font-weight:600;font-size:14px">Klaviatura: A, B, C, D — javob; ← → — savollar orasida</div>
+</div>
+
+<div id="sRes" class="hidden">
+  <div class="card" style="padding:34px;text-align:center;margin-bottom:18px">
+    <h1 style="margin:0">Natija</h1>
+    <p style="font-size:56px;font-weight:800;margin:8px 0 0" id="rScore"></p>
+    <p style="font-size:20px;font-weight:700;color:var(--ink-soft);margin:6px 0" id="rPct"></p>
+    <p style="font-size:19px;font-weight:700;margin:6px 0" id="rMsg"></p>
+    <div class="btnrow" style="justify-content:center"><button class="btn" id="rAgain">Qayta urinish</button><button class="btn ghost" id="rList">Boshqa to'plam</button></div>
+  </div>
+  <h2 style="font-weight:800">Savollar tahlili</h2>
+  <div id="review"></div>
+</div>
+</div>
+
+<!--
+  YANGI TO'PLAM QO'SHISH: pastdagi blokni nusxalab, sarlavhani va savollarni o'zgartiring.
+  Atributlar: data-title (nom), data-desc (qisqa tavsif), data-time (imtihon vaqti, daqiqada; yozilmasa — har savolga 1 daqiqa).
+  Savollar bo'sh qator bilan ajratiladi. Har bir savol:
+      Savol matni
+      A) variant
+      B) variant
+      C) variant
+      D) variant
+      JAVOB: B
+      IZOH: izoh (ixtiyoriy)
+      RASM: rasmlar/fayl.jpg (ixtiyoriy)
+-->
+
+<script type="text/plain" class="set" data-title="Pedagogik mahorat va kasb standarti — to'liq (134 savol)" data-desc="Attestatsiya savollari asosida, hamma savollar aralashtiriladi" data-time="134">
+Yosh o'qituvchi dars davomida turli holatlarga duch keladi (yangi mavzuni tushuntirish, tanbeh berish va hokazo). Pedagogik ta'sir o'tkazishda e'tibor berilishi kerak bo'lgan jihatlarning to'g'ri ketma-ketligini aniqlang.
+1. Pedagogik ta'sir ko'rsatish.
+2. Optimal metodlarni tanlash.
+3. Murakkab vaziyatdan chiqishning mumkin bo'lgan variantlarini saralash.
+4. Vaziyatni tahlil qilish.
+A) 1, 2, 3, 4
+B) 4, 2, 3, 1
+C) 4, 3, 2, 1
+D) 3, 4, 2, 1
+JAVOB: C
+
+Sinf rahbari bir o'quvchining ba'zi fanlardan orqada qolayotganini aniqladi va unga o'zlashtirishda yordam tariqasida darsdan keyingi faoliyatga jalb etmoqchi. Ta'limni tashkil etishning mumkin bo'lgan variantlarini belgilang.
+1. Fan to'garaklari
+2. Fakultativ mashg'ulotlar
+3. O'qituvchi maslahati
+4. O'quv ekskursiyalari
+5. O'quv konferensiyalari
+A) 1, 2, 3
+B) 2, 3, 4
+C) 1, 3, 5
+D) 1, 2, 3, 4, 5
+JAVOB: D
+
+Yosh mutaxassis yuqori sinf o'quvchilarini boshqara olmadi. Ma'naviy-ma'rifiy ishlar bo'yicha direktor o'rinbosari uning darsini kuzatib, pedagogning kommunikativ madaniyati juda muhimligini uqtirdi. Pedagogning kommunikativ madaniyati qanday bo'lishi kerak?
+A) Pedagogning faqat o'quvchilar bilan rasmiy tarzda va qat'iy tartibda muloqot qilishi
+B) Pedagogning o'quvchilar va atrofdagilar bilan qisqa muddatda muloqot o'rnatishga doimiy intilishi
+C) Pedagogning o'z fikrini o'quvchilarga so'zsiz qabul qildirishga intilishi
+D) Pedagogning muloqotdan qochib, faqat yozma topshiriqlar bilan cheklanishi
+JAVOB: B
+
+Quyidagi tadbirlarning qaysilari mustaqil kasbiy rivojlanishga omil bo'ladi?
+1. Onlayn kurslarda o'qish
+2. Hamkasblarning darsini kuzatish
+3. Fanga oid maqolalar bilan tanishish
+4. Turli seminar, trening, konferensiyalarda ishtirok etish
+5. Hamkasblar bilan hordiq chiqarish
+6. Xayriya tadbirlarida ishtirok etish
+A) 1, 2, 5, 6
+B) 3, 4, 5, 6
+C) 2, 4, 5
+D) 1, 2, 3, 4
+JAVOB: D
+
+Ota-onalarni ta'lim jarayonida ishtirok etishga jalb qilish uchun o'qituvchi qanday zarur bilimlarga ega bo'lishi lozim?
+1. Samarali ijtimoiy muloqot asoslari
+2. Insoniyatni o'qitish va tarbiyalashning zamonaviy nazariyalari
+3. Yosh pedagogikasi, psixologiyasi asoslari
+4. Inklyuzivlik tamoyilini amalga oshirish
+A) 1, 3
+B) 2, 4
+C) 1, 2, 4
+D) 3, 4
+JAVOB: A
+
+O'qituvchi dars davomida o'quvchilarning turli yo'nalishlarda fikrlash qobiliyatlarini rivojlantirish uchun 4K usulidan samarali foydalandi. Bunda u ta'lim samaradorligini ta'minlashda qanday mehnat harakatini amalga oshirdi?
+A) O'quvchilarni baholashdan butunlay ozod qildi
+B) Dars maqsadlari asosida o'quvchilar uchun erishimli vazifalarni belgiladi
+C) Barcha topshiriqlarni bir xil murakkablikda berdi
+D) Dars mavzusini o'quvchilarning o'zi tanlashiga imkon berdi
+JAVOB: B
+
+Bir guruh o'quvchilar loyiha ishi ustida juda ko'p mehnat qilib, darsda sinfdoshlari oldida taqdimot o'tkazdilar. O'qituvchi loyihada ba'zi kamchiliklar bo'lsa-da, vazifa yaxshi bajarilganligi va dolzarbligini aytib, guruh a'zolarini maqtadi. U nima uchun bunday qildi?
+A) O'quvchilarning yutuqlarini baholash orqali ularni o'qishni davom ettirishga qiziqtirish uchun
+B) Loyihadagi kamchiliklarni yashirib, guruhni jazolamaslik uchun
+C) Guruhlar o'rtasida raqobatni kuchaytirish uchun
+D) Dars vaqtini tejab, keyingi mavzuga tezroq o'tish uchun
+JAVOB: A
+
+Kechqurun maktab rahbariyati ustozga boshlang'ich sinf o'qituvchisi betob bo'lib qolgani va ertaga uning o'rniga ishga chiqish lozimligini xabar qildi. Shu kungacha ustoz faqat 5–7- sinflarga dars berib kelgan edi. Darsga tayyorgarlik ko'rish uchun u qaysi faoliyat turini to'g'ri tanlagan?
+A) Darsning maqsadlari, o'quvchilarning yosh xususiyatlari va o'zlashtirishiga mos keladigan dars shakllari va usullarini rejalashtirish
+B) 5–7-sinflarda qo'llagan dars konspektini o'zgartirmasdan ishlatish
+C) Darsni faqat o'zi qulay deb bilgan usulda, yosh xususiyatlariga e'tibor bermay o'tish
+D) Dars rejasini tuzmasdan, o'quvchilar bilan erkin suhbat o'tkazish
+JAVOB: A
+
+Direktor o'rinbosari tarbiya darsiga tahlil uchun kirdi. Yakunda o'qituvchining mashg'ulot davomida milliy ruh, madaniyatning go'zal durdonalari, buyuk alloma va olimlarning ishlari va fikrlaridan o'rinli foydalanganini ta'kidladi. Bu qanday dars tahlili?
+A) Didaktik tahlil
+B) Metodologik tahlil
+C) Psixologik tahlil
+D) Tuzilmaviy tahlil
+JAVOB: B
+
+O'qituvchi bir o'quvchining berilgan vazifani tezlik bilan, pala-partish bajarib, so'ng partaning bir chekkasida berkinib rasm chizayotganini sezib qoldi. Darsdan so'ng bolani tasviriy san'at ustozi oldiga olib borib, fan to'garagiga yozdirib qo'ydi. Bunda o'qituvchining qaysi qobiliyati namoyon bo'ldi?
+A) Kinestetik qobiliyat
+B) Mantiqiy qobiliyat
+C) Voqealarni oldindan ko'ra olish qobiliyati
+D) Eshitish va his qilish qobiliyati
+JAVOB: C
+
+Biologiya o'qituvchisi dars vaqtida o'quvchilarni maktab baliqxonasiga olib chiqib, mavzu bo'yicha topshiriq berdi. O'quvchilar topshiriqni bajarish jarayonida yangi bilimlarni egalladilar. O'qituvchi qanday usuldan foydalandi?
+A) Ma'ruza
+B) Suhbat
+C) Hikoya
+D) Amaliy
+JAVOB: D
+
+O'qituvchi sinfdagi o'quvchining matematikaga qobiliyati borligini inobatga olib, uni matematika olimpiadasiga tayyorlamoqchi bo'ldi. O'quvchi esa boshqa fandan qatnashishni xohladi, ammo o'qituvchi fikridan qaytmay uni matematikadan ishtirok etishga majbur qildi. Bunda ta'lim-tarbiyaning qaysi tamoyili buzilgan?
+A) Ilmiylik tamoyili
+B) Demokratik tamoyil
+C) Izchillik tamoyili
+D) Ko'rgazmalilik tamoyili
+JAVOB: B
+
+O'quvchilar bilan muloqot qilish madaniyatining individual shaxsiy xususiyatlari berilgan qatorni aniqlang.
+1) O'quvchilar shaxsiy xususiyatlarini mustaqil tahlil qilish;
+2) O'quvchilar ichki imkoniyatlariga har tomonlama tavsif berish;
+3) Pedagogik faoliyatga monand muloqot madaniyati modelini ishlab chiqish;
+4) O'qituvchining muloqot madaniyatini to'g'ri tashkil etishi.
+A) 1, 2, 4
+B) 1, 3, 4
+C) 2, 3, 4
+D) 1, 2, 3
+JAVOB: A
+
+Shaxsning individual-psixologik xususiyati bo'lib, muayyan faoliyat yuzasidan layoqati va ishni muvaffaqiyatli amalga oshirishning subyektiv shart-sharoitini ifodalovchi individual psixik sifatlar yig'indisi nima deyiladi?
+A) Xarakter
+B) Qobiliyat
+C) Temperament
+D) Moyillik
+JAVOB: B
+
+O'qituvchi yangi mavzuni ma'ruza tarzida tushuntirib berdi. Dars davomida u faol bo'lib, o'quvchilarga qaratilgan nutq so'zladi. Bunda o'qituvchi faoliyatida nutqning qaysi shakli namoyon bo'ldi?
+A) Dialog
+B) Polilog
+C) Ichki nutq
+D) Monolog
+JAVOB: D
+
+O'quvchining aniq ehtiyojlariga yo'naltirilgan barcha faoliyat turlarini moslashtirish nima deyiladi?
+A) Ta'limni standartlashtirish
+B) Ta'limni faollashtirish
+C) Ta'limni individuallashtirish
+D) Ta'limni intensivlashtirish
+JAVOB: C
+
+Nutqning asosiy xususiyatlari nechta talabdan kelib chiqadi?
+A) 2
+B) 4
+C) 3
+D) 5
+JAVOB: B
+
+Boshqa fan asoslarini o'zlashtirishga imkon beradigan qobiliyat turini ko'rsating.
+A) Pedagogik qobiliyat
+B) Ijodiy qobiliyat
+C) Akademik qobiliyat
+D) Kommunikativ qobiliyat
+JAVOB: C
+
+Pedagogik faoliyatni tashkil etish va ijtimoiy xulq-atvor ko'nikmalarini shakllantirish usullarini aniqlang.
+1) pedagogik tahlil; 2) o'rganish; 3) mashq qilish; 4) tarbiyalovchi vaziyatlar; 5) musobaqa; 6) rag'batlantirish.
+A) 1, 3, 4, 5
+B) 2, 3, 4, 5, 6
+C) 1, 2, 5, 6
+D) 1, 2, 3, 4, 6
+JAVOB: D
+
+Boshlang'ich sinf o'quvchisi darslarda o'zini yomon tutib, o'qituvchisiga sinfdoshlari oldida gap qaytardi. Sinf rahbarining alohida suhbatlari natija bermadi. Rahbar bolaning or-nomusi, izzat-nafsi, his-tuyg'ularini ehtiyotkorlik bilan o'stirish kerakligini inobatga olgan holda uni koyidi. Bola qilgan ishidan xijolat bo'ldi. Sinf rahbari motivatsion metodlarning qaysi biridan foydalangan?
+A) Rag'batlantirish
+B) Istiqbol
+C) Musobaqa
+D) Uyaltirish
+JAVOB: D
+
+Pessimist insonga mos javoblarni toping.
+1. Tushkunlikka moyil
+2. Qiyinchilikka oson yengiladi
+3. Orzusiga qanday erishishni biladi
+4. Xushchaqchaq bo'ladi
+5. Hamma narsaga qodirligini aytadi
+6. O'ziga ishonmaydi
+A) 3, 4, 5
+B) 1, 2, 6
+C) 1, 4, 6
+D) 2, 3, 6
+JAVOB: B
+
+4K modelini nimalar tashkil qiladi?
+1. Kreativ 2. Kritik 3. Kombinatorika 4. Kommunikatsiya 5. Kooperatsiya 6. Kollaboratsiya
+A) 1, 2, 4, 6
+B) 1, 3, 4, 5
+C) 2, 3, 5, 6
+D) 1, 2, 3, 4
+JAVOB: A
+
+Ziddiyatlarni hal qilish va sinfda muloqot qilish uchun ijobiy muhit yaratishda qo'llaniladigan faoliyatlarni belgilang.
+1. Odob-axloq haqida davra suhbatlari uyushtirish
+2. Do'stona muhitni qo'llab-quvvatlash
+3. Bolalarni maktabdan tashqari to'garaklarga yo'naltirish
+4. Tarbiyaviy ishlarda o'quvchilarning jinsi, yoshi, madaniy xususiyatlarini inobatga olish
+5. O'quvchilarda bag'rikenglik, odob-axloq va hayotga tayyorgarlik ko'nikmalarini shakllantirish
+A) 1, 3, 4, 5
+B) 2, 3, 4
+C) 1, 2, 4, 5
+D) 1, 2, 3, 5
+JAVOB: C
+
+4-sinfda ingliz tili darsi. O'qituvchiga nafaqat o'z guruhida, balki kasal bo'lib qolgan o'qituvchining guruhida ham dars o'tish vazifasi berilgan. O'quvchilar o'zlarini juda yomon tutmoqdalar: baland ovozda gaplashmoqda, urishmoqda, bir-biriga qog'oz qushchalar otmoqda. O'qituvchi nima qilishi kerak?
+1. O'quvchilar diqqatini qiziqarli ma'lumotlar bilan jalb etish.
+2. Darsni shu holatda davom ettirish.
+3. Ko'proq qiziqarli o'yinlar o'tkazib, diqqatni darsga qaratish.
+4. O'quvchilarga tartib-intizom va o'quvchining majburiyatlari haqida talab qo'yish.
+A) 1, 2, 3
+B) 1, 3, 4
+C) 2, 3, 4
+D) 1, 2, 4
+JAVOB: B
+
+O'qituvchi o'quvchilar bilan maslahatlashib tadbir rejalashtirdi, har bir bola o'zi rol tanlab oldi. Bu qanday ta'lim uslubi?
+A) Avtoritar
+B) Liberal
+C) Reproduktiv
+D) Demokratik
+JAVOB: D
+
+Ta'lim samaradorligini oshirish uchun o'qituvchi darsda ko'rgazmali qurollardan foydalanishni rejalashtirdi. Qo'l ostida ko'rgazmali va tarqatma materiallar juda ko'p edi. To'g'ri tanlangan tarqatma materiallar qatorini belgilang.
+A) Dars mavzusiga mos keladigan namoyish va tarqatma materiallar
+B) Mavzudan tashqari, ammo qiziqarli ko'rgazmalar
+C) O'qituvchi o'zi tayyorlagan barcha materiallar
+D) Mavzuga bevosita aloqasi bo'lmagan eng ko'p miqdordagi materiallar
+JAVOB: A
+
+O'quvchilar Konstitutsiya kuniga bag'ishlangan tadbir uyushtirmoqchi bo'lib, boshqa sinf o'quvchilarini ham jalb etishlarini o'qituvchiga aytdilar. O'qituvchi vazifani mustaqil bajarishlari uchun barcha shart-sharoitlarni yaratib berdi. Tarbiyaviy faoliyatning qaysi yo'nalishlari amalga oshirilgan?
+1. O'quvchilarning o'zini o'zi boshqarish organlari faoliyatini tashkil qilishda yordam berish va qo'llab-quvvatlash
+2. O'quvchilarga zamonaviy ommaviy axborot vositalari dunyosida xavfsiz ishlashga yordam berish
+3. O'quvchilarda kognitiv faollik, mustaqillik, tashabbuskorlik, fuqarolik pozitsiyasi madaniyatini rivojlantirish
+4. O'quvchilarda fuqarolik kompetensiyalari va media savodxonligini shakllantirish
+A) 1, 3
+B) 2, 4
+C) 1, 2
+D) 3, 4
+JAVOB: A
+
+Kasbiy faoliyat turlari va mehnat vazifalarini moslashtiring.
+1. O'z-o'zini rivojlantirish va kasbiy o'sish
+2. Tarbiyaviy faoliyatni tashkil etish
+3. Hamkasblar va ta'lim oluvchilarning ota-onalari bilan hamkorlik
+4. Ta'lim samaradorligini ta'minlash
+A. O'zaro darslarda qatnashish, ularni tahlil qilish, undan o'z kasbiy faoliyatida foydalanish
+B. Ziddiyatlarni hal qilish, sinfda va undan tashqarida muloqot uchun ijobiy muhit yaratish
+C. Tarbiyaviy muammolarni hal qilishda boshqa pedagogik xodimlar va mutaxassislarni maktab hayotiga jalb qilish
+D. O'quvchilarning jamoaviy va hamkorlikdagi loyihaviy ishlarini tashkil etish
+E. Darsdan tashqari turli madaniy tadbirlarda ishtirok etish
+A) 1-B, 2-A, 3-C, 4-D
+B) 1-A, 2-C, 3-B, 4-E
+C) 1-A, 2-B, 3-C, 4-D
+D) 1-E, 2-B, 3-A, 4-D
+JAVOB: C
+
+Dars boshlanganda barcha o'quvchilar tinchlanib, jimlik cho'kdi va birdan bir o'quvchi baland ovozda kulib yubordi. U ko'zingizga tik qarab: «Menga sizga qarash kulguli tuyuladi», dedi. O'qituvchi «Kayfiyating yaxshi ekanidan xursandman», deb javob berib, darsni davom ettirdi. Bunda o'qituvchi muloqotni modellashtirish bosqichida nimalarga e'tibor berdi?
+A) O'quvchining xatti-harakatini jazolash choralarini oldindan belgilab qo'yish
+B) Muloqot ishtirokchilarining kamchiliklarini aniqlab, jamoat oldida tanqid qilish
+C) Ta'lim-tarbiya jarayonida uchrashi mumkin bo'lgan qiyinchiliklar dinamikasini oldindan ko'ra olish va bartaraf etish
+D) Dars mavzusini o'quvchining qiziqishiga qarab o'zgartirish
+JAVOB: C
+
+Farzandi 3-sinfda o'qiydigan ona past baholar va sinfdoshlarining kulishi sababli o'qituvchilar xonasida janjal ko'tardi. Sinf rahbari yosh bo'lishiga qaramay, onani xushmuomalalik bilan tinchlantirdi. Og'zaki ta'sir qilishning xushmuomalalik mezonlari to'g'ri ko'rsatilgan qatorni aniqlang.
+1. Shirinsuxanlik va insoniylik tuyg'ularini namoyish etish
+2. Suhbatning barcha bosqichlarida hissiy osoyishtalikning namoyon bo'lishi
+3. O'zaro fikr almashishga doir sifatlar, ko'nikma va malakalarning mavjudligi
+4. Ta'lim va bilim olishga bo'lgan ishtiyoqni kuchaytirish
+5. Mustaqil fikr yuritish, o'z fikrini erkin bayon eta olish, insoniy qadr-qimmat tuyg'usini shakllantirish
+A) 1, 2, 4, 5
+B) 1, 2, 3, 5
+C) 2, 3, 4
+D) 1, 3, 4, 5
+JAVOB: B
+
+Bir o'quvchining onasi o'g'lining qo'pol muomala qilayotganini aytib, sinf rahbaridan maslahat so'radi. O'qituvchi oiladagi muhit bilan tanishib, bu ota-ona munosabatlarining oqibati ekanini aniqladi, onaga maslahat berdi va o'quvchining fikrlari, qiziqishlarini o'rganib, unga yordam berish maqsadida suhbatlar olib bordi. Bunda ta'lim jarayoni ishtirokchilariga qanday munosabat aks etgan?
+A) Pedagogik talabchanlik
+B) Pedagogik takt
+C) Pedagogik hamdardlik
+D) Pedagogik burch
+JAVOB: C
+
+O'qituvchining pedagogik jarayonda sog'lom muhitni yarata olishi, ijobiy muloqotni tashkil etishi, turli ziddiyatlarni o'z vaqtida anglay olishi va bartaraf etishi qaysi kasbiy kompetensiyada namoyon bo'ladi?
+A) Metodik
+B) Predmet
+C) Psixologik
+D) Axborot
+JAVOB: C
+
+O'z ustida ishlash bosqichlarining to'g'ri ketma-ketligini aniqlang.
+1. Ushbu qaror bo'yicha amaliy harakatlarni samarali tashkil etish yo'llarini izlash
+2. Yutuqlarni boyitish va kamchiliklarni bartaraf etish yuzasidan aniq qarorga kelish
+3. O'z faoliyatini tahlil qilish asosida yutuq va kamchiliklarni aniqlash
+A) 1, 2, 3
+B) 2, 3, 1
+C) 3, 1, 2
+D) 3, 2, 1
+JAVOB: D
+
+Moslikni toping.
+1. Kreativlik
+2. Kommunikativlik
+a) o'qituvchining o'quvchilar bilan to'g'ri muomala qila olishi va muloqot o'rnatish qobiliyati
+b) kelib tushayotgan axborotni mulohaza qilib, baholab, kuzatuv va tajribalarga asoslanib qabul qilish qobiliyati
+c) yangi g'oyalarni ishlab chiqishga moyillik, nostandart fikrlash va boy tasavvurga ega bo'lish qobiliyati
+A) 1-a, 2-c
+B) 1-b, 2-a
+C) 1-c, 2-a
+D) 1-c, 2-b
+JAVOB: C
+
+Ta'lim vositalariga kiruvchi javob variantlarini tanlang.
+1. O'quv qo'llanmalari 2. Namoyishli qurilmalar 3. Texnik vositalar 4. O'qituvchining ish rejasi 5. Ko'rgazmali qurollar 6. O'quv ustaxonasi jihozlari 7. Darslik
+A) 1, 2, 4, 5, 7
+B) 1, 2, 3, 5, 6, 7
+C) 2, 3, 4, 5, 6
+D) 1, 3, 4, 6, 7
+JAVOB: B
+
+Darslarda mavzuga mos keladigan ko'rgazmali va tarqatma materiallardan qanday maqsadda foydalaniladi?
+A) Ta'lim samaradorligini ta'minlash uchun
+B) Sinf xonasini bezash uchun
+C) O'qituvchi mehnatini yengillashtirish uchun
+D) Dars vaqtini qisqartirish uchun
+JAVOB: A
+
+Quyidagi javoblarning qaysi birida ta'lim samaradorligini oshirishga xizmat qiluvchi vositalar keltirilgan?
+A) Faqat darslik va daftar
+B) Nazorat ishi varaqlari va sinf jurnali
+C) Tarqatma materiallar va ko'rgazmali qurollar
+D) Dars jadvali va o'quv rejasi
+JAVOB: C
+
+Ko'rgazma va tarqatma materiallardan foydalanishning maqsadi nima?
+1) darslarni qiziqarli qilish, ularni yengil o'zlashtirish
+2) o'qituvchiga konsepsiyalarni oson bayon etishga imkon berish
+3) ishchi muhitni yaratish, o'quvchilar vazifalarini ketma-ket bajarish
+A) 1, 3
+B) 2, 3
+C) 1, 2, 3
+D) 1, 2
+JAVOB: D
+
+Darsda boshlang'ich sinf o'quvchisi havoning ifloslanishi rasmlarini ko'rsatib, uning sabablarini tushuntirdi. So'ngra o'qituvchi o'quvchilar bilan ifloslanishning oldini olish va kamaytirish yo'llarini muhokama qildi, eng yaxshi yechimlarni doskaga yozishdi. Bu darsda qanday o'qitish strategiyasi qo'llanildi?
+A) O'qitishda muammoli ta'lim
+B) Reproduktiv ta'lim
+C) Dasturlashtirilgan ta'lim
+D) An'anaviy ma'ruzaviy ta'lim
+JAVOB: A
+
+Darsda o'qituvchi o'quvchilarni guruhlarga ajratib, muammoli vaziyat topshirig'ini berdi. Har bir guruh turli usullarda muammoni hal qilishga urinib, yechimni taqdim etdi. O'qituvchi qanday usuldan foydalangan?
+A) Reproduktiv
+B) Tushuntirish-ko'rgazmali
+C) Ma'ruza
+D) Evristik
+JAVOB: D
+
+Darsni boshlashdan oldin o'qituvchi har bir o'quvchidan darsdan tashqari vaqtda nima bilan shug'ullanishini so'radi. Dars davomida barcha o'quvchi faol ishtirok etdi. O'qituvchi ta'lim samaradorligini ta'minlash maqsadida qanday usuldan foydalandi?
+A) O'quvchilarning darsda faol qatnashishini motivatsiyalashda ularning shaxsiy qiziqishlaridan foydalandi
+B) Faol qatnashishni faqat baholar orqali majburlashga tayandi
+C) Mavzuni o'quvchilar hayoti bilan bog'lamay, tayyor reja bo'yicha o'tdi
+D) Eng faol o'quvchilarni namuna qilib, passivlarni tanqid qildi
+JAVOB: A
+
+«Dars vaqtini oqilona tashkillashtirish, darsning maqsad, shakl va usullarini aniqlash» o'qituvchilar kasbiy kompetensiyasining qaysi mehnat vazifasidagi ko'nikmalariga kiradi?
+A) O'quv jarayonini rejalashtirish
+B) Ta'lim va tarbiya jarayonini boshqarish
+C) O'quv jarayonini baholash
+D) Hamkorlik va ota-onalar bilan ishlash
+JAVOB: A
+
+O'qituvchining dars jarayonida AKT dan foydalanish maqsadini belgilang.
+A) Dars o'tish vazifasini to'liq texnikaga topshirish uchun
+B) O'quvchilarning daftarga yozishini kamaytirish uchun
+C) Ta'lim jarayonini qo'llab-quvvatlash va ta'limiy muammolarni hal qilish uchun
+D) Darsni faqat ko'ngilochar tusga keltirish uchun
+JAVOB: C
+
+Mezonlarga asoslangan baholash tizimi qaysi muammolarni hal qiladi? To'g'ri javoblarni belgilang.
+1. Ob'yektiv va shaffof baholash tizimi orqali ta'lim sifatini oshirishga hissa qo'shadi;
+2. Xalqaro standartlarga javob beradigan yuqori sifatli baholash mexanizmini shakllantiradi;
+3. O'quvchining o'qishdagi yutuqlari haqidagi dalillarni to'plashga yordam beradi;
+4. Asosiy natijalarni umumlashtirish va ta'limiy natijalarni tahlil qilishga yordam beradi.
+A) 1, 2
+B) 2, 3
+C) 2, 4
+D) 1, 3, 4
+JAVOB: D
+
+Nima uchun o'quvchilarning yutuqlarini baholash va bahoni asoslab berish juda muhim?
+A) Maqsadga qay darajada erishganini ko'rsatish, o'qishni davom ettirishga qiziqtirish, motivatsiya berish
+B) O'quvchilarni bir-biri bilan solishtirib, reyting tuzish
+C) Sinf jurnalini to'ldirish talabini bajarish
+D) O'qituvchi mehnatiga haq belgilash
+JAVOB: A
+
+O'qituvchi dars davomida aksariyat o'quvchilarni tingladi. Noto'g'ri fikrlarni rad etmasdan, yo'naltiruvchi savollar bilan yangi mavzuni tushuntirishga harakat qildi. U bunday usulni nima maqsadda qo'lladi?
+A) O'quvchilarning xatolarini yashirib, darsni tez yakunlash maqsadida
+B) Dars davomida har bir o'quvchiga o'z g'oyalari va qarashlarini ifoda etish imkoniyatini berish maqsadida
+C) Faqat kuchli o'quvchilarni faollashtirish maqsadida
+D) Mavzuni o'quvchilarsiz mustaqil bayon etish maqsadida
+JAVOB: B
+
+Didaktik o'yin nima?
+A) Dars oxirida o'quvchilar bilimini nazorat qilish uchun qo'llaniladigan test shakli
+B) O'rganilayotgan obyekt, hodisa va jarayonlarni modellashtirish asosida o'quvchining bilishga bo'lgan qiziqishi va faollik darajasini rag'batlantiruvchi o'quv faoliyati turi
+C) Darsdan tashqarida o'quvchilarning dam olishi uchun tashkil etiladigan faoliyat
+D) O'qituvchi tomonidan tayyor bilimlarni yod oldirishga mo'ljallangan mashq turi
+JAVOB: B
+
+Didaktik vositalar his qilish, sezish uchun foydalanishga ko'ra qanday tavsiflanadi?
+A) Vizual, kinestetik, matnli
+B) Og'zaki, yozma, amaliy
+C) Statik, dinamik, interaktiv
+D) Vizual, audial, audiovizual
+JAVOB: D
+
+Didaktik vositalarga nimalar kiradi?
+A) Dars jadvali, sinf jurnali, o'qituvchi ish rejasi
+B) Darslik, o'quv dasturi, yillik reja
+C) O'quv va ko'rgazmali qo'llanmalar, namoyishli qurilmalar, texnik vositalar
+D) Baholash mezonlari, test varaqlari, bayonnomalar
+JAVOB: C
+
+Turli muhitda, har xil emotsional holatdagi odamlar bilan aloqa qila olish ko'nikmasi o'qituvchi kasbiy faoliyatining qaysi vazifasini bajarish uchun juda muhim?
+A) Ta'lim samaradorligini ta'minlash
+B) O'z-o'zini rivojlantirish va kasbiy o'sish
+C) Hamkasblar va ta'lim oluvchilarning ota-onalari (ularning o'rnini bosuvchi shaxslar) bilan hamkorlik
+D) Tarbiyaviy faoliyatni tashkil etish
+JAVOB: C
+
+O'qituvchi o'quvchilarga bilimlarning bir qismini aytib beradi, qolganini o'quvchilar bilish topshiriqlarini yechish, savollarga javob topish asosida mustaqil egallaydi. Bu qanday ta'lim metodi?
+A) Evristik ta'lim
+B) Reproduktiv ta'lim
+C) Axborot-reseptiv ta'lim
+D) Tadqiqot ta'limi
+JAVOB: A
+
+O'qituvchining kasbiy faoliyatiga taalluqli murakkab vaziyatlarda asosiy ta'sir ko'rsatuvchi, ta'lim-tarbiya jarayonida ishlatiladigan usullardan biri qaysi?
+A) Majburlash
+B) Jazolash
+C) Ishontirish
+D) Taqlid
+JAVOB: C
+
+Pedagogik ta'sir ko'rsatish usuli sifatida ishontirish nimalarni talab etadi?
+A) Jazo choralarini qo'llashni va qat'iy talabni
+B) Buyruq ohangi va tezkorlikni
+C) Dalillar keltirishni, isbotlashni va mantiqni
+D) Namuna ko'rsatish va taqlid qilishni
+JAVOB: C
+
+Rejalashtirilayotgan darsning shakl va usullari nimalarga mos kelishi lozim?
+A) Faqat o'qituvchining shaxsiy qulayligiga
+B) Darsning maqsadlari, o'quvchilarning yosh xususiyatlari va o'zlashtirishiga
+C) Darslikdagi mavzular soniga va maktab jadvaliga
+D) O'quvchilarning ota-onalari xohishiga
+JAVOB: B
+
+Pedagogik muloqot – bu...
+A) O'qituvchining o'quvchilar bilan darsda va darsdan tashqari faoliyatda eng qulay psixologik muhitni vujudga keltirib, ijobiy ruhiy iqlim yaratishi uchun imkon beruvchi kasbiy munosabatidir
+B) O'qituvchining faqat dars vaqtida o'quvchilarga yangi bilim yetkazib berish jarayoni
+C) O'quvchilar o'rtasidagi o'zaro munosabatlarni nazorat qilish va baholash jarayoni
+D) O'qituvchining ota-onalar bilan rasmiy yozishmalar yuritish faoliyati
+JAVOB: A
+
+Monitoring so'zining ma'nosi nima?
+A) Yakuniy baholash
+B) Uzluksiz kuzatish
+C) Natijalarni tahlil qilish
+D) Test o'tkazish
+JAVOB: B
+
+Oliy toifali o'qituvchi uchun kamida 8 yillik ish tajribasi talab qilinishi qanday talab hisoblanadi?
+A) Amaliy ish tajribasiga qo'yiladigan talab
+B) Ma'lumotga qo'yiladigan talab
+C) Bilimga qo'yiladigan talab
+D) Yoshga qo'yiladigan talab
+JAVOB: A
+
+Quyidagilarning qaysi biri «O'quv jarayonini rejalashtirish»dagi zaruriy bilim?
+A) Maktab ichki tartib qoidalari
+B) Moliyaviy hisobot yuritish qoidalari
+C) Yong'in xavfsizligi qoidalari
+D) Fanni o'qitishning turli usullari
+JAVOB: D
+
+Quyidagilarning qaysi biri «O'quv jarayonini rejalashtirish»dagi mehnat harakati?
+A) O'quvchilar o'rtasidagi mojarolarni hal etish
+B) Tegishli o'quv, namoyish va tarqatma materiallardan foydalanishni rejalashtirish
+C) O'z-o'zini rivojlantirish rejasini tuzish
+D) Ota-onalar yig'ilishini o'tkazish
+JAVOB: B
+
+Pedagogik mahoratning tashkil etuvchi komponentlari qaysilar?
+1) o'qituvchilik kasbiga sadoqat;
+2) o'z fanining o'qitish metodikasini mukammal bilishi;
+3) pedagogik qobiliyatlarini namoyish eta olishi;
+4) pedagogik texnikani o'z o'rnida qo'llay bilishi;
+5) o'qituvchining ruhiy-psixologik tayyorgarligini bilish.
+A) 1, 2, 3, 4
+B) 1, 2, 3, 4, 5
+C) 2, 3, 4, 5
+D) 1, 3, 5
+JAVOB: A
+
+Intellektning asosiy sifatlarini aniqlang.
+A) Xotira, e'tibor, iroda
+B) Ijod, fikrlash tezligi, mahorat
+C) Sabr, matonat, odob
+D) Qobiliyat, xarakter, temperament
+JAVOB: B
+
+«Til shirinligi – ko'ngilga yoqimlidir, muloyimligi esa foydali. Shirin so'z sof ko'ngillar uchun asal kabi totlidir». Ushbu hikmatli so'zlar muallifini aniqlang.
+A) Abu Nasr Forobiy
+B) Kaykovus
+C) Yusuf Xos Hojib
+D) Alisher Navoiy
+JAVOB: D
+
+«Til muncha sharaf birla nutqning holatidir va ham nutqdurki, agar nopisand zohir bo'lsak, boshning ofatidir...» Ushbu ibratli so'zlar muallifini aniqlang.
+A) Mahmud Qoshg'ariy
+B) Abdulla Avloniy
+C) Alisher Navoiy
+D) Ahmad Yassaviy
+JAVOB: C
+
+Refleksiya so'zi qanday ma'noni anglatadi?
+A) Yunon tilidan olingan bo'lib, «reflex» — shartli ta'sirlanish ma'nosini bildiradi
+B) Lotin tilidan olingan bo'lib, «relatio» — munosabat ma'nosini bildiradi
+C) Lotin tilidan olingan bo'lib, «reflexio» — orqaga qaytish ma'nosini bildiradi
+D) Fors tilidan olingan bo'lib, «raftor» — xatti-harakat ma'nosini bildiradi
+JAVOB: C
+
+Navbatdagi ota-onalar majlisida boshlang'ich sinf rahbari barchaning oldida o'quvchining onasiga farzandi haqida noo'rin ayblovlar qo'ydi. Ona va o'quvchi orasida janjal ko'tarildi, ertasiga ona farzandini boshqa maktabga olib ketdi. Sinf rahbari uzoq o'ylanib, qayerda xato qilganini tushunib yetdi. Bunda o'qituvchi refleksiyaning qaysi turidan foydalandi?
+A) Shaxsiy refleksiya
+B) Kommunikativ refleksiya
+C) Kooperativ refleksiya
+D) Intellektual refleksiya
+JAVOB: A
+
+Boshlang'ich sinf o'quvchisi ish jarayonida emotsional holati barqaror emasligini kuzatib, maktab psixologiga murojaat qildi. Psixolog o'zini-o'zi tarbiyalashni maslahat berdi. O'zini-o'zi tarbiyalash tushunchasi to'g'ri izohlangan qatorni toping.
+A) O'qituvchi tomonidan o'quvchilarga berilgan axloqiy ko'rsatmalar majmui
+B) O'qituvchi kasbiga mos madaniyatning shakllanishi, ruhiy va axloqiy sifatlarni tinmay rivojlantirish
+C) Kasbiy faoliyatdan tashqarida dam olish va charchoqni yengish usullari
+D) Boshqalarning kamchiliklarini aniqlab, ularni tuzatishga qaratilgan faoliyat
+JAVOB: B
+
+O'qituvchi o'quvchilarga zamonaviy ommaviy axborot vositalari dunyosida to'g'ri faoliyat yuritishni (kerakli ma'lumotlar tahlilini) o'rgatdi. Shunda o'qituvchi «Ta'lim va tarbiya jarayonini boshqarish» kasbiy faoliyat turining qaysi mehnat vazifasini bajardi?
+A) O'quv jarayonini rejalashtirish
+B) Xavfsiz ta'lim muhitini yaratish va ta'minlash
+C) Hamkasblar bilan hamkorlik qilish
+D) O'z-o'zini rivojlantirish va kasbiy o'sish
+JAVOB: B
+
+O'quvchi nazorat ishidan «3» baho oldi va norozi bo'lib, bahosini «4» ga o'zgartirmoqchi. Bu jarayonda o'qituvchi qanday xatoga yo'l qo'ygan?
+A) Qo'yilgan bahoni isbotlab bermagan
+B) Bahoni boshqa o'quvchilarga e'lon qilgan
+C) O'quvchini nazorat ishini qayta yozishga yubormagan
+D) Bahoni sinf rahbari bilan kelishmagan
+JAVOB: A
+
+Berilgan topshiriqlarni bajargan o'quvchi o'z bahosidan norozi bo'lib, 3 bahoni 4 ga ko'tarishni talab qildi. O'qituvchi qanday xatoga yo'l qo'ygan?
+1) Topshiriq berayotganda o'quvchilarni baholash mezoni bilan tanishtirmagan
+2) Topshiriqlarni baholashda subyektiv yondashgan
+3) Topshiriq sinfdagi boshqa o'quvchilarga nisbatan baholangan
+4) Topshiriq baholash mezonlari asosida amalga oshirilgan va barchaga tushuntirilgan
+A) 1, 4
+B) 2, 3, 4
+C) 3, 4
+D) 1, 2, 3
+JAVOB: D
+
+O'quvchilarga biror vazifa beradi, tushuntiradi, o'quvchilarning fikriga quloq soladi, so'ng mustaqil ishlashga qo'yib beradi. Bu qanday muloqot turi?
+A) Avtoritar
+B) Demokratik
+C) Liberal
+D) Rasmiy
+JAVOB: B
+
+O'qituvchi o'quvchining faolligini oshirish uchun nima qilishi kerak?
+A) Dars jarayonini to'g'ri tashkil etishi kerak
+B) Baholarni oshirib qo'yishi kerak
+C) Uy vazifasini ko'paytirishi kerak
+D) Sinf tarkibini tez-tez o'zgartirishi kerak
+JAVOB: A
+
+O'qituvchi darslarda faoliyat turini doim o'quvchilarning xohishiga qarab tanlar edi. Faqat shu uslubda dars olib borishning oqibati nimalarga olib kelishi mumkin?
+A) O'quvchilarning mustaqilligi va mas'uliyati ortib, o'zlashtirish yaxshilanadi
+B) O'quvchilar qat'iy intizomga o'rganib, qo'rquv asosida o'qiydi
+C) Faqat ilg'or o'quvchilar faollashib, qolganlar o'z-o'zidan rivojlanadi
+D) O'quvchilar tartibsiz bo'lib, yalqovlik kuchayadi va o'qituvchiga hurmat susayadi
+JAVOB: D
+
+Tashkilot va jamoatchilik o'rtasidagi axborot oqimini boshqarish qanday ataladi?
+A) PR (public relations)
+B) Marketing
+C) Monitoring
+D) Menejment
+JAVOB: A
+
+Pedagogik amaliyotda yosh o'qituvchilarning pedagogik texnikasida uchraydigan juz'iy kamchiliklarni aniqlang.
+1) o'quvchi yoki uning ota-onasi bilan sidqidildan so'zlasha olmaslik;
+2) g'azabni to'xtata olmaslik yoki uni o'z o'rnida ishlata olmaslik;
+3) o'zini erkin tutish va xushmuomala bo'lish;
+4) nutqni ravon bayon eta olmaslik;
+5) ortiqcha qattiqqo'llik;
+6) monoton, bir ohangda so'zlash, nutqning zerikarliligi, jonli emasligi;
+7) juda tez gapirish (ayniqsa darslarda);
+8) ortiqcha harakat yoki bir joyda qotib qolish, qo'llarini qayerga qo'yishni bilmaslik.
+A) 1, 3, 4, 5, 6
+B) 1, 2, 4, 5, 6, 7, 8
+C) 2, 3, 5, 7, 8
+D) 1, 2, 3, 4, 8
+JAVOB: B
+
+Pedagog tomonidan kasbiy maqsadga muvofiq tashkil etiladigan tizimli harakatlarning muayyan shakli qanday nomlanadi?
+A) Pedagogik texnika
+B) Pedagogik jarayon
+C) Pedagogik muloqot
+D) Pedagogik faoliyat
+JAVOB: D
+
+Shahnoza musiqaga juda qiziqadi, ovozi shirali, tuman va viloyat musiqa tanlovlari g'olibi. Ota-onasi esa uning boshlang'ich sinf o'qituvchisi bo'lishini xohlaydi. Sinf rahbari ota-onasi bilan suhbatlashib, farzandning qiziqishi, qobiliyati va orzulariga e'tibor berib yo'naltirish kerakligini aytdi. Ushbu vaziyatda qanday muloqot namoyon bo'lmoqda?
+A) Avtoritar muloqot
+B) Liberal muloqot
+C) Hamdardlik
+D) Rasmiy muloqot
+JAVOB: C
+
+O'qituvchi o'quvchilarga favqulodda vaziyatlarda qanday harakat qilish, zarur bo'lganda tibbiy yordam ko'rsatish haqida ma'lumot berdi. U buni nima uchun qildi?
+A) Xavfsiz rivojlantiruvchi ta'lim muhitini yaratish uchun
+B) O'quvchilarning qo'rquvini kuchaytirib, intizomni mustahkamlash uchun
+C) Dars soatlarini tibbiyot fani bilan bog'lash uchun
+D) O'quv dasturini bajarishni osonlashtirish uchun
+JAVOB: A
+
+Musiqa darsida o'qituvchi darsga oid tushunchalarni emas, bolalarga erkin zamonaviy estrada qo'shiqlarini xohlaganlaridek kuylashga imkon yaratmoqda. Ushbu vaziyatda pedagogik odobning qaysi shakli buzilmoqda?
+A) Pedagogik adolat
+B) Pedagogik takt
+C) Pedagogik burch
+D) Pedagogik vijdon
+JAVOB: C
+
+O'qituvchi seminar mashg'ulotiga tayyorgarlik ko'rish uchun o'quvchilarning qobiliyati, qiziqishi, ijodkorlik va o'zlashtirish darajasiga qarab vazifalarni taqsimlab berdi. Ushbu jarayonda pedagogik muloqotning qaysi shakli namoyon bo'lmoqda?
+A) Avtoritar
+B) Liberal
+C) Demokratik
+D) Rasmiy
+JAVOB: C
+
+Oila vakillari o'rtasida tajriba almashinuvi, amaliy mashqlar bilan mustahkamlanadigan nazariy ma'lumotlar, amalga oshirilgan loyiha natijalari bilan o'rtoqlashishga qaratilgan, interfaol metodlar asosida tashkil etiladigan ta'limiy-ma'rifiy tadbir nima deb ataladi?
+A) Davra suhbati
+B) Ma'ruza
+C) Yakka tartibdagi suhbat
+D) Pedagogik kengash
+JAVOB: A
+
+O'qituvchi o'rtaga muammoli vaziyat tashladi. Barcha o'quvchilar erkin fikrladilar, ularning barcha takliflarini ustoz inobatga oldi, hech birini rad etmadi. Barchani sidqidildan tinglab, qaror chiqardi. Bunda u qaysi uslubni namoyon etdi?
+A) Avtoritar
+B) Liberal
+C) Rasmiy
+D) Demokratik
+JAVOB: D
+
+O'qituvchi tadbir tayyorladi va barcha o'quvchilarga rollarni bo'lib berdi. Bir o'quvchiga o'ziga mos, eplay oladigan rolni berdi va u rolni juda yaxshi ijro etdi. Bunda o'qituvchi qaysi pedagogik yondashuvni amalga oshirdi?
+A) Moddiy rag'batlantirish yondashuvi
+B) Majburlash yondashuvi
+C) O'quvchining qobiliyatini oldindan ko'ra olish
+D) Liberal yondashuv
+JAVOB: C
+
+O'qituvchi sinfda majlis o'tkazdi. Barchaning fikrini eshitdi, o'zi esa yo'nalishlar berdi. Bunda o'qituvchi nutqning qaysi shaklidan foydalandi?
+A) Monolog
+B) Dialog
+C) Polilog
+D) Ichki nutq
+JAVOB: C
+
+O'quvchi dars vaqtida pichirlab gaplashib, boshqa bolalarning ham diqqatini bo'lyapti. O'qituvchi o'sha bolalarga turli savollar berib, ularning diqqatini darsga jalb qildi. Bunda o'qituvchi qanday usuldan foydalandi?
+A) O'quvchilarni darsga qiziqtirishning turli usullaridan foydalandi
+B) O'quvchilarni intizomga chaqirib, jazo qo'lladi
+C) Pichirlagan bolani sinfdan chiqarib yubordi
+D) Darsni to'xtatib, ota-onasini chaqirtirdi
+JAVOB: A
+
+PISA xalqaro baholash dasturining mohiyati yoritilgan qatorni belgilang.
+A) Boshlang'ich sinf bitiruvchilarining matnni o'qish va tushunish darajasini baholaydi
+B) O'quvchilarning o'qish, matematika va tabiiy fanlardan olgan bilimlarini turli hayotiy vaziyatlarda qo'llay olishlarini baholashga qaratilgan
+C) Mamlakat o'quvchilarining o'quv dasturini yodlash darajasini solishtiradi
+D) Maktab bitiruvchilarining oliy ta'limga tayyorgarligini test orqali aniqlaydi
+JAVOB: B
+
+TIMSS (Trends in International Mathematics and Science Study) xalqaro baholash dasturining mohiyati yoritilgan qatorni belgilang.
+A) Boshlang'ich maktab bitiruvchilarining matnni o'qish va tushunish darajasini baholaydi
+B) O'quvchilarning matematika va tabiiy fanlar bo'yicha egallagan bilim darajasi, sifatini solishtirish hamda milliy ta'lim tizimidagi farqlarni aniqlashga yordam beradi
+C) O'quvchilarning hayotiy vaziyatlarda o'qish savodxonligini aniqlaydi
+D) O'qituvchilarning kasbiy mahoratini xalqaro miqyosda reyting asosida baholaydi
+JAVOB: B
+
+PIRLS xalqaro baholash dasturining mohiyati yoritilgan qatorni belgilang.
+A) O'quvchilarning matematika va tabiiy fanlar bo'yicha bilim darajasi solishtiriladi
+B) 15 yoshli o'quvchilarning bilimlarni hayotiy vaziyatlarda qo'llash qobiliyati baholanadi
+C) Maktab o'qituvchilarining kasbiy tayyorgarligi aniqlanadi
+D) Boshlang'ich maktab bitiruvchilarining matnni o'qish va uni tushunish darajasi baholanadi
+JAVOB: D
+
+O'quvchilarning o'quv faoliyatini nazorat qilish turlari to'g'ri ko'rsatilgan qatorni toping.
+A) Boshlang'ich; o'rta; yuqori nazorat
+B) Joriy nazorat; oraliq nazorat; yakuniy nazorat
+C) Dastlabki; ichki; tashqi nazorat
+D) Kunlik; haftalik; oylik nazorat
+JAVOB: B
+
+O'qituvchining oldiga sinfdagi bir bolaning onasi kelib, o'g'lining gap qaytarishi, umuman quloq solmasligini aytib shikoyat qildi. O'qituvchi vaziyatni aniqlab, to'g'ri maslahatlar berdi. Bunda o'qituvchining qanday qobiliyati namoyon bo'ldi?
+A) Pedagogik talabchanlik
+B) Pedagogik bag'rikenglik
+C) Pedagogik empatiya (hamdardlik)
+D) Pedagogik qat'iyatlilik
+JAVOB: C
+
+Pedagogik texnologiya darajalari ketma-ketligini toping.
+1. Umumpedagogik
+2. Xususiy-metodik
+3. Lokal daraja
+A) 3, 2, 1
+B) 1, 2, 3
+C) 2, 1, 3
+D) 1, 3, 2
+JAVOB: B
+
+O'qituvchi yuqori sinf o'quvchilari bilan juda yaxshi munosabatda. Ularning eng nozik xususiyatlarini biladi, ularni ishontirishni, ma'qullashni biladi. O'quvchilar ham o'qituvchini juda hurmat qiladi. O'qituvchi qanday ta'sir ko'rsatish usulidan foydalanmoqda?
+A) Majburlash
+B) Uyaltirish
+C) Jazolash
+D) Ishontirish
+JAVOB: D
+
+Darsning qanday turlari mavjud?
+1. Aralash (kombinatsion) dars
+2. Sinf-dars
+3. O'rganilganlarni takrorlash va mustahkamlash darsi
+4. O'quvchilarning bilim, ko'nikma va malakalarini nazorat qilish darslari
+5. Laboratoriya darslari
+6. Interfaol darslar
+7. Amaliy darslar
+A) 1, 3, 4, 5, 7
+B) 1, 2, 4, 6
+C) 2, 3, 5, 6
+D) 1, 2, 3, 4, 5, 6, 7
+JAVOB: A
+
+Muammoli ta'lim turlarini belgilang.
+1. Muammo; 2. Muammoli holat; 3. Muammoli savol; 4. Muammoli vazifa; 5. Muammoli ish; 6. Muammoli topshiriq; 7. Muammoli vaziyat
+A) 2, 3, 5, 6
+B) 1, 3, 4, 6, 7
+C) 1, 2, 3, 4, 5
+D) 2, 4, 5, 7
+JAVOB: B
+
+Kompetensiyaviy yondashuvda ta'limning 6 tamoyilini to'g'ri ketma-ketlikda joylashtiring.
+1. Amaliy faoliyat darajasi 2. Bilim 3. Kompetensiya 4. Ko'nikma 5. Kompetentlik 6. Malaka
+A) 2, 4, 6, 3, 1, 5
+B) 2, 6, 4, 1, 3, 5
+C) 4, 2, 6, 1, 5, 3
+D) 2, 4, 6, 1, 3, 5
+JAVOB: D
+
+Qadimda qaysi kasb egalari qonuniyatlarga amal qilgan holda «tinglovchilarga halovat bag'ishlash» orqali odamlarni ezgulikka, adolatparvarlikka, vatan oldidagi burchlariga sadoqatli bo'lishga, odob-axloq qoidalariga rioya qilishga chorlar edilar?
+A) Hunarmandlar
+B) Dehqonlar
+C) Sarkardalar
+D) Notiqlar
+JAVOB: D
+
+O'qitishning eng qadimgi shakli to'g'ri ko'rsatilgan qatorni aniqlang.
+A) Ta'limning guruhli shakli
+B) Ta'limning frontal shakli
+C) Ta'limning individual shakli
+D) Sinf-dars tizimi
+JAVOB: C
+
+«O'qituvchi muntazam ravishda fan bilan shug'ullanmog'i lozim. Aks holda u qurigan daraxt va toshga o'xshab qoladi. Qurigan daraxt va tosh meva bera olmaganidek, bunday o'qituvchidan hech qanday natija kutib bo'lmaydi». Ushbu so'zlar muallifi kim?
+A) Yan Amos Komenskiy
+B) Konstantin Ushinskiy
+C) Adolf Disterverg
+D) Jon Lokk
+JAVOB: C
+
+O'qituvchining pedagogik faoliyati tarkibiy qismlari berilgan qatorni toping.
+1) Pedagogik faoliyatning maqsadi
+2) Pedagogik faoliyatning obyekti va subyekti
+3) Pedagogik faoliyatning vositasi
+4) Pedagogik jarayonning harakat vositasi
+A) 1, 2, 3
+B) 1, 3, 4
+C) 2, 3, 4
+D) 1, 2, 4
+JAVOB: A
+
+«Muomala madaniyatida so'z aqldan kuch, tildan ixtiyor oladi». Ushbu so'zlar muallifini aniqlang.
+A) Abdulla Avloniy
+B) Aziz Yunusov
+C) Alisher Navoiy
+D) Mahmud Qoshg'ariy
+JAVOB: B
+
+Moslashtiring.
+1) Ular barcha ishlarda faol, jiddiy va vazmin, osoyishtalikka va tashqi ta'sirchanlikka moyil kishilardir.
+2) Ular faqat o'z ichki olamiga beriluvchan, atrofidagi odamlarga aralashmaydigan, o'z-o'zini nazorat qilishga, doimo ichki xavotirga moyil kishilardir.
+a) ekstravert shaxslar
+b) introvert shaxslar
+c) aqlli shaxslar
+A) 1-b, 2-a
+B) 1-a, 2-c
+C) 1-c, 2-b
+D) 1-a, 2-b
+JAVOB: D
+
+Bunday qobiliyatga ega insonlar musiqani sevishadi, ohangni yaxshi his qilishadi, deklamatsiya asosida proza va poeziyani yaxshi o'qishadi, eshitgan narsasini xotirada saqlaydi, ayniqsa she'r va qo'shiqlarni sevib tinglaydi. Bu qaysi qobiliyat turi?
+A) Eshitish va his qilish qobiliyati
+B) Aqliy qobiliyat
+C) Mantiqiy qobiliyat
+D) Kinestetik qobiliyat
+JAVOB: A
+
+O'qituvchining o'z xatti-harakatlarini muvofiqlashtirish qobiliyati, harakat ohangini his qilgan holda yo'naltirishi, vaqtni harakat sur'ati bilan his qilishi qaysi qobiliyat turi?
+A) Mantiqiy qobiliyat
+B) Shaxsning ichki qobiliyati
+C) Eshitish va his qilish qobiliyati
+D) Kinestetik (teri-muskul) qobiliyat
+JAVOB: D
+
+Falsafiy mulohazalar yuritishni, raqamlar, matematika, murakkab masalalarni hal qilishni sevadigan, sabab va oqibat natijalarini tushunish malakasiga ega, voqelikda asosiyni ikkinchi darajalisidan ajrata oladigan qobiliyat turi qaysi?
+A) Kinestetik qobiliyat
+B) Mantiqiy qobiliyat
+C) Aqliy qobiliyat
+D) Eshitish va his qilish qobiliyati
+JAVOB: B
+
+O'z-o'zini mukammal bilishi, tushunishi va his qilish qobiliyati; erkin shaxsda mukammal rivojlanadi, irodasi mustahkam, qat'iyatli, har qanday vaziyatda o'z fikrini erkin bayon eta oladi. Bu qaysi qobiliyat turi?
+A) Mantiqiy qobiliyat
+B) Kinestetik qobiliyat
+C) Aqliy qobiliyat
+D) Shaxsning ichki qobiliyati
+JAVOB: D
+
+O'qituvchi bir bolaning kelajakda yaxshi kasb egasi bo'lishiga orzu, umid va maqsadlar berdi. Bunday holatda o'qituvchi ta'lim jarayonida qanday usuldan foydalandi?
+A) Istiqbol
+B) Uyaltirish
+C) Musobaqa
+D) Rag'batlantirish
+JAVOB: A
+
+«Men VIII «B» sinfga kirishga tayyorlanayotgan vaqtimda o'qituvchilar xonasidayoq yuzimdagi tabassumni yo'qotaman. Sinfga kirishdan oldin o'zimga jiddiy, deyarli ifodasiz tus beraman. O'quvchilar bilan kam, juda aniq, keskin gaplashaman, hech qanday hazilga yo'l qo'ymayman...» Ushbu mulohazalar muallifini aniqlang.
+A) F. Samuylenkov
+B) A. S. Makarenko
+C) K. D. Ushinskiy
+D) V. A. Suxomlinskiy
+JAVOB: A
+
+O'qituvchining o'quvchilar bilan dars va darsdan tashqari jarayonlarda, sinfda ijobiy ruhiy iqlim yarata olish qobiliyati qaysi?
+A) Mantiqiy qobiliyat
+B) Muloqot qilish (kommunikativ) qobiliyati
+C) Kinestetik qobiliyat
+D) Aqliy qobiliyat
+JAVOB: B
+
+1-sinf o'quvchilari bilan darsda AKT dan foydalanib, necha daqiqa dars o'tish mumkin?
+A) 20 daqiqa
+B) 30 daqiqa
+C) 10 daqiqa
+D) 15 daqiqa
+JAVOB: C
+
+«Ta'lim to'g'risida»gi qonunning nechanchi moddasida o'qituvchining malaka toifasini olish haqida aytilgan?
+A) 10-modda
+B) 15-modda
+C) 20-modda
+D) 13-modda
+JAVOB: D
+
+Eng muhim jazo chorasi bo'lib, bunda o'qituvchi o'quvchiga yuzma-yuz turib dakki beradi va kundaligiga yozib borishi ham mumkin. Bu jazo turi qaysi?
+A) Hayfsan e'lon qilish
+B) Maktabdan chetlatish
+C) Ogohlantirish
+D) Tanbeh berish
+JAVOB: D
+
+O'quvchilar faoliyatini nazorat qilish metodlarining nechta turi mavjud?
+A) 2 ta
+B) 3 ta
+C) 4 ta
+D) 5 ta
+JAVOB: C
+
+Umumiy o'rta ta'lim sifatini nazorat qilishning nechta turi mavjud?
+A) 4 ta
+B) 3 ta
+C) 5 ta
+D) 6 ta
+JAVOB: A
+
+Tarbiyalanuvchi o'zini boshqa bolalar bilan muloqot qilishdan tortyapti. Buning sababi bolaning nutqi rivojlanmaganligi ekani aniqlandi. Bola nutqini rivojlantirish uchun qanday mashg'ulotlardan foydalanasiz?
+A) Murakkab matnni o'qib, ko'chirib yozish
+B) Rasmga qarab gap tuzish, kichik hajmdagi she'rni yoddan aytish
+C) Faqat jim holda rasm chizdirish
+D) Katta hajmdagi nasriy asarni yod oldirish
+JAVOB: B
+
+O'quvchilarga ta'lim-tarbiya berishda munozara, savol-javob usulini joriy qilib, suhbat metodiga asos solgan kim?
+A) Platon
+B) Aristotel
+C) Suqrot
+D) Konfutsiy
+JAVOB: C
+
+Kompetensiyaviy yondashuvda ta'limning 3 tamoyilini to'g'ri ketma-ketlikda joylashtiring.
+A) Bilim, ko'nikma, malaka
+B) Malaka, bilim, ko'nikma
+C) Ko'nikma, bilim, malaka
+D) Bilim, malaka, ko'nikma
+JAVOB: A
+
+O'qituvchi o'quvchining ko'rish qobiliyatida nuqsonlar borligini aniqladi. Bunday holatda o'qituvchi qanday yo'l tutishi kerak?
+A) Logoped yoniga olib borishi kerak
+B) Tiflopedagog yoniga olib borishi kerak
+C) Psixolog yoniga olib borishi kerak
+D) Sinf rahbari yoniga olib borishi kerak
+JAVOB: B
+
+Gulnora gapirganda biroz tutilib, duduqlanib gapiradi. O'qituvchi bunday holatda uni qaysi mutaxassisga olib borishi kerak?
+A) Tiflopedagogga
+B) Surdopedagogga
+C) Maktab hamshirasiga
+D) Logopedga
+JAVOB: D
+
+Sinfga yangi o'quvchi keldi. Bu bola sinfda o'z o'rnini topishi va boshqa bolalarga aralashib ketishi uchun o'qituvchi nima qilishi kerak?
+A) O'quvchilar orasida do'stona muhit yarata olishi kerak
+B) Yangi o'quvchini boshqalardan alohida o'tirg'izishi kerak
+C) Yangi o'quvchining o'zi moslashishini kutib, e'tibor bermasligi kerak
+D) Sinfdoshlarning o'zaro munosabatiga aralashmasligi kerak
+JAVOB: A
+
+Muomala madaniyatida nima aqldan kuch oladi?
+A) Fikr
+B) Odob
+C) Ilm
+D) So'z
+JAVOB: D
+
+Darsda o'qituvchi o'quvchilarning xatti-harakatlariga e'tibor bermadi. Bolalar beodoblik va shoxlik qilishdi. Bunday holatda o'qituvchi qanday uslubdan foydalandi?
+A) Avtoritar
+B) Demokratik
+C) Liberal
+D) Kooperativ
+JAVOB: C
+
+O'quvchi biologiya bilan unchalik qiziqmaydi, lekin suratkashlikka qiziqadi. Unga boshqalardan farqli vazifa berish mumkin: u biror hodisa yoki obyektni rasmga oladi, boshqalar esa rasmlarni darsliklardan qidiradi. Bu qiziqishlarni inobatga olish unchalik yoqmaydigan fan bo'yicha o'qishga nimani keskin oshiradi?
+A) Intizom
+B) Xotira
+C) Motivatsiya
+D) Charchoq
+JAVOB: C
+
+O'qituvchi darsda o'quvchilarning to'g'ri javobini rag'batlantirmadi, tashabbuslarini inobatga olmay, mavzuni tushuntirishda davom etmoqda. Bunday holatda qanday uslubdan foydalanmoqda?
+A) Liberal
+B) Avtoritar
+C) Demokratik
+D) Hamkorlik
+JAVOB: B
+
+O'quvchiga amaliy topshiriqni bajarish uchun muayyan vazifa va uni amalga oshirish shartlari belgilab berildi. O'quvchi o'z faoliyatini shunga muvofiq rejalashtirdi. Bu qobiliyat qaysi faoliyat turiga kiradi?
+A) Regulyativ (maqsadni belgilash, rejalashtirish, o'z-o'zini tartibga solish, to'siqlarni yengish)
+B) Kognitiv (axborotni izlash, qayta ishlash va tahlil qilish)
+C) Kommunikativ (hamkorlik va muloqotga kirishish)
+D) Shaxsiy (qadriyatlarga munosabat va o'z-o'zini anglash)
+JAVOB: A
+
+O'qituvchi muayyan mavzu bo'yicha o'quvchilarga tayyor bilimlarni taqdim etib, so'ng mustahkamlash, umumlashtirish, tizimlashtirish va nazorat qilish jarayonini tashkil etdi. Bu jarayon qanday nomlanadi?
+A) Muammoli ta'lim
+B) Evristik ta'lim
+C) Tadqiqot ta'limi
+D) Reproduktiv ta'lim
+JAVOB: D
+
+O'qituvchi o'quvchiga mustaqil bajarish uchun vazifa berdi. O'quvchi vazifani berilgan adabiyotlar ro'yxatidan foydalanmasdan, o'z shaxsiy fikr va mulohazalari bilan boyitdi. Pedagog o'quvchining ijodkorligini rivojlantirish uchun ta'limning qaysi turidan foydalangan?
+A) Reproduktiv ta'lim
+B) Shaxsga yo'naltirilgan ta'lim
+C) Dasturlashtirilgan ta'lim
+D) Axborot-reseptiv ta'lim
+JAVOB: B
+
+Qaysi holatlarda namunaviy o'quv rejalariga o'zgartirish kiritish mumkin?
+A) Faqat o'qituvchining shaxsiy xohishiga ko'ra
+B) Dars soatlari sonini kamaytirish maqsadida
+C) O'quvchilarning ehtiyojlari va qiziqishlaridan kelib chiqqan holda
+D) Maktab direktorining og'zaki ko'rsatmasiga binoan
+JAVOB: C
+
+Ta'lim – bu...
+A) Ta'lim jarayonida o'zlashtirilgan bilim, ko'nikma, malaka va fikrlash usullari tizimi
+B) Shaxsni jamiyat hayotiga tayyorlashga qaratilgan axloqiy qadriyatlar tizimi
+C) O'quvchilarning dam olish va ko'ngilochar faoliyatini tashkil etish tizimi
+D) Faqat o'quv dasturida belgilangan mavzularni yodlash jarayoni
+JAVOB: A
+
+O'qituvchi o'quvchining mustaqil faoliyati darajasini oshirmoqchi. Buning uchun u o'qitish usullari ketma-ketligini qanday tanlashi lozim?
+1. Reproduktiv usul 2. Axborot to'plash – reseptiv usul 3. Muammoli ta'lim usuli 4. Tadqiqot usuli
+A) 1, 2, 3, 4
+B) 2, 1, 3, 4
+C) 2, 3, 1, 4
+D) 4, 3, 2, 1
+JAVOB: B
+
+O'qituvchi o'quvchilarni guruhlarga ajratib, bir necha yo'nalishda loyiha mavzularini taqdim etdi. Ekologik loyiha turiga kiradigan variantlarni belgilang.
+1. Maktabda chiqindilarni saralab yig'ish ishlarini tashkil etish
+2. Maktab hududidagi sport maydonchasini yoritish uchun shamol generatorini yaratish
+3. Tog' chang'isi dam olish zonasiga sayohat xarajatlarini hisoblash
+4. Maktabda «Ekologik muammolar» mavzusidagi tadbirni tashkil etish
+A) 2, 3
+B) 1, 3
+C) 2, 4
+D) 1, 4
+JAVOB: D
+
+O'qituvchi mualliflik dasturi va maktabni rivojlantirish konsepsiyasi ustida ish olib bordi. Bunday jarayon o'qituvchining qaysi faoliyat turiga kiradi?
+A) O'qituvchining ishdan tashqari faoliyatiga
+B) Dars o'tish faoliyatiga
+C) Tarbiyaviy faoliyatga
+D) Ota-onalar bilan hamkorlik faoliyatiga
+JAVOB: A
+
+O'qituvchi yangi mavzuga oid faktlar va mulohazalarni keltirdi hamda ularga doir savollar bilan murojaat qildi. Bunda o'quvchida qanday ko'nikma turi shakllantiriladi?
+A) Takrorlash
+B) Tasniflash
+C) Mulohaza
+D) Taqlid qilish
+JAVOB: C
+
+Yosh mutaxassis ko'p yillardan beri faoliyat yuritayotgan ustozning darsiga kirib, dars berish mahoratini o'rganmoqchi bo'ldi. Dars davomida o'quvchilar guruhlarda erkin fikr bildirdilar, o'qituvchi fasilitatorlik vazifasini bajardi. Yosh mutaxassis bu tajribaga qanday yo'llar bilan erishilganini so'radi. Pedagogik tajribani hosil qilishdagi to'g'ri yo'llarni tanlang.
+1) mustaqil o'qib-o'rganish;
+2) ilg'or ish tajribalari bilan tanishish;
+3) ilmiy anjumanlarda ishtirok etish;
+4) o'zaro tajriba almashish;
+5) hamkorlikda pedagogik izlanishlarni olib borish;
+6) tajribali ustozlardan maslahat olish;
+7) faqat talabalik davrida olingan nazariy bilimlarga tayanish.
+A) 1, 2, 7
+B) 1, 2, 3, 4, 5, 6
+C) 2, 4, 5, 7
+D) 1, 3, 6, 7
+JAVOB: B
+
+O'qituvchi dars davomida o'quvchilarga o'tilgan mavzular yuzasidan savollar berdi. So'ng o'quvchilar olgan bilimlarini qo'llash maqsadida kichik guruhlarda amaliy topshiriq bajardilar va dars yakunida o'z xulosalarini taqdim etdilar. O'qituvchi qaysi dars turidan foydalandi?
+A) Yangi bilim berish darsi
+B) Nazorat darsi
+C) Aralash (kombinatsion) dars
+D) O'rganilganlarni takrorlash va mustahkamlash
+JAVOB: D
+
+O'qituvchi o'quvchiga tanbeh berdi. O'quvchi e'tiroz bildirib, gap qaytardi. O'qituvchi o'quvchining ota-onasini chaqirtirib, ularning ko'z oldida o'quvchi bilan gaplashdi. O'qituvchi qanday yo'l tutdi?
+A) Rag'batlantirish
+B) Istiqbol
+C) Musobaqa
+D) Uyaltirish
+JAVOB: D
+
+</script>
+<script type="text/plain" class="set" data-title="Pedagogik mahorat va kasb standarti — 1-qism" data-desc="1–34-savollar" data-time="34">
+Yosh o'qituvchi dars davomida turli holatlarga duch keladi (yangi mavzuni tushuntirish, tanbeh berish va hokazo). Pedagogik ta'sir o'tkazishda e'tibor berilishi kerak bo'lgan jihatlarning to'g'ri ketma-ketligini aniqlang.
+1. Pedagogik ta'sir ko'rsatish.
+2. Optimal metodlarni tanlash.
+3. Murakkab vaziyatdan chiqishning mumkin bo'lgan variantlarini saralash.
+4. Vaziyatni tahlil qilish.
+A) 1, 2, 3, 4
+B) 4, 2, 3, 1
+C) 4, 3, 2, 1
+D) 3, 4, 2, 1
+JAVOB: C
+
+Sinf rahbari bir o'quvchining ba'zi fanlardan orqada qolayotganini aniqladi va unga o'zlashtirishda yordam tariqasida darsdan keyingi faoliyatga jalb etmoqchi. Ta'limni tashkil etishning mumkin bo'lgan variantlarini belgilang.
+1. Fan to'garaklari
+2. Fakultativ mashg'ulotlar
+3. O'qituvchi maslahati
+4. O'quv ekskursiyalari
+5. O'quv konferensiyalari
+A) 1, 2, 3
+B) 2, 3, 4
+C) 1, 3, 5
+D) 1, 2, 3, 4, 5
+JAVOB: D
+
+Yosh mutaxassis yuqori sinf o'quvchilarini boshqara olmadi. Ma'naviy-ma'rifiy ishlar bo'yicha direktor o'rinbosari uning darsini kuzatib, pedagogning kommunikativ madaniyati juda muhimligini uqtirdi. Pedagogning kommunikativ madaniyati qanday bo'lishi kerak?
+A) Pedagogning faqat o'quvchilar bilan rasmiy tarzda va qat'iy tartibda muloqot qilishi
+B) Pedagogning o'quvchilar va atrofdagilar bilan qisqa muddatda muloqot o'rnatishga doimiy intilishi
+C) Pedagogning o'z fikrini o'quvchilarga so'zsiz qabul qildirishga intilishi
+D) Pedagogning muloqotdan qochib, faqat yozma topshiriqlar bilan cheklanishi
+JAVOB: B
+
+Quyidagi tadbirlarning qaysilari mustaqil kasbiy rivojlanishga omil bo'ladi?
+1. Onlayn kurslarda o'qish
+2. Hamkasblarning darsini kuzatish
+3. Fanga oid maqolalar bilan tanishish
+4. Turli seminar, trening, konferensiyalarda ishtirok etish
+5. Hamkasblar bilan hordiq chiqarish
+6. Xayriya tadbirlarida ishtirok etish
+A) 1, 2, 5, 6
+B) 3, 4, 5, 6
+C) 2, 4, 5
+D) 1, 2, 3, 4
+JAVOB: D
+
+Ota-onalarni ta'lim jarayonida ishtirok etishga jalb qilish uchun o'qituvchi qanday zarur bilimlarga ega bo'lishi lozim?
+1. Samarali ijtimoiy muloqot asoslari
+2. Insoniyatni o'qitish va tarbiyalashning zamonaviy nazariyalari
+3. Yosh pedagogikasi, psixologiyasi asoslari
+4. Inklyuzivlik tamoyilini amalga oshirish
+A) 1, 3
+B) 2, 4
+C) 1, 2, 4
+D) 3, 4
+JAVOB: A
+
+O'qituvchi dars davomida o'quvchilarning turli yo'nalishlarda fikrlash qobiliyatlarini rivojlantirish uchun 4K usulidan samarali foydalandi. Bunda u ta'lim samaradorligini ta'minlashda qanday mehnat harakatini amalga oshirdi?
+A) O'quvchilarni baholashdan butunlay ozod qildi
+B) Dars maqsadlari asosida o'quvchilar uchun erishimli vazifalarni belgiladi
+C) Barcha topshiriqlarni bir xil murakkablikda berdi
+D) Dars mavzusini o'quvchilarning o'zi tanlashiga imkon berdi
+JAVOB: B
+
+Bir guruh o'quvchilar loyiha ishi ustida juda ko'p mehnat qilib, darsda sinfdoshlari oldida taqdimot o'tkazdilar. O'qituvchi loyihada ba'zi kamchiliklar bo'lsa-da, vazifa yaxshi bajarilganligi va dolzarbligini aytib, guruh a'zolarini maqtadi. U nima uchun bunday qildi?
+A) O'quvchilarning yutuqlarini baholash orqali ularni o'qishni davom ettirishga qiziqtirish uchun
+B) Loyihadagi kamchiliklarni yashirib, guruhni jazolamaslik uchun
+C) Guruhlar o'rtasida raqobatni kuchaytirish uchun
+D) Dars vaqtini tejab, keyingi mavzuga tezroq o'tish uchun
+JAVOB: A
+
+Kechqurun maktab rahbariyati ustozga boshlang'ich sinf o'qituvchisi betob bo'lib qolgani va ertaga uning o'rniga ishga chiqish lozimligini xabar qildi. Shu kungacha ustoz faqat 5–7- sinflarga dars berib kelgan edi. Darsga tayyorgarlik ko'rish uchun u qaysi faoliyat turini to'g'ri tanlagan?
+A) Darsning maqsadlari, o'quvchilarning yosh xususiyatlari va o'zlashtirishiga mos keladigan dars shakllari va usullarini rejalashtirish
+B) 5–7-sinflarda qo'llagan dars konspektini o'zgartirmasdan ishlatish
+C) Darsni faqat o'zi qulay deb bilgan usulda, yosh xususiyatlariga e'tibor bermay o'tish
+D) Dars rejasini tuzmasdan, o'quvchilar bilan erkin suhbat o'tkazish
+JAVOB: A
+
+Direktor o'rinbosari tarbiya darsiga tahlil uchun kirdi. Yakunda o'qituvchining mashg'ulot davomida milliy ruh, madaniyatning go'zal durdonalari, buyuk alloma va olimlarning ishlari va fikrlaridan o'rinli foydalanganini ta'kidladi. Bu qanday dars tahlili?
+A) Didaktik tahlil
+B) Metodologik tahlil
+C) Psixologik tahlil
+D) Tuzilmaviy tahlil
+JAVOB: B
+
+O'qituvchi bir o'quvchining berilgan vazifani tezlik bilan, pala-partish bajarib, so'ng partaning bir chekkasida berkinib rasm chizayotganini sezib qoldi. Darsdan so'ng bolani tasviriy san'at ustozi oldiga olib borib, fan to'garagiga yozdirib qo'ydi. Bunda o'qituvchining qaysi qobiliyati namoyon bo'ldi?
+A) Kinestetik qobiliyat
+B) Mantiqiy qobiliyat
+C) Voqealarni oldindan ko'ra olish qobiliyati
+D) Eshitish va his qilish qobiliyati
+JAVOB: C
+
+Biologiya o'qituvchisi dars vaqtida o'quvchilarni maktab baliqxonasiga olib chiqib, mavzu bo'yicha topshiriq berdi. O'quvchilar topshiriqni bajarish jarayonida yangi bilimlarni egalladilar. O'qituvchi qanday usuldan foydalandi?
+A) Ma'ruza
+B) Suhbat
+C) Hikoya
+D) Amaliy
+JAVOB: D
+
+O'qituvchi sinfdagi o'quvchining matematikaga qobiliyati borligini inobatga olib, uni matematika olimpiadasiga tayyorlamoqchi bo'ldi. O'quvchi esa boshqa fandan qatnashishni xohladi, ammo o'qituvchi fikridan qaytmay uni matematikadan ishtirok etishga majbur qildi. Bunda ta'lim-tarbiyaning qaysi tamoyili buzilgan?
+A) Ilmiylik tamoyili
+B) Demokratik tamoyil
+C) Izchillik tamoyili
+D) Ko'rgazmalilik tamoyili
+JAVOB: B
+
+O'quvchilar bilan muloqot qilish madaniyatining individual shaxsiy xususiyatlari berilgan qatorni aniqlang.
+1) O'quvchilar shaxsiy xususiyatlarini mustaqil tahlil qilish;
+2) O'quvchilar ichki imkoniyatlariga har tomonlama tavsif berish;
+3) Pedagogik faoliyatga monand muloqot madaniyati modelini ishlab chiqish;
+4) O'qituvchining muloqot madaniyatini to'g'ri tashkil etishi.
+A) 1, 2, 4
+B) 1, 3, 4
+C) 2, 3, 4
+D) 1, 2, 3
+JAVOB: A
+
+Shaxsning individual-psixologik xususiyati bo'lib, muayyan faoliyat yuzasidan layoqati va ishni muvaffaqiyatli amalga oshirishning subyektiv shart-sharoitini ifodalovchi individual psixik sifatlar yig'indisi nima deyiladi?
+A) Xarakter
+B) Qobiliyat
+C) Temperament
+D) Moyillik
+JAVOB: B
+
+O'qituvchi yangi mavzuni ma'ruza tarzida tushuntirib berdi. Dars davomida u faol bo'lib, o'quvchilarga qaratilgan nutq so'zladi. Bunda o'qituvchi faoliyatida nutqning qaysi shakli namoyon bo'ldi?
+A) Dialog
+B) Polilog
+C) Ichki nutq
+D) Monolog
+JAVOB: D
+
+O'quvchining aniq ehtiyojlariga yo'naltirilgan barcha faoliyat turlarini moslashtirish nima deyiladi?
+A) Ta'limni standartlashtirish
+B) Ta'limni faollashtirish
+C) Ta'limni individuallashtirish
+D) Ta'limni intensivlashtirish
+JAVOB: C
+
+Nutqning asosiy xususiyatlari nechta talabdan kelib chiqadi?
+A) 2
+B) 4
+C) 3
+D) 5
+JAVOB: B
+
+Boshqa fan asoslarini o'zlashtirishga imkon beradigan qobiliyat turini ko'rsating.
+A) Pedagogik qobiliyat
+B) Ijodiy qobiliyat
+C) Akademik qobiliyat
+D) Kommunikativ qobiliyat
+JAVOB: C
+
+Pedagogik faoliyatni tashkil etish va ijtimoiy xulq-atvor ko'nikmalarini shakllantirish usullarini aniqlang.
+1) pedagogik tahlil; 2) o'rganish; 3) mashq qilish; 4) tarbiyalovchi vaziyatlar; 5) musobaqa; 6) rag'batlantirish.
+A) 1, 3, 4, 5
+B) 2, 3, 4, 5, 6
+C) 1, 2, 5, 6
+D) 1, 2, 3, 4, 6
+JAVOB: D
+
+Boshlang'ich sinf o'quvchisi darslarda o'zini yomon tutib, o'qituvchisiga sinfdoshlari oldida gap qaytardi. Sinf rahbarining alohida suhbatlari natija bermadi. Rahbar bolaning or-nomusi, izzat-nafsi, his-tuyg'ularini ehtiyotkorlik bilan o'stirish kerakligini inobatga olgan holda uni koyidi. Bola qilgan ishidan xijolat bo'ldi. Sinf rahbari motivatsion metodlarning qaysi biridan foydalangan?
+A) Rag'batlantirish
+B) Istiqbol
+C) Musobaqa
+D) Uyaltirish
+JAVOB: D
+
+Pessimist insonga mos javoblarni toping.
+1. Tushkunlikka moyil
+2. Qiyinchilikka oson yengiladi
+3. Orzusiga qanday erishishni biladi
+4. Xushchaqchaq bo'ladi
+5. Hamma narsaga qodirligini aytadi
+6. O'ziga ishonmaydi
+A) 3, 4, 5
+B) 1, 2, 6
+C) 1, 4, 6
+D) 2, 3, 6
+JAVOB: B
+
+4K modelini nimalar tashkil qiladi?
+1. Kreativ 2. Kritik 3. Kombinatorika 4. Kommunikatsiya 5. Kooperatsiya 6. Kollaboratsiya
+A) 1, 2, 4, 6
+B) 1, 3, 4, 5
+C) 2, 3, 5, 6
+D) 1, 2, 3, 4
+JAVOB: A
+
+Ziddiyatlarni hal qilish va sinfda muloqot qilish uchun ijobiy muhit yaratishda qo'llaniladigan faoliyatlarni belgilang.
+1. Odob-axloq haqida davra suhbatlari uyushtirish
+2. Do'stona muhitni qo'llab-quvvatlash
+3. Bolalarni maktabdan tashqari to'garaklarga yo'naltirish
+4. Tarbiyaviy ishlarda o'quvchilarning jinsi, yoshi, madaniy xususiyatlarini inobatga olish
+5. O'quvchilarda bag'rikenglik, odob-axloq va hayotga tayyorgarlik ko'nikmalarini shakllantirish
+A) 1, 3, 4, 5
+B) 2, 3, 4
+C) 1, 2, 4, 5
+D) 1, 2, 3, 5
+JAVOB: C
+
+4-sinfda ingliz tili darsi. O'qituvchiga nafaqat o'z guruhida, balki kasal bo'lib qolgan o'qituvchining guruhida ham dars o'tish vazifasi berilgan. O'quvchilar o'zlarini juda yomon tutmoqdalar: baland ovozda gaplashmoqda, urishmoqda, bir-biriga qog'oz qushchalar otmoqda. O'qituvchi nima qilishi kerak?
+1. O'quvchilar diqqatini qiziqarli ma'lumotlar bilan jalb etish.
+2. Darsni shu holatda davom ettirish.
+3. Ko'proq qiziqarli o'yinlar o'tkazib, diqqatni darsga qaratish.
+4. O'quvchilarga tartib-intizom va o'quvchining majburiyatlari haqida talab qo'yish.
+A) 1, 2, 3
+B) 1, 3, 4
+C) 2, 3, 4
+D) 1, 2, 4
+JAVOB: B
+
+O'qituvchi o'quvchilar bilan maslahatlashib tadbir rejalashtirdi, har bir bola o'zi rol tanlab oldi. Bu qanday ta'lim uslubi?
+A) Avtoritar
+B) Liberal
+C) Reproduktiv
+D) Demokratik
+JAVOB: D
+
+Ta'lim samaradorligini oshirish uchun o'qituvchi darsda ko'rgazmali qurollardan foydalanishni rejalashtirdi. Qo'l ostida ko'rgazmali va tarqatma materiallar juda ko'p edi. To'g'ri tanlangan tarqatma materiallar qatorini belgilang.
+A) Dars mavzusiga mos keladigan namoyish va tarqatma materiallar
+B) Mavzudan tashqari, ammo qiziqarli ko'rgazmalar
+C) O'qituvchi o'zi tayyorlagan barcha materiallar
+D) Mavzuga bevosita aloqasi bo'lmagan eng ko'p miqdordagi materiallar
+JAVOB: A
+
+O'quvchilar Konstitutsiya kuniga bag'ishlangan tadbir uyushtirmoqchi bo'lib, boshqa sinf o'quvchilarini ham jalb etishlarini o'qituvchiga aytdilar. O'qituvchi vazifani mustaqil bajarishlari uchun barcha shart-sharoitlarni yaratib berdi. Tarbiyaviy faoliyatning qaysi yo'nalishlari amalga oshirilgan?
+1. O'quvchilarning o'zini o'zi boshqarish organlari faoliyatini tashkil qilishda yordam berish va qo'llab-quvvatlash
+2. O'quvchilarga zamonaviy ommaviy axborot vositalari dunyosida xavfsiz ishlashga yordam berish
+3. O'quvchilarda kognitiv faollik, mustaqillik, tashabbuskorlik, fuqarolik pozitsiyasi madaniyatini rivojlantirish
+4. O'quvchilarda fuqarolik kompetensiyalari va media savodxonligini shakllantirish
+A) 1, 3
+B) 2, 4
+C) 1, 2
+D) 3, 4
+JAVOB: A
+
+Kasbiy faoliyat turlari va mehnat vazifalarini moslashtiring.
+1. O'z-o'zini rivojlantirish va kasbiy o'sish
+2. Tarbiyaviy faoliyatni tashkil etish
+3. Hamkasblar va ta'lim oluvchilarning ota-onalari bilan hamkorlik
+4. Ta'lim samaradorligini ta'minlash
+A. O'zaro darslarda qatnashish, ularni tahlil qilish, undan o'z kasbiy faoliyatida foydalanish
+B. Ziddiyatlarni hal qilish, sinfda va undan tashqarida muloqot uchun ijobiy muhit yaratish
+C. Tarbiyaviy muammolarni hal qilishda boshqa pedagogik xodimlar va mutaxassislarni maktab hayotiga jalb qilish
+D. O'quvchilarning jamoaviy va hamkorlikdagi loyihaviy ishlarini tashkil etish
+E. Darsdan tashqari turli madaniy tadbirlarda ishtirok etish
+A) 1-B, 2-A, 3-C, 4-D
+B) 1-A, 2-C, 3-B, 4-E
+C) 1-A, 2-B, 3-C, 4-D
+D) 1-E, 2-B, 3-A, 4-D
+JAVOB: C
+
+Dars boshlanganda barcha o'quvchilar tinchlanib, jimlik cho'kdi va birdan bir o'quvchi baland ovozda kulib yubordi. U ko'zingizga tik qarab: «Menga sizga qarash kulguli tuyuladi», dedi. O'qituvchi «Kayfiyating yaxshi ekanidan xursandman», deb javob berib, darsni davom ettirdi. Bunda o'qituvchi muloqotni modellashtirish bosqichida nimalarga e'tibor berdi?
+A) O'quvchining xatti-harakatini jazolash choralarini oldindan belgilab qo'yish
+B) Muloqot ishtirokchilarining kamchiliklarini aniqlab, jamoat oldida tanqid qilish
+C) Ta'lim-tarbiya jarayonida uchrashi mumkin bo'lgan qiyinchiliklar dinamikasini oldindan ko'ra olish va bartaraf etish
+D) Dars mavzusini o'quvchining qiziqishiga qarab o'zgartirish
+JAVOB: C
+
+Farzandi 3-sinfda o'qiydigan ona past baholar va sinfdoshlarining kulishi sababli o'qituvchilar xonasida janjal ko'tardi. Sinf rahbari yosh bo'lishiga qaramay, onani xushmuomalalik bilan tinchlantirdi. Og'zaki ta'sir qilishning xushmuomalalik mezonlari to'g'ri ko'rsatilgan qatorni aniqlang.
+1. Shirinsuxanlik va insoniylik tuyg'ularini namoyish etish
+2. Suhbatning barcha bosqichlarida hissiy osoyishtalikning namoyon bo'lishi
+3. O'zaro fikr almashishga doir sifatlar, ko'nikma va malakalarning mavjudligi
+4. Ta'lim va bilim olishga bo'lgan ishtiyoqni kuchaytirish
+5. Mustaqil fikr yuritish, o'z fikrini erkin bayon eta olish, insoniy qadr-qimmat tuyg'usini shakllantirish
+A) 1, 2, 4, 5
+B) 1, 2, 3, 5
+C) 2, 3, 4
+D) 1, 3, 4, 5
+JAVOB: B
+
+Bir o'quvchining onasi o'g'lining qo'pol muomala qilayotganini aytib, sinf rahbaridan maslahat so'radi. O'qituvchi oiladagi muhit bilan tanishib, bu ota-ona munosabatlarining oqibati ekanini aniqladi, onaga maslahat berdi va o'quvchining fikrlari, qiziqishlarini o'rganib, unga yordam berish maqsadida suhbatlar olib bordi. Bunda ta'lim jarayoni ishtirokchilariga qanday munosabat aks etgan?
+A) Pedagogik talabchanlik
+B) Pedagogik takt
+C) Pedagogik hamdardlik
+D) Pedagogik burch
+JAVOB: C
+
+O'qituvchining pedagogik jarayonda sog'lom muhitni yarata olishi, ijobiy muloqotni tashkil etishi, turli ziddiyatlarni o'z vaqtida anglay olishi va bartaraf etishi qaysi kasbiy kompetensiyada namoyon bo'ladi?
+A) Metodik
+B) Predmet
+C) Psixologik
+D) Axborot
+JAVOB: C
+
+O'z ustida ishlash bosqichlarining to'g'ri ketma-ketligini aniqlang.
+1. Ushbu qaror bo'yicha amaliy harakatlarni samarali tashkil etish yo'llarini izlash
+2. Yutuqlarni boyitish va kamchiliklarni bartaraf etish yuzasidan aniq qarorga kelish
+3. O'z faoliyatini tahlil qilish asosida yutuq va kamchiliklarni aniqlash
+A) 1, 2, 3
+B) 2, 3, 1
+C) 3, 1, 2
+D) 3, 2, 1
+JAVOB: D
+
+Moslikni toping.
+1. Kreativlik
+2. Kommunikativlik
+a) o'qituvchining o'quvchilar bilan to'g'ri muomala qila olishi va muloqot o'rnatish qobiliyati
+b) kelib tushayotgan axborotni mulohaza qilib, baholab, kuzatuv va tajribalarga asoslanib qabul qilish qobiliyati
+c) yangi g'oyalarni ishlab chiqishga moyillik, nostandart fikrlash va boy tasavvurga ega bo'lish qobiliyati
+A) 1-a, 2-c
+B) 1-b, 2-a
+C) 1-c, 2-a
+D) 1-c, 2-b
+JAVOB: C
+
+</script>
+<script type="text/plain" class="set" data-title="Pedagogik mahorat va kasb standarti — 2-qism" data-desc="35–68-savollar" data-time="34">
+Ta'lim vositalariga kiruvchi javob variantlarini tanlang.
+1. O'quv qo'llanmalari 2. Namoyishli qurilmalar 3. Texnik vositalar 4. O'qituvchining ish rejasi 5. Ko'rgazmali qurollar 6. O'quv ustaxonasi jihozlari 7. Darslik
+A) 1, 2, 4, 5, 7
+B) 1, 2, 3, 5, 6, 7
+C) 2, 3, 4, 5, 6
+D) 1, 3, 4, 6, 7
+JAVOB: B
+
+Darslarda mavzuga mos keladigan ko'rgazmali va tarqatma materiallardan qanday maqsadda foydalaniladi?
+A) Ta'lim samaradorligini ta'minlash uchun
+B) Sinf xonasini bezash uchun
+C) O'qituvchi mehnatini yengillashtirish uchun
+D) Dars vaqtini qisqartirish uchun
+JAVOB: A
+
+Quyidagi javoblarning qaysi birida ta'lim samaradorligini oshirishga xizmat qiluvchi vositalar keltirilgan?
+A) Faqat darslik va daftar
+B) Nazorat ishi varaqlari va sinf jurnali
+C) Tarqatma materiallar va ko'rgazmali qurollar
+D) Dars jadvali va o'quv rejasi
+JAVOB: C
+
+Ko'rgazma va tarqatma materiallardan foydalanishning maqsadi nima?
+1) darslarni qiziqarli qilish, ularni yengil o'zlashtirish
+2) o'qituvchiga konsepsiyalarni oson bayon etishga imkon berish
+3) ishchi muhitni yaratish, o'quvchilar vazifalarini ketma-ket bajarish
+A) 1, 3
+B) 2, 3
+C) 1, 2, 3
+D) 1, 2
+JAVOB: D
+
+Darsda boshlang'ich sinf o'quvchisi havoning ifloslanishi rasmlarini ko'rsatib, uning sabablarini tushuntirdi. So'ngra o'qituvchi o'quvchilar bilan ifloslanishning oldini olish va kamaytirish yo'llarini muhokama qildi, eng yaxshi yechimlarni doskaga yozishdi. Bu darsda qanday o'qitish strategiyasi qo'llanildi?
+A) O'qitishda muammoli ta'lim
+B) Reproduktiv ta'lim
+C) Dasturlashtirilgan ta'lim
+D) An'anaviy ma'ruzaviy ta'lim
+JAVOB: A
+
+Darsda o'qituvchi o'quvchilarni guruhlarga ajratib, muammoli vaziyat topshirig'ini berdi. Har bir guruh turli usullarda muammoni hal qilishga urinib, yechimni taqdim etdi. O'qituvchi qanday usuldan foydalangan?
+A) Reproduktiv
+B) Tushuntirish-ko'rgazmali
+C) Ma'ruza
+D) Evristik
+JAVOB: D
+
+Darsni boshlashdan oldin o'qituvchi har bir o'quvchidan darsdan tashqari vaqtda nima bilan shug'ullanishini so'radi. Dars davomida barcha o'quvchi faol ishtirok etdi. O'qituvchi ta'lim samaradorligini ta'minlash maqsadida qanday usuldan foydalandi?
+A) O'quvchilarning darsda faol qatnashishini motivatsiyalashda ularning shaxsiy qiziqishlaridan foydalandi
+B) Faol qatnashishni faqat baholar orqali majburlashga tayandi
+C) Mavzuni o'quvchilar hayoti bilan bog'lamay, tayyor reja bo'yicha o'tdi
+D) Eng faol o'quvchilarni namuna qilib, passivlarni tanqid qildi
+JAVOB: A
+
+«Dars vaqtini oqilona tashkillashtirish, darsning maqsad, shakl va usullarini aniqlash» o'qituvchilar kasbiy kompetensiyasining qaysi mehnat vazifasidagi ko'nikmalariga kiradi?
+A) O'quv jarayonini rejalashtirish
+B) Ta'lim va tarbiya jarayonini boshqarish
+C) O'quv jarayonini baholash
+D) Hamkorlik va ota-onalar bilan ishlash
+JAVOB: A
+
+O'qituvchining dars jarayonida AKT dan foydalanish maqsadini belgilang.
+A) Dars o'tish vazifasini to'liq texnikaga topshirish uchun
+B) O'quvchilarning daftarga yozishini kamaytirish uchun
+C) Ta'lim jarayonini qo'llab-quvvatlash va ta'limiy muammolarni hal qilish uchun
+D) Darsni faqat ko'ngilochar tusga keltirish uchun
+JAVOB: C
+
+Mezonlarga asoslangan baholash tizimi qaysi muammolarni hal qiladi? To'g'ri javoblarni belgilang.
+1. Ob'yektiv va shaffof baholash tizimi orqali ta'lim sifatini oshirishga hissa qo'shadi;
+2. Xalqaro standartlarga javob beradigan yuqori sifatli baholash mexanizmini shakllantiradi;
+3. O'quvchining o'qishdagi yutuqlari haqidagi dalillarni to'plashga yordam beradi;
+4. Asosiy natijalarni umumlashtirish va ta'limiy natijalarni tahlil qilishga yordam beradi.
+A) 1, 2
+B) 2, 3
+C) 2, 4
+D) 1, 3, 4
+JAVOB: D
+
+Nima uchun o'quvchilarning yutuqlarini baholash va bahoni asoslab berish juda muhim?
+A) Maqsadga qay darajada erishganini ko'rsatish, o'qishni davom ettirishga qiziqtirish, motivatsiya berish
+B) O'quvchilarni bir-biri bilan solishtirib, reyting tuzish
+C) Sinf jurnalini to'ldirish talabini bajarish
+D) O'qituvchi mehnatiga haq belgilash
+JAVOB: A
+
+O'qituvchi dars davomida aksariyat o'quvchilarni tingladi. Noto'g'ri fikrlarni rad etmasdan, yo'naltiruvchi savollar bilan yangi mavzuni tushuntirishga harakat qildi. U bunday usulni nima maqsadda qo'lladi?
+A) O'quvchilarning xatolarini yashirib, darsni tez yakunlash maqsadida
+B) Dars davomida har bir o'quvchiga o'z g'oyalari va qarashlarini ifoda etish imkoniyatini berish maqsadida
+C) Faqat kuchli o'quvchilarni faollashtirish maqsadida
+D) Mavzuni o'quvchilarsiz mustaqil bayon etish maqsadida
+JAVOB: B
+
+Didaktik o'yin nima?
+A) Dars oxirida o'quvchilar bilimini nazorat qilish uchun qo'llaniladigan test shakli
+B) O'rganilayotgan obyekt, hodisa va jarayonlarni modellashtirish asosida o'quvchining bilishga bo'lgan qiziqishi va faollik darajasini rag'batlantiruvchi o'quv faoliyati turi
+C) Darsdan tashqarida o'quvchilarning dam olishi uchun tashkil etiladigan faoliyat
+D) O'qituvchi tomonidan tayyor bilimlarni yod oldirishga mo'ljallangan mashq turi
+JAVOB: B
+
+Didaktik vositalar his qilish, sezish uchun foydalanishga ko'ra qanday tavsiflanadi?
+A) Vizual, kinestetik, matnli
+B) Og'zaki, yozma, amaliy
+C) Statik, dinamik, interaktiv
+D) Vizual, audial, audiovizual
+JAVOB: D
+
+Didaktik vositalarga nimalar kiradi?
+A) Dars jadvali, sinf jurnali, o'qituvchi ish rejasi
+B) Darslik, o'quv dasturi, yillik reja
+C) O'quv va ko'rgazmali qo'llanmalar, namoyishli qurilmalar, texnik vositalar
+D) Baholash mezonlari, test varaqlari, bayonnomalar
+JAVOB: C
+
+Turli muhitda, har xil emotsional holatdagi odamlar bilan aloqa qila olish ko'nikmasi o'qituvchi kasbiy faoliyatining qaysi vazifasini bajarish uchun juda muhim?
+A) Ta'lim samaradorligini ta'minlash
+B) O'z-o'zini rivojlantirish va kasbiy o'sish
+C) Hamkasblar va ta'lim oluvchilarning ota-onalari (ularning o'rnini bosuvchi shaxslar) bilan hamkorlik
+D) Tarbiyaviy faoliyatni tashkil etish
+JAVOB: C
+
+O'qituvchi o'quvchilarga bilimlarning bir qismini aytib beradi, qolganini o'quvchilar bilish topshiriqlarini yechish, savollarga javob topish asosida mustaqil egallaydi. Bu qanday ta'lim metodi?
+A) Evristik ta'lim
+B) Reproduktiv ta'lim
+C) Axborot-reseptiv ta'lim
+D) Tadqiqot ta'limi
+JAVOB: A
+
+O'qituvchining kasbiy faoliyatiga taalluqli murakkab vaziyatlarda asosiy ta'sir ko'rsatuvchi, ta'lim-tarbiya jarayonida ishlatiladigan usullardan biri qaysi?
+A) Majburlash
+B) Jazolash
+C) Ishontirish
+D) Taqlid
+JAVOB: C
+
+Pedagogik ta'sir ko'rsatish usuli sifatida ishontirish nimalarni talab etadi?
+A) Jazo choralarini qo'llashni va qat'iy talabni
+B) Buyruq ohangi va tezkorlikni
+C) Dalillar keltirishni, isbotlashni va mantiqni
+D) Namuna ko'rsatish va taqlid qilishni
+JAVOB: C
+
+Rejalashtirilayotgan darsning shakl va usullari nimalarga mos kelishi lozim?
+A) Faqat o'qituvchining shaxsiy qulayligiga
+B) Darsning maqsadlari, o'quvchilarning yosh xususiyatlari va o'zlashtirishiga
+C) Darslikdagi mavzular soniga va maktab jadvaliga
+D) O'quvchilarning ota-onalari xohishiga
+JAVOB: B
+
+Pedagogik muloqot – bu...
+A) O'qituvchining o'quvchilar bilan darsda va darsdan tashqari faoliyatda eng qulay psixologik muhitni vujudga keltirib, ijobiy ruhiy iqlim yaratishi uchun imkon beruvchi kasbiy munosabatidir
+B) O'qituvchining faqat dars vaqtida o'quvchilarga yangi bilim yetkazib berish jarayoni
+C) O'quvchilar o'rtasidagi o'zaro munosabatlarni nazorat qilish va baholash jarayoni
+D) O'qituvchining ota-onalar bilan rasmiy yozishmalar yuritish faoliyati
+JAVOB: A
+
+Monitoring so'zining ma'nosi nima?
+A) Yakuniy baholash
+B) Uzluksiz kuzatish
+C) Natijalarni tahlil qilish
+D) Test o'tkazish
+JAVOB: B
+
+Oliy toifali o'qituvchi uchun kamida 8 yillik ish tajribasi talab qilinishi qanday talab hisoblanadi?
+A) Amaliy ish tajribasiga qo'yiladigan talab
+B) Ma'lumotga qo'yiladigan talab
+C) Bilimga qo'yiladigan talab
+D) Yoshga qo'yiladigan talab
+JAVOB: A
+
+Quyidagilarning qaysi biri «O'quv jarayonini rejalashtirish»dagi zaruriy bilim?
+A) Maktab ichki tartib qoidalari
+B) Moliyaviy hisobot yuritish qoidalari
+C) Yong'in xavfsizligi qoidalari
+D) Fanni o'qitishning turli usullari
+JAVOB: D
+
+Quyidagilarning qaysi biri «O'quv jarayonini rejalashtirish»dagi mehnat harakati?
+A) O'quvchilar o'rtasidagi mojarolarni hal etish
+B) Tegishli o'quv, namoyish va tarqatma materiallardan foydalanishni rejalashtirish
+C) O'z-o'zini rivojlantirish rejasini tuzish
+D) Ota-onalar yig'ilishini o'tkazish
+JAVOB: B
+
+Pedagogik mahoratning tashkil etuvchi komponentlari qaysilar?
+1) o'qituvchilik kasbiga sadoqat;
+2) o'z fanining o'qitish metodikasini mukammal bilishi;
+3) pedagogik qobiliyatlarini namoyish eta olishi;
+4) pedagogik texnikani o'z o'rnida qo'llay bilishi;
+5) o'qituvchining ruhiy-psixologik tayyorgarligini bilish.
+A) 1, 2, 3, 4
+B) 1, 2, 3, 4, 5
+C) 2, 3, 4, 5
+D) 1, 3, 5
+JAVOB: A
+
+Intellektning asosiy sifatlarini aniqlang.
+A) Xotira, e'tibor, iroda
+B) Ijod, fikrlash tezligi, mahorat
+C) Sabr, matonat, odob
+D) Qobiliyat, xarakter, temperament
+JAVOB: B
+
+«Til shirinligi – ko'ngilga yoqimlidir, muloyimligi esa foydali. Shirin so'z sof ko'ngillar uchun asal kabi totlidir». Ushbu hikmatli so'zlar muallifini aniqlang.
+A) Abu Nasr Forobiy
+B) Kaykovus
+C) Yusuf Xos Hojib
+D) Alisher Navoiy
+JAVOB: D
+
+«Til muncha sharaf birla nutqning holatidir va ham nutqdurki, agar nopisand zohir bo'lsak, boshning ofatidir...» Ushbu ibratli so'zlar muallifini aniqlang.
+A) Mahmud Qoshg'ariy
+B) Abdulla Avloniy
+C) Alisher Navoiy
+D) Ahmad Yassaviy
+JAVOB: C
+
+Refleksiya so'zi qanday ma'noni anglatadi?
+A) Yunon tilidan olingan bo'lib, «reflex» — shartli ta'sirlanish ma'nosini bildiradi
+B) Lotin tilidan olingan bo'lib, «relatio» — munosabat ma'nosini bildiradi
+C) Lotin tilidan olingan bo'lib, «reflexio» — orqaga qaytish ma'nosini bildiradi
+D) Fors tilidan olingan bo'lib, «raftor» — xatti-harakat ma'nosini bildiradi
+JAVOB: C
+
+Navbatdagi ota-onalar majlisida boshlang'ich sinf rahbari barchaning oldida o'quvchining onasiga farzandi haqida noo'rin ayblovlar qo'ydi. Ona va o'quvchi orasida janjal ko'tarildi, ertasiga ona farzandini boshqa maktabga olib ketdi. Sinf rahbari uzoq o'ylanib, qayerda xato qilganini tushunib yetdi. Bunda o'qituvchi refleksiyaning qaysi turidan foydalandi?
+A) Shaxsiy refleksiya
+B) Kommunikativ refleksiya
+C) Kooperativ refleksiya
+D) Intellektual refleksiya
+JAVOB: A
+
+Boshlang'ich sinf o'quvchisi ish jarayonida emotsional holati barqaror emasligini kuzatib, maktab psixologiga murojaat qildi. Psixolog o'zini-o'zi tarbiyalashni maslahat berdi. O'zini-o'zi tarbiyalash tushunchasi to'g'ri izohlangan qatorni toping.
+A) O'qituvchi tomonidan o'quvchilarga berilgan axloqiy ko'rsatmalar majmui
+B) O'qituvchi kasbiga mos madaniyatning shakllanishi, ruhiy va axloqiy sifatlarni tinmay rivojlantirish
+C) Kasbiy faoliyatdan tashqarida dam olish va charchoqni yengish usullari
+D) Boshqalarning kamchiliklarini aniqlab, ularni tuzatishga qaratilgan faoliyat
+JAVOB: B
+
+O'qituvchi o'quvchilarga zamonaviy ommaviy axborot vositalari dunyosida to'g'ri faoliyat yuritishni (kerakli ma'lumotlar tahlilini) o'rgatdi. Shunda o'qituvchi «Ta'lim va tarbiya jarayonini boshqarish» kasbiy faoliyat turining qaysi mehnat vazifasini bajardi?
+A) O'quv jarayonini rejalashtirish
+B) Xavfsiz ta'lim muhitini yaratish va ta'minlash
+C) Hamkasblar bilan hamkorlik qilish
+D) O'z-o'zini rivojlantirish va kasbiy o'sish
+JAVOB: B
+
+O'quvchi nazorat ishidan «3» baho oldi va norozi bo'lib, bahosini «4» ga o'zgartirmoqchi. Bu jarayonda o'qituvchi qanday xatoga yo'l qo'ygan?
+A) Qo'yilgan bahoni isbotlab bermagan
+B) Bahoni boshqa o'quvchilarga e'lon qilgan
+C) O'quvchini nazorat ishini qayta yozishga yubormagan
+D) Bahoni sinf rahbari bilan kelishmagan
+JAVOB: A
+
+</script>
+<script type="text/plain" class="set" data-title="Pedagogik mahorat va kasb standarti — 3-qism" data-desc="69–101-savollar" data-time="33">
+Berilgan topshiriqlarni bajargan o'quvchi o'z bahosidan norozi bo'lib, 3 bahoni 4 ga ko'tarishni talab qildi. O'qituvchi qanday xatoga yo'l qo'ygan?
+1) Topshiriq berayotganda o'quvchilarni baholash mezoni bilan tanishtirmagan
+2) Topshiriqlarni baholashda subyektiv yondashgan
+3) Topshiriq sinfdagi boshqa o'quvchilarga nisbatan baholangan
+4) Topshiriq baholash mezonlari asosida amalga oshirilgan va barchaga tushuntirilgan
+A) 1, 4
+B) 2, 3, 4
+C) 3, 4
+D) 1, 2, 3
+JAVOB: D
+
+O'quvchilarga biror vazifa beradi, tushuntiradi, o'quvchilarning fikriga quloq soladi, so'ng mustaqil ishlashga qo'yib beradi. Bu qanday muloqot turi?
+A) Avtoritar
+B) Demokratik
+C) Liberal
+D) Rasmiy
+JAVOB: B
+
+O'qituvchi o'quvchining faolligini oshirish uchun nima qilishi kerak?
+A) Dars jarayonini to'g'ri tashkil etishi kerak
+B) Baholarni oshirib qo'yishi kerak
+C) Uy vazifasini ko'paytirishi kerak
+D) Sinf tarkibini tez-tez o'zgartirishi kerak
+JAVOB: A
+
+O'qituvchi darslarda faoliyat turini doim o'quvchilarning xohishiga qarab tanlar edi. Faqat shu uslubda dars olib borishning oqibati nimalarga olib kelishi mumkin?
+A) O'quvchilarning mustaqilligi va mas'uliyati ortib, o'zlashtirish yaxshilanadi
+B) O'quvchilar qat'iy intizomga o'rganib, qo'rquv asosida o'qiydi
+C) Faqat ilg'or o'quvchilar faollashib, qolganlar o'z-o'zidan rivojlanadi
+D) O'quvchilar tartibsiz bo'lib, yalqovlik kuchayadi va o'qituvchiga hurmat susayadi
+JAVOB: D
+
+Tashkilot va jamoatchilik o'rtasidagi axborot oqimini boshqarish qanday ataladi?
+A) PR (public relations)
+B) Marketing
+C) Monitoring
+D) Menejment
+JAVOB: A
+
+Pedagogik amaliyotda yosh o'qituvchilarning pedagogik texnikasida uchraydigan juz'iy kamchiliklarni aniqlang.
+1) o'quvchi yoki uning ota-onasi bilan sidqidildan so'zlasha olmaslik;
+2) g'azabni to'xtata olmaslik yoki uni o'z o'rnida ishlata olmaslik;
+3) o'zini erkin tutish va xushmuomala bo'lish;
+4) nutqni ravon bayon eta olmaslik;
+5) ortiqcha qattiqqo'llik;
+6) monoton, bir ohangda so'zlash, nutqning zerikarliligi, jonli emasligi;
+7) juda tez gapirish (ayniqsa darslarda);
+8) ortiqcha harakat yoki bir joyda qotib qolish, qo'llarini qayerga qo'yishni bilmaslik.
+A) 1, 3, 4, 5, 6
+B) 1, 2, 4, 5, 6, 7, 8
+C) 2, 3, 5, 7, 8
+D) 1, 2, 3, 4, 8
+JAVOB: B
+
+Pedagog tomonidan kasbiy maqsadga muvofiq tashkil etiladigan tizimli harakatlarning muayyan shakli qanday nomlanadi?
+A) Pedagogik texnika
+B) Pedagogik jarayon
+C) Pedagogik muloqot
+D) Pedagogik faoliyat
+JAVOB: D
+
+Shahnoza musiqaga juda qiziqadi, ovozi shirali, tuman va viloyat musiqa tanlovlari g'olibi. Ota-onasi esa uning boshlang'ich sinf o'qituvchisi bo'lishini xohlaydi. Sinf rahbari ota-onasi bilan suhbatlashib, farzandning qiziqishi, qobiliyati va orzulariga e'tibor berib yo'naltirish kerakligini aytdi. Ushbu vaziyatda qanday muloqot namoyon bo'lmoqda?
+A) Avtoritar muloqot
+B) Liberal muloqot
+C) Hamdardlik
+D) Rasmiy muloqot
+JAVOB: C
+
+O'qituvchi o'quvchilarga favqulodda vaziyatlarda qanday harakat qilish, zarur bo'lganda tibbiy yordam ko'rsatish haqida ma'lumot berdi. U buni nima uchun qildi?
+A) Xavfsiz rivojlantiruvchi ta'lim muhitini yaratish uchun
+B) O'quvchilarning qo'rquvini kuchaytirib, intizomni mustahkamlash uchun
+C) Dars soatlarini tibbiyot fani bilan bog'lash uchun
+D) O'quv dasturini bajarishni osonlashtirish uchun
+JAVOB: A
+
+Musiqa darsida o'qituvchi darsga oid tushunchalarni emas, bolalarga erkin zamonaviy estrada qo'shiqlarini xohlaganlaridek kuylashga imkon yaratmoqda. Ushbu vaziyatda pedagogik odobning qaysi shakli buzilmoqda?
+A) Pedagogik adolat
+B) Pedagogik takt
+C) Pedagogik burch
+D) Pedagogik vijdon
+JAVOB: C
+
+O'qituvchi seminar mashg'ulotiga tayyorgarlik ko'rish uchun o'quvchilarning qobiliyati, qiziqishi, ijodkorlik va o'zlashtirish darajasiga qarab vazifalarni taqsimlab berdi. Ushbu jarayonda pedagogik muloqotning qaysi shakli namoyon bo'lmoqda?
+A) Avtoritar
+B) Liberal
+C) Demokratik
+D) Rasmiy
+JAVOB: C
+
+Oila vakillari o'rtasida tajriba almashinuvi, amaliy mashqlar bilan mustahkamlanadigan nazariy ma'lumotlar, amalga oshirilgan loyiha natijalari bilan o'rtoqlashishga qaratilgan, interfaol metodlar asosida tashkil etiladigan ta'limiy-ma'rifiy tadbir nima deb ataladi?
+A) Davra suhbati
+B) Ma'ruza
+C) Yakka tartibdagi suhbat
+D) Pedagogik kengash
+JAVOB: A
+
+O'qituvchi o'rtaga muammoli vaziyat tashladi. Barcha o'quvchilar erkin fikrladilar, ularning barcha takliflarini ustoz inobatga oldi, hech birini rad etmadi. Barchani sidqidildan tinglab, qaror chiqardi. Bunda u qaysi uslubni namoyon etdi?
+A) Avtoritar
+B) Liberal
+C) Rasmiy
+D) Demokratik
+JAVOB: D
+
+O'qituvchi tadbir tayyorladi va barcha o'quvchilarga rollarni bo'lib berdi. Bir o'quvchiga o'ziga mos, eplay oladigan rolni berdi va u rolni juda yaxshi ijro etdi. Bunda o'qituvchi qaysi pedagogik yondashuvni amalga oshirdi?
+A) Moddiy rag'batlantirish yondashuvi
+B) Majburlash yondashuvi
+C) O'quvchining qobiliyatini oldindan ko'ra olish
+D) Liberal yondashuv
+JAVOB: C
+
+O'qituvchi sinfda majlis o'tkazdi. Barchaning fikrini eshitdi, o'zi esa yo'nalishlar berdi. Bunda o'qituvchi nutqning qaysi shaklidan foydalandi?
+A) Monolog
+B) Dialog
+C) Polilog
+D) Ichki nutq
+JAVOB: C
+
+O'quvchi dars vaqtida pichirlab gaplashib, boshqa bolalarning ham diqqatini bo'lyapti. O'qituvchi o'sha bolalarga turli savollar berib, ularning diqqatini darsga jalb qildi. Bunda o'qituvchi qanday usuldan foydalandi?
+A) O'quvchilarni darsga qiziqtirishning turli usullaridan foydalandi
+B) O'quvchilarni intizomga chaqirib, jazo qo'lladi
+C) Pichirlagan bolani sinfdan chiqarib yubordi
+D) Darsni to'xtatib, ota-onasini chaqirtirdi
+JAVOB: A
+
+PISA xalqaro baholash dasturining mohiyati yoritilgan qatorni belgilang.
+A) Boshlang'ich sinf bitiruvchilarining matnni o'qish va tushunish darajasini baholaydi
+B) O'quvchilarning o'qish, matematika va tabiiy fanlardan olgan bilimlarini turli hayotiy vaziyatlarda qo'llay olishlarini baholashga qaratilgan
+C) Mamlakat o'quvchilarining o'quv dasturini yodlash darajasini solishtiradi
+D) Maktab bitiruvchilarining oliy ta'limga tayyorgarligini test orqali aniqlaydi
+JAVOB: B
+
+TIMSS (Trends in International Mathematics and Science Study) xalqaro baholash dasturining mohiyati yoritilgan qatorni belgilang.
+A) Boshlang'ich maktab bitiruvchilarining matnni o'qish va tushunish darajasini baholaydi
+B) O'quvchilarning matematika va tabiiy fanlar bo'yicha egallagan bilim darajasi, sifatini solishtirish hamda milliy ta'lim tizimidagi farqlarni aniqlashga yordam beradi
+C) O'quvchilarning hayotiy vaziyatlarda o'qish savodxonligini aniqlaydi
+D) O'qituvchilarning kasbiy mahoratini xalqaro miqyosda reyting asosida baholaydi
+JAVOB: B
+
+PIRLS xalqaro baholash dasturining mohiyati yoritilgan qatorni belgilang.
+A) O'quvchilarning matematika va tabiiy fanlar bo'yicha bilim darajasi solishtiriladi
+B) 15 yoshli o'quvchilarning bilimlarni hayotiy vaziyatlarda qo'llash qobiliyati baholanadi
+C) Maktab o'qituvchilarining kasbiy tayyorgarligi aniqlanadi
+D) Boshlang'ich maktab bitiruvchilarining matnni o'qish va uni tushunish darajasi baholanadi
+JAVOB: D
+
+O'quvchilarning o'quv faoliyatini nazorat qilish turlari to'g'ri ko'rsatilgan qatorni toping.
+A) Boshlang'ich; o'rta; yuqori nazorat
+B) Joriy nazorat; oraliq nazorat; yakuniy nazorat
+C) Dastlabki; ichki; tashqi nazorat
+D) Kunlik; haftalik; oylik nazorat
+JAVOB: B
+
+O'qituvchining oldiga sinfdagi bir bolaning onasi kelib, o'g'lining gap qaytarishi, umuman quloq solmasligini aytib shikoyat qildi. O'qituvchi vaziyatni aniqlab, to'g'ri maslahatlar berdi. Bunda o'qituvchining qanday qobiliyati namoyon bo'ldi?
+A) Pedagogik talabchanlik
+B) Pedagogik bag'rikenglik
+C) Pedagogik empatiya (hamdardlik)
+D) Pedagogik qat'iyatlilik
+JAVOB: C
+
+Pedagogik texnologiya darajalari ketma-ketligini toping.
+1. Umumpedagogik
+2. Xususiy-metodik
+3. Lokal daraja
+A) 3, 2, 1
+B) 1, 2, 3
+C) 2, 1, 3
+D) 1, 3, 2
+JAVOB: B
+
+O'qituvchi yuqori sinf o'quvchilari bilan juda yaxshi munosabatda. Ularning eng nozik xususiyatlarini biladi, ularni ishontirishni, ma'qullashni biladi. O'quvchilar ham o'qituvchini juda hurmat qiladi. O'qituvchi qanday ta'sir ko'rsatish usulidan foydalanmoqda?
+A) Majburlash
+B) Uyaltirish
+C) Jazolash
+D) Ishontirish
+JAVOB: D
+
+Darsning qanday turlari mavjud?
+1. Aralash (kombinatsion) dars
+2. Sinf-dars
+3. O'rganilganlarni takrorlash va mustahkamlash darsi
+4. O'quvchilarning bilim, ko'nikma va malakalarini nazorat qilish darslari
+5. Laboratoriya darslari
+6. Interfaol darslar
+7. Amaliy darslar
+A) 1, 3, 4, 5, 7
+B) 1, 2, 4, 6
+C) 2, 3, 5, 6
+D) 1, 2, 3, 4, 5, 6, 7
+JAVOB: A
+
+Muammoli ta'lim turlarini belgilang.
+1. Muammo; 2. Muammoli holat; 3. Muammoli savol; 4. Muammoli vazifa; 5. Muammoli ish; 6. Muammoli topshiriq; 7. Muammoli vaziyat
+A) 2, 3, 5, 6
+B) 1, 3, 4, 6, 7
+C) 1, 2, 3, 4, 5
+D) 2, 4, 5, 7
+JAVOB: B
+
+Kompetensiyaviy yondashuvda ta'limning 6 tamoyilini to'g'ri ketma-ketlikda joylashtiring.
+1. Amaliy faoliyat darajasi 2. Bilim 3. Kompetensiya 4. Ko'nikma 5. Kompetentlik 6. Malaka
+A) 2, 4, 6, 3, 1, 5
+B) 2, 6, 4, 1, 3, 5
+C) 4, 2, 6, 1, 5, 3
+D) 2, 4, 6, 1, 3, 5
+JAVOB: D
+
+Qadimda qaysi kasb egalari qonuniyatlarga amal qilgan holda «tinglovchilarga halovat bag'ishlash» orqali odamlarni ezgulikka, adolatparvarlikka, vatan oldidagi burchlariga sadoqatli bo'lishga, odob-axloq qoidalariga rioya qilishga chorlar edilar?
+A) Hunarmandlar
+B) Dehqonlar
+C) Sarkardalar
+D) Notiqlar
+JAVOB: D
+
+O'qitishning eng qadimgi shakli to'g'ri ko'rsatilgan qatorni aniqlang.
+A) Ta'limning guruhli shakli
+B) Ta'limning frontal shakli
+C) Ta'limning individual shakli
+D) Sinf-dars tizimi
+JAVOB: C
+
+«O'qituvchi muntazam ravishda fan bilan shug'ullanmog'i lozim. Aks holda u qurigan daraxt va toshga o'xshab qoladi. Qurigan daraxt va tosh meva bera olmaganidek, bunday o'qituvchidan hech qanday natija kutib bo'lmaydi». Ushbu so'zlar muallifi kim?
+A) Yan Amos Komenskiy
+B) Konstantin Ushinskiy
+C) Adolf Disterverg
+D) Jon Lokk
+JAVOB: C
+
+O'qituvchining pedagogik faoliyati tarkibiy qismlari berilgan qatorni toping.
+1) Pedagogik faoliyatning maqsadi
+2) Pedagogik faoliyatning obyekti va subyekti
+3) Pedagogik faoliyatning vositasi
+4) Pedagogik jarayonning harakat vositasi
+A) 1, 2, 3
+B) 1, 3, 4
+C) 2, 3, 4
+D) 1, 2, 4
+JAVOB: A
+
+«Muomala madaniyatida so'z aqldan kuch, tildan ixtiyor oladi». Ushbu so'zlar muallifini aniqlang.
+A) Abdulla Avloniy
+B) Aziz Yunusov
+C) Alisher Navoiy
+D) Mahmud Qoshg'ariy
+JAVOB: B
+
+Moslashtiring.
+1) Ular barcha ishlarda faol, jiddiy va vazmin, osoyishtalikka va tashqi ta'sirchanlikka moyil kishilardir.
+2) Ular faqat o'z ichki olamiga beriluvchan, atrofidagi odamlarga aralashmaydigan, o'z-o'zini nazorat qilishga, doimo ichki xavotirga moyil kishilardir.
+a) ekstravert shaxslar
+b) introvert shaxslar
+c) aqlli shaxslar
+A) 1-b, 2-a
+B) 1-a, 2-c
+C) 1-c, 2-b
+D) 1-a, 2-b
+JAVOB: D
+
+Bunday qobiliyatga ega insonlar musiqani sevishadi, ohangni yaxshi his qilishadi, deklamatsiya asosida proza va poeziyani yaxshi o'qishadi, eshitgan narsasini xotirada saqlaydi, ayniqsa she'r va qo'shiqlarni sevib tinglaydi. Bu qaysi qobiliyat turi?
+A) Eshitish va his qilish qobiliyati
+B) Aqliy qobiliyat
+C) Mantiqiy qobiliyat
+D) Kinestetik qobiliyat
+JAVOB: A
+
+</script>
+<script type="text/plain" class="set" data-title="Pedagogik mahorat va kasb standarti — 4-qism" data-desc="102–134-savollar" data-time="33">
+O'qituvchining o'z xatti-harakatlarini muvofiqlashtirish qobiliyati, harakat ohangini his qilgan holda yo'naltirishi, vaqtni harakat sur'ati bilan his qilishi qaysi qobiliyat turi?
+A) Mantiqiy qobiliyat
+B) Shaxsning ichki qobiliyati
+C) Eshitish va his qilish qobiliyati
+D) Kinestetik (teri-muskul) qobiliyat
+JAVOB: D
+
+Falsafiy mulohazalar yuritishni, raqamlar, matematika, murakkab masalalarni hal qilishni sevadigan, sabab va oqibat natijalarini tushunish malakasiga ega, voqelikda asosiyni ikkinchi darajalisidan ajrata oladigan qobiliyat turi qaysi?
+A) Kinestetik qobiliyat
+B) Mantiqiy qobiliyat
+C) Aqliy qobiliyat
+D) Eshitish va his qilish qobiliyati
+JAVOB: B
+
+O'z-o'zini mukammal bilishi, tushunishi va his qilish qobiliyati; erkin shaxsda mukammal rivojlanadi, irodasi mustahkam, qat'iyatli, har qanday vaziyatda o'z fikrini erkin bayon eta oladi. Bu qaysi qobiliyat turi?
+A) Mantiqiy qobiliyat
+B) Kinestetik qobiliyat
+C) Aqliy qobiliyat
+D) Shaxsning ichki qobiliyati
+JAVOB: D
+
+O'qituvchi bir bolaning kelajakda yaxshi kasb egasi bo'lishiga orzu, umid va maqsadlar berdi. Bunday holatda o'qituvchi ta'lim jarayonida qanday usuldan foydalandi?
+A) Istiqbol
+B) Uyaltirish
+C) Musobaqa
+D) Rag'batlantirish
+JAVOB: A
+
+«Men VIII «B» sinfga kirishga tayyorlanayotgan vaqtimda o'qituvchilar xonasidayoq yuzimdagi tabassumni yo'qotaman. Sinfga kirishdan oldin o'zimga jiddiy, deyarli ifodasiz tus beraman. O'quvchilar bilan kam, juda aniq, keskin gaplashaman, hech qanday hazilga yo'l qo'ymayman...» Ushbu mulohazalar muallifini aniqlang.
+A) F. Samuylenkov
+B) A. S. Makarenko
+C) K. D. Ushinskiy
+D) V. A. Suxomlinskiy
+JAVOB: A
+
+O'qituvchining o'quvchilar bilan dars va darsdan tashqari jarayonlarda, sinfda ijobiy ruhiy iqlim yarata olish qobiliyati qaysi?
+A) Mantiqiy qobiliyat
+B) Muloqot qilish (kommunikativ) qobiliyati
+C) Kinestetik qobiliyat
+D) Aqliy qobiliyat
+JAVOB: B
+
+1-sinf o'quvchilari bilan darsda AKT dan foydalanib, necha daqiqa dars o'tish mumkin?
+A) 20 daqiqa
+B) 30 daqiqa
+C) 10 daqiqa
+D) 15 daqiqa
+JAVOB: C
+
+«Ta'lim to'g'risida»gi qonunning nechanchi moddasida o'qituvchining malaka toifasini olish haqida aytilgan?
+A) 10-modda
+B) 15-modda
+C) 20-modda
+D) 13-modda
+JAVOB: D
+
+Eng muhim jazo chorasi bo'lib, bunda o'qituvchi o'quvchiga yuzma-yuz turib dakki beradi va kundaligiga yozib borishi ham mumkin. Bu jazo turi qaysi?
+A) Hayfsan e'lon qilish
+B) Maktabdan chetlatish
+C) Ogohlantirish
+D) Tanbeh berish
+JAVOB: D
+
+O'quvchilar faoliyatini nazorat qilish metodlarining nechta turi mavjud?
+A) 2 ta
+B) 3 ta
+C) 4 ta
+D) 5 ta
+JAVOB: C
+
+Umumiy o'rta ta'lim sifatini nazorat qilishning nechta turi mavjud?
+A) 4 ta
+B) 3 ta
+C) 5 ta
+D) 6 ta
+JAVOB: A
+
+Tarbiyalanuvchi o'zini boshqa bolalar bilan muloqot qilishdan tortyapti. Buning sababi bolaning nutqi rivojlanmaganligi ekani aniqlandi. Bola nutqini rivojlantirish uchun qanday mashg'ulotlardan foydalanasiz?
+A) Murakkab matnni o'qib, ko'chirib yozish
+B) Rasmga qarab gap tuzish, kichik hajmdagi she'rni yoddan aytish
+C) Faqat jim holda rasm chizdirish
+D) Katta hajmdagi nasriy asarni yod oldirish
+JAVOB: B
+
+O'quvchilarga ta'lim-tarbiya berishda munozara, savol-javob usulini joriy qilib, suhbat metodiga asos solgan kim?
+A) Platon
+B) Aristotel
+C) Suqrot
+D) Konfutsiy
+JAVOB: C
+
+Kompetensiyaviy yondashuvda ta'limning 3 tamoyilini to'g'ri ketma-ketlikda joylashtiring.
+A) Bilim, ko'nikma, malaka
+B) Malaka, bilim, ko'nikma
+C) Ko'nikma, bilim, malaka
+D) Bilim, malaka, ko'nikma
+JAVOB: A
+
+O'qituvchi o'quvchining ko'rish qobiliyatida nuqsonlar borligini aniqladi. Bunday holatda o'qituvchi qanday yo'l tutishi kerak?
+A) Logoped yoniga olib borishi kerak
+B) Tiflopedagog yoniga olib borishi kerak
+C) Psixolog yoniga olib borishi kerak
+D) Sinf rahbari yoniga olib borishi kerak
+JAVOB: B
+
+Gulnora gapirganda biroz tutilib, duduqlanib gapiradi. O'qituvchi bunday holatda uni qaysi mutaxassisga olib borishi kerak?
+A) Tiflopedagogga
+B) Surdopedagogga
+C) Maktab hamshirasiga
+D) Logopedga
+JAVOB: D
+
+Sinfga yangi o'quvchi keldi. Bu bola sinfda o'z o'rnini topishi va boshqa bolalarga aralashib ketishi uchun o'qituvchi nima qilishi kerak?
+A) O'quvchilar orasida do'stona muhit yarata olishi kerak
+B) Yangi o'quvchini boshqalardan alohida o'tirg'izishi kerak
+C) Yangi o'quvchining o'zi moslashishini kutib, e'tibor bermasligi kerak
+D) Sinfdoshlarning o'zaro munosabatiga aralashmasligi kerak
+JAVOB: A
+
+Muomala madaniyatida nima aqldan kuch oladi?
+A) Fikr
+B) Odob
+C) Ilm
+D) So'z
+JAVOB: D
+
+Darsda o'qituvchi o'quvchilarning xatti-harakatlariga e'tibor bermadi. Bolalar beodoblik va shoxlik qilishdi. Bunday holatda o'qituvchi qanday uslubdan foydalandi?
+A) Avtoritar
+B) Demokratik
+C) Liberal
+D) Kooperativ
+JAVOB: C
+
+O'quvchi biologiya bilan unchalik qiziqmaydi, lekin suratkashlikka qiziqadi. Unga boshqalardan farqli vazifa berish mumkin: u biror hodisa yoki obyektni rasmga oladi, boshqalar esa rasmlarni darsliklardan qidiradi. Bu qiziqishlarni inobatga olish unchalik yoqmaydigan fan bo'yicha o'qishga nimani keskin oshiradi?
+A) Intizom
+B) Xotira
+C) Motivatsiya
+D) Charchoq
+JAVOB: C
+
+O'qituvchi darsda o'quvchilarning to'g'ri javobini rag'batlantirmadi, tashabbuslarini inobatga olmay, mavzuni tushuntirishda davom etmoqda. Bunday holatda qanday uslubdan foydalanmoqda?
+A) Liberal
+B) Avtoritar
+C) Demokratik
+D) Hamkorlik
+JAVOB: B
+
+O'quvchiga amaliy topshiriqni bajarish uchun muayyan vazifa va uni amalga oshirish shartlari belgilab berildi. O'quvchi o'z faoliyatini shunga muvofiq rejalashtirdi. Bu qobiliyat qaysi faoliyat turiga kiradi?
+A) Regulyativ (maqsadni belgilash, rejalashtirish, o'z-o'zini tartibga solish, to'siqlarni yengish)
+B) Kognitiv (axborotni izlash, qayta ishlash va tahlil qilish)
+C) Kommunikativ (hamkorlik va muloqotga kirishish)
+D) Shaxsiy (qadriyatlarga munosabat va o'z-o'zini anglash)
+JAVOB: A
+
+O'qituvchi muayyan mavzu bo'yicha o'quvchilarga tayyor bilimlarni taqdim etib, so'ng mustahkamlash, umumlashtirish, tizimlashtirish va nazorat qilish jarayonini tashkil etdi. Bu jarayon qanday nomlanadi?
+A) Muammoli ta'lim
+B) Evristik ta'lim
+C) Tadqiqot ta'limi
+D) Reproduktiv ta'lim
+JAVOB: D
+
+O'qituvchi o'quvchiga mustaqil bajarish uchun vazifa berdi. O'quvchi vazifani berilgan adabiyotlar ro'yxatidan foydalanmasdan, o'z shaxsiy fikr va mulohazalari bilan boyitdi. Pedagog o'quvchining ijodkorligini rivojlantirish uchun ta'limning qaysi turidan foydalangan?
+A) Reproduktiv ta'lim
+B) Shaxsga yo'naltirilgan ta'lim
+C) Dasturlashtirilgan ta'lim
+D) Axborot-reseptiv ta'lim
+JAVOB: B
+
+Qaysi holatlarda namunaviy o'quv rejalariga o'zgartirish kiritish mumkin?
+A) Faqat o'qituvchining shaxsiy xohishiga ko'ra
+B) Dars soatlari sonini kamaytirish maqsadida
+C) O'quvchilarning ehtiyojlari va qiziqishlaridan kelib chiqqan holda
+D) Maktab direktorining og'zaki ko'rsatmasiga binoan
+JAVOB: C
+
+Ta'lim – bu...
+A) Ta'lim jarayonida o'zlashtirilgan bilim, ko'nikma, malaka va fikrlash usullari tizimi
+B) Shaxsni jamiyat hayotiga tayyorlashga qaratilgan axloqiy qadriyatlar tizimi
+C) O'quvchilarning dam olish va ko'ngilochar faoliyatini tashkil etish tizimi
+D) Faqat o'quv dasturida belgilangan mavzularni yodlash jarayoni
+JAVOB: A
+
+O'qituvchi o'quvchining mustaqil faoliyati darajasini oshirmoqchi. Buning uchun u o'qitish usullari ketma-ketligini qanday tanlashi lozim?
+1. Reproduktiv usul 2. Axborot to'plash – reseptiv usul 3. Muammoli ta'lim usuli 4. Tadqiqot usuli
+A) 1, 2, 3, 4
+B) 2, 1, 3, 4
+C) 2, 3, 1, 4
+D) 4, 3, 2, 1
+JAVOB: B
+
+O'qituvchi o'quvchilarni guruhlarga ajratib, bir necha yo'nalishda loyiha mavzularini taqdim etdi. Ekologik loyiha turiga kiradigan variantlarni belgilang.
+1. Maktabda chiqindilarni saralab yig'ish ishlarini tashkil etish
+2. Maktab hududidagi sport maydonchasini yoritish uchun shamol generatorini yaratish
+3. Tog' chang'isi dam olish zonasiga sayohat xarajatlarini hisoblash
+4. Maktabda «Ekologik muammolar» mavzusidagi tadbirni tashkil etish
+A) 2, 3
+B) 1, 3
+C) 2, 4
+D) 1, 4
+JAVOB: D
+
+O'qituvchi mualliflik dasturi va maktabni rivojlantirish konsepsiyasi ustida ish olib bordi. Bunday jarayon o'qituvchining qaysi faoliyat turiga kiradi?
+A) O'qituvchining ishdan tashqari faoliyatiga
+B) Dars o'tish faoliyatiga
+C) Tarbiyaviy faoliyatga
+D) Ota-onalar bilan hamkorlik faoliyatiga
+JAVOB: A
+
+O'qituvchi yangi mavzuga oid faktlar va mulohazalarni keltirdi hamda ularga doir savollar bilan murojaat qildi. Bunda o'quvchida qanday ko'nikma turi shakllantiriladi?
+A) Takrorlash
+B) Tasniflash
+C) Mulohaza
+D) Taqlid qilish
+JAVOB: C
+
+Yosh mutaxassis ko'p yillardan beri faoliyat yuritayotgan ustozning darsiga kirib, dars berish mahoratini o'rganmoqchi bo'ldi. Dars davomida o'quvchilar guruhlarda erkin fikr bildirdilar, o'qituvchi fasilitatorlik vazifasini bajardi. Yosh mutaxassis bu tajribaga qanday yo'llar bilan erishilganini so'radi. Pedagogik tajribani hosil qilishdagi to'g'ri yo'llarni tanlang.
+1) mustaqil o'qib-o'rganish;
+2) ilg'or ish tajribalari bilan tanishish;
+3) ilmiy anjumanlarda ishtirok etish;
+4) o'zaro tajriba almashish;
+5) hamkorlikda pedagogik izlanishlarni olib borish;
+6) tajribali ustozlardan maslahat olish;
+7) faqat talabalik davrida olingan nazariy bilimlarga tayanish.
+A) 1, 2, 7
+B) 1, 2, 3, 4, 5, 6
+C) 2, 4, 5, 7
+D) 1, 3, 6, 7
+JAVOB: B
+
+O'qituvchi dars davomida o'quvchilarga o'tilgan mavzular yuzasidan savollar berdi. So'ng o'quvchilar olgan bilimlarini qo'llash maqsadida kichik guruhlarda amaliy topshiriq bajardilar va dars yakunida o'z xulosalarini taqdim etdilar. O'qituvchi qaysi dars turidan foydalandi?
+A) Yangi bilim berish darsi
+B) Nazorat darsi
+C) Aralash (kombinatsion) dars
+D) O'rganilganlarni takrorlash va mustahkamlash
+JAVOB: D
+
+O'qituvchi o'quvchiga tanbeh berdi. O'quvchi e'tiroz bildirib, gap qaytardi. O'qituvchi o'quvchining ota-onasini chaqirtirib, ularning ko'z oldida o'quvchi bilan gaplashdi. O'qituvchi qanday yo'l tutdi?
+A) Rag'batlantirish
+B) Istiqbol
+C) Musobaqa
+D) Uyaltirish
+JAVOB: D
+
+</script>
+
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  // ---- o'qish ----
+  var sets=[], warns=[];
+  document.querySelectorAll('script.set').forEach(function(sc){
+    var set={title:sc.dataset.title||'To\'plam',desc:sc.dataset.desc||'',time:+sc.dataset.time||0,qs:[]};
+    sc.textContent.trim().split(/\n\s*\n/).forEach(function(block,bi){
+      var q={text:[],opts:[],ans:-1,izoh:'',img:[]}, m;
+      block.split('\n').forEach(function(l){l=l.trim();if(!l)return;
+        if(m=l.match(/^([A-D])\)\s*(.+)$/))q.opts.push(m[2]);
+        else if(m=l.match(/^JAVOB:\s*([A-D])/i))q.ans='ABCD'.indexOf(m[1].toUpperCase());
+        else if(m=l.match(/^IZOH:\s*(.+)/i))q.izoh=m[1];
+        else if(m=l.match(/^RASM:\s*(.+)/i))q.img.push(m[1]);
+        else q.text.push(l);});
+      if(q.text.length&&q.opts.length>=2&&q.ans>=0&&q.ans<q.opts.length){q.text=q.text.join('\n');set.qs.push(q);}
+      else warns.push('"'+set.title+'": '+(bi+1)+'-blok o\'tkazib yuborildi (savol, kamida 2 variant va JAVOB: kerak).');
+    });
+    if(!set.time)set.time=Math.max(1,set.qs.length);
+    sets.push(set);
+  });
+  if(warns.length)document.getElementById('warn').innerHTML='<div class="warn">'+warns.map(esc).join('<br>')+'</div>';
+  var list=document.getElementById('list');
+  sets.forEach(function(s,i){
+    var d=document.createElement('div');d.className='card row';
+    d.innerHTML='<div>'+esc(s.title)+'<small>'+esc(s.desc)+' · '+s.qs.length+' savol · '+s.time+' daqiqa</small></div><span class="arrow">›</span>';
+    d.onclick=function(){pick(i);};list.appendChild(d);
+  });
+
+  // ---- statistika ----
+  function rec(ok){try{var st;try{st=JSON.parse(localStorage.getItem('tm_stats'));}catch(e){}
+    if(!st||!st.days)st={total:0,correct:0,wrong:0,best:0,days:{}};
+    function k(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+    var d=new Date(),key=k(d);st.days[key]=(st.days[key]||0)+1;st.total++;if(ok)st.correct++;else st.wrong++;
+    var n=0,c=new Date();while(st.days[k(c)]){n++;c.setDate(c.getDate()-1);}if(n>(st.best||0))st.best=n;
+    localStorage.setItem('tm_stats',JSON.stringify(st));}catch(e){}}
+
+  // ---- holat ----
+  var S=null, Q=[], picked=[], cur=0, mode='', tmr=null, left=0, finished=false, shown=[];
+  function screen(id){['sList','sMode','sQuiz','sRes'].forEach(function(x){document.getElementById(x).classList.toggle('hidden',x!==id);});window.scrollTo(0,0);}
+  function pick(i){S=sets[i];document.getElementById('mTitle').textContent=S.title;document.getElementById('mDesc').textContent=S.qs.length+' savol · imtihon vaqti: '+S.time+' daqiqa';screen('sMode');}
+  document.getElementById('mBack').onclick=function(){screen('sList');};
+  document.getElementById('modeP').onclick=function(){begin('P');};
+  document.getElementById('modeE').onclick=function(){begin('E');};
+  function begin(m){
+    mode=m;finished=false;cur=0;
+    // savollar va variantlar aralashtiriladi
+    Q=shuffle(S.qs).map(function(q){
+      var idx=shuffle(q.opts.map(function(_,i){return i;}));
+      return {text:q.text,img:q.img,izoh:q.izoh,opts:idx.map(function(i){return q.opts[i];}),ans:idx.indexOf(q.ans)};
+    });
+    picked=Q.map(function(){return -1;});shown=Q.map(function(){return false;});
+    screen('sQuiz');
+    clearInterval(tmr);
+    var tmEl=document.getElementById('tm');
+    if(m==='E'){left=S.time*60;drawT();tmr=setInterval(function(){left--;drawT();if(left<=0){clearInterval(tmr);finish();}},1000);}
+    else tmEl.textContent='';
+    render();
+  }
+  function drawT(){var t=document.getElementById('tm');var mm=Math.floor(left/60),ss=left%60;t.textContent=mm+':'+String(ss).padStart(2,'0');t.className='tm'+(left<=60?' low':'');}
+  function render(){
+    var q=Q[cur];
+    document.getElementById('qcount').textContent=(cur+1)+' / '+Q.length;
+    document.getElementById('fill').style.width=(picked.filter(function(x){return x>=0;}).length/Q.length*100)+'%';
+    document.getElementById('media').innerHTML=q.img.map(function(s){return '<img src="'+esc(s)+'" alt="" style="max-width:100%;border-radius:14px;margin-bottom:14px">';}).join('');
+    var qt=document.getElementById('qtext');qt.className='qtext'+(q.text.length>170?' sm':'');qt.innerHTML=esc(q.text).split('\n').join('<br>');
+    var o=document.getElementById('opts');o.innerHTML='';
+    q.opts.forEach(function(t,i){
+      var b=document.createElement('button');b.className='opt';
+      var cls='';
+      if(mode==='P'&&shown[cur]){cls=i===q.ans?' ok':(i===picked[cur]?' no':'');}
+      else if(picked[cur]===i)cls=' sel';
+      b.className+=cls;b.disabled=(mode==='P'&&shown[cur]);
+      b.innerHTML='<span class="k">'+'ABCD'[i]+'</span><span>'+esc(t)+'</span>';
+      b.onclick=function(){choose(i);};o.appendChild(b);
+    });
+    document.getElementById('exp').innerHTML=(mode==='P'&&shown[cur]&&q.izoh)?'<div class="ans">Izoh: '+esc(q.izoh)+'</div>':'';
+    var bt=document.getElementById('qbtns');bt.innerHTML='';
+    if(mode==='E'){
+      var p=document.createElement('button');p.className='btn ghost';p.textContent='← Oldingi';p.disabled=cur===0;p.onclick=function(){go(-1);};bt.appendChild(p);
+      var n=document.createElement('button');n.className='btn ghost';n.textContent='Keyingi →';n.disabled=cur===Q.length-1;n.onclick=function(){go(1);};bt.appendChild(n);
+      var f=document.createElement('button');f.className='btn good';f.textContent='Tugatish';f.onclick=function(){
+        var un=picked.filter(function(x){return x<0;}).length;
+        if(un&&!confirm(un+' ta savolga javob berilmagan. Baribir tugatilsinmi?'))return;finish();};bt.appendChild(f);
+    } else if(shown[cur]){
+      var nx=document.createElement('button');nx.className='btn';nx.textContent=cur===Q.length-1?'Natijani ko\'rish':'Keyingi →';nx.onclick=function(){if(cur===Q.length-1)finish();else go(1);};bt.appendChild(nx);
+    }
+    var nv=document.getElementById('nav');nv.innerHTML='';
+    Q.forEach(function(_,i){var b=document.createElement('button');b.textContent=i+1;
+      b.className=(i===cur?'cur ':'')+(picked[i]>=0?'done':'');
+      b.onclick=function(){if(mode==='E'){cur=i;render();}};nv.appendChild(b);});
+    nv.style.display=mode==='E'?'flex':'none';
+    document.getElementById('hint').style.display='block';
+  }
+  function go(d){var n=cur+d;if(n>=0&&n<Q.length){cur=n;render();}}
+  function choose(i){
+    if(finished)return;
+    if(mode==='P'){if(shown[cur])return;picked[cur]=i;shown[cur]=true;rec(i===Q[cur].ans);}
+    else picked[cur]=i;
+    render();
+  }
+  function finish(){
+    if(finished)return;finished=true;clearInterval(tmr);
+    var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++;if(mode==='E'&&picked[i]>=0)rec(picked[i]===q.ans);});
+    var pct=Math.round(ok/Q.length*100);
+    document.getElementById('rScore').textContent=ok+' / '+Q.length;
+    document.getElementById('rPct').textContent=pct+'%';
+    document.getElementById('rMsg').textContent=pct>=86?'Ajoyib natija! Imtihonga tayyorsiz.':pct>=60?'Yaxshi, lekin xatolar ustida ishlang.':'Mavzularni takrorlab, yana urinib ko\'ring.';
+    var rv=document.getElementById('review');rv.innerHTML='';
+    Q.forEach(function(q,i){
+      var good=picked[i]===q.ans;
+      var d=document.createElement('div');d.className='rv '+(good?'good':'bad');
+      d.innerHTML='<b>'+(i+1)+'. '+esc(q.text)+'</b><p>Sizning javobingiz: '+(picked[i]>=0?'ABCD'[picked[i]]+') '+esc(q.opts[picked[i]]):'javob berilmagan')+'</p>'+
+        (good?'':'<p>To\'g\'ri javob: <b>'+'ABCD'[q.ans]+') '+esc(q.opts[q.ans])+'</b></p>')+(q.izoh?'<p>Izoh: '+esc(q.izoh)+'</p>':'');
+      rv.appendChild(d);
+    });
+    screen('sRes');
+  }
+  document.getElementById('rAgain').onclick=function(){screen('sMode');};
+  document.getElementById('rList').onclick=function(){screen('sList');};
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('sQuiz').classList.contains('hidden'))return;
+    var k=e.key.toLowerCase(),map={a:0,b:1,c:2,d:3,'1':0,'2':1,'3':2,'4':3};
+    if(map[k]!==undefined&&map[k]<Q[cur].opts.length){e.preventDefault();choose(map[k]);}
+    else if(e.key==='ArrowRight'&&mode==='E')go(1);
+    else if(e.key==='ArrowLeft'&&mode==='E')go(-1);
+    else if((e.key==='Enter'||e.key===' ')&&mode==='P'&&shown[cur]){e.preventDefault();if(cur===Q.length-1)finish();else go(1);}
+  });
+</script></body></html>

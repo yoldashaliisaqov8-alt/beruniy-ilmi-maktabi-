@@ -2,14 +2,14 @@
 <html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biletlar — Akademiya suhbat</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="stil.css"></head>
+<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="akademiya.html" aria-label="Orqaga">←</a><span class="brand">AKADEMIYA SUHBAT</span></div>
 <h1>Biletlar</h1>
 <p class="sub">"Umumiy biletlar"da har bir biletda 3 fandan 1 tadan savol bor. Fanni alohida ham tanlash mumkin. Biletni bosing yoki "Bilet tortish" tugmasini bosing, tasodifiy 3 fanli bilet uchun "Aralash bilet" tugmasidan foydalaning. Savollar elektron doskada ochiladi, javoblar tugma bilan ko'rsatiladi.</p>
 <div class="field"><select id="selG" aria-label="Guruh"></select><button class="btn" id="draw">🎟 Bilet tortish</button><button class="btn ghost" id="mix">🔀 Aralash bilet (3 fan)</button><span id="info" style="color:var(--ink-soft);font-weight:600"></span></div>
 <div class="bgrid" id="grid"></div>
-<p><button class="btn ghost hidden" id="resetUsed">Tortilganlarni tozalash</button></p>
+<p><a class="btn ghost" href="bilet-chop.html" style="text-decoration:none;display:inline-block">🖨 Biletlarni chop etish</a> <button class="btn ghost hidden" id="resetUsed">Tortilganlarni tozalash</button></p>
 </div>
 
 <div class="doska hidden" id="doska">

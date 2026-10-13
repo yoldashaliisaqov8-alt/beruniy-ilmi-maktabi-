@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kartochkalar — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .fc{min-height:300px;padding:34px 38px;display:flex;flex-direction:column;justify-content:center;}
+  .fc .meta{color:var(--ink-soft);font-weight:700;font-size:15px;margin-bottom:12px;}
+  .fc .qq{font-size:30px;font-weight:800;line-height:1.35;margin:0;}
+  .fc .aa{margin-top:20px;padding:18px 20px;background:#eaf2ff;border-radius:18px;font-weight:600;font-size:19px;line-height:1.5;white-space:pre-wrap;max-height:46vh;overflow:auto;}
+  .fc .aa .src{font-size:13px;color:var(--ink-soft);margin-top:10px;font-weight:600;}
+  .acts{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;}
+  .acts .btn{flex:1;min-width:140px;font-size:18px;padding:14px;}
+  .acts .no{background:var(--red);} .acts .yes{background:var(--green);}
+  .stat{display:flex;gap:18px;flex-wrap:wrap;font-weight:800;margin:6px 0 14px;color:var(--ink-soft);}
+  .stat b{color:var(--ink);}
+  .bar{height:10px;border-radius:5px;background:#dde6f0;overflow:hidden;margin-bottom:14px;} .bar i{display:block;height:100%;background:var(--green);width:0;transition:width .3s;}
+  @media (max-width:600px){.fc{padding:22px;min-height:240px;}.fc .qq{font-size:22px;}.fc .aa{font-size:16px;}}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">KARTOCHKALAR</span></div>
+<h1>Kartochkalar</h1>
+<p class="sub">Savolni o'qing, javobni o'zingizcha ayting, so'ng tekshiring. Bilmagan savollar qaytib chiqadi</p>
+<div id="msg"></div>
+
+<div id="setup" class="hidden">
+  <div class="field"><select id="fan" aria-label="Fan"></select><select id="mv" aria-label="Sinf yoki mavzu"></select>
+    <label style="font-weight:700"><input type="checkbox" id="shuf" checked> Aralashtirish</label>
+    <button class="btn" id="go">Boshlash</button></div>
+  <p id="cnt" style="color:var(--ink-soft);font-weight:700"></p>
+</div>
+
+<div id="play" class="hidden">
+  <div class="stat"><span>Qoldi: <b id="sLeft">0</b></span><span>Bildim: <b id="sYes">0</b></span><span>Bilmadim (qaytadi): <b id="sNo">0</b></span></div>
+  <div class="bar"><i id="pb"></i></div>
+  <div class="card fc" id="card"><div class="meta" id="meta"></div><p class="qq" id="qq"></p><div id="aa"></div></div>
+  <div class="acts" id="acts"><button class="btn" id="show">Javobni ko'rish</button></div>
+  <p style="color:var(--ink-soft);font-weight:600;font-size:14px">Klaviatura: Space — javobni ko'rish · ← bilmadim · → bildim</p>
+  <p><button class="btn ghost" id="stop">← Boshiga qaytish</button></p>
+</div>
+
+<div id="done" class="hidden"><div class="card" style="padding:30px;text-align:center"><h2 style="margin:0 0 8px">Barakalla! 🎉</h2><p id="dmsg" style="font-weight:600"></p><button class="btn" id="again">Qaytadan</button> <button class="btn ghost" id="home">Boshiga qaytish</button></div></div>
+</div>
+<script src="baza.js"></script>
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  var ALL=[],cur=[],queue=[],yes=0,no=0,total=0,shown=false;
+  var fan=document.getElementById('fan'),mv=document.getElementById('mv');
+  Promise.all(Baza.FAN.map(Baza.suhbat)).then(function(a){
+    ALL=[].concat.apply([],a);
+    fan.innerHTML='<option value="">Hamma fanlar</option>'+Baza.FAN.map(function(f){return '<option>'+esc(f.nom)+'</option>';}).join('');
+    fillMv();document.getElementById('setup').classList.remove('hidden');
+  }).catch(function(){document.getElementById('msg').innerHTML='<div class="card" style="padding:22px;font-weight:600">Savollarni yuklab bo\'lmadi. Sayt internetda (GitHub Pages) ochilganda ishlaydi; kompyuterdagi faylni to\'g\'ridan-to\'g\'ri ochsangiz ishlamaydi.</div>';});
+  function sinf(x){var m=x.mavzu.match(/^(\d-sinf)/);return m?m[1]:x.mavzu;}
+  function pool(){return ALL.filter(function(x){return (!fan.value||x.fan===fan.value)&&(!mv.value||sinf(x)===mv.value);});}
+  function fillMv(){
+    var s=[];ALL.forEach(function(x){if((!fan.value||x.fan===fan.value)&&s.indexOf(sinf(x))<0)s.push(sinf(x));});
+    mv.innerHTML='<option value="">Hamma sinf/bo\'limlar</option>'+s.map(function(v){return '<option>'+esc(v)+'</option>';}).join('');cnt();
+  }
+  function cnt(){document.getElementById('cnt').textContent=pool().length+' ta kartochka';}
+  fan.onchange=fillMv;mv.onchange=cnt;
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+  function start(){
+    cur=pool().slice();if(!cur.length)return;if(document.getElementById('shuf').checked)shuffle(cur);
+    queue=cur.slice();total=queue.length;yes=0;no=0;
+    document.getElementById('setup').classList.add('hidden');document.getElementById('done').classList.add('hidden');document.getElementById('play').classList.remove('hidden');next();
+  }
+  function next(){
+    if(!queue.length){document.getElementById('play').classList.add('hidden');document.getElementById('done').classList.remove('hidden');document.getElementById('dmsg').textContent='Hamma '+total+' ta kartochka tugadi. Bilmadim deb belgilanganlar qayta ko\'rsatildi: '+no+' marta.';return;}
+    var x=queue[0];shown=false;
+    document.getElementById('meta').textContent=x.fan+' · '+x.mavzu;
+    document.getElementById('qq').textContent=x.q;document.getElementById('aa').innerHTML='';
+    document.getElementById('acts').innerHTML='<button class="btn" id="show">Javobni ko\'rish</button>';
+    document.getElementById('show').onclick=reveal;stat();
+  }
+  function reveal(){
+    if(shown)return;shown=true;var x=queue[0];
+    document.getElementById('aa').innerHTML='<div class="aa">'+esc(x.a||'(javob kiritilmagan)')+(x.m?'<div class="src">Izoh: '+esc(x.m)+'</div>':'')+'</div>';
+    document.getElementById('acts').innerHTML='<button class="btn no" id="bNo">Bilmadim</button><button class="btn yes" id="bYes">Bildim</button>';
+    document.getElementById('bNo').onclick=function(){mark(false);};document.getElementById('bYes').onclick=function(){mark(true);};
+  }
+  function mark(ok){
+    var x=queue.shift();
+    if(ok)yes++;else{no++;var pos=Math.min(queue.length,4+Math.floor(Math.random()*4));queue.splice(pos,0,x);}
+    next();
+  }
+  function stat(){
+    document.getElementById('sLeft').textContent=queue.length;document.getElementById('sYes').textContent=yes;document.getElementById('sNo').textContent=no;
+    document.getElementById('pb').style.width=Math.round(yes/Math.max(total,1)*100)+'%';
+  }
+  function back(){document.getElementById('play').classList.add('hidden');document.getElementById('done').classList.add('hidden');document.getElementById('setup').classList.remove('hidden');}
+  document.getElementById('go').onclick=start;document.getElementById('again').onclick=start;
+  document.getElementById('stop').onclick=back;document.getElementById('home').onclick=back;
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('play').classList.contains('hidden'))return;
+    if(e.key===' '&&!shown){e.preventDefault();reveal();}
+    else if(shown&&e.key==='ArrowRight')mark(true);else if(shown&&e.key==='ArrowLeft')mark(false);
+  });
+</script></body></html>

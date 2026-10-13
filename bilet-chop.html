@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biletlarni chop etish — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .opts{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  .opts label{font-weight:700;} .opts input[type=number]{width:80px;}
+  .sheet{display:grid;gap:10px;margin:14px 0;}
+  .sheet.c4{grid-template-columns:1fr 1fr;} .sheet.c6{grid-template-columns:1fr 1fr;} .sheet.c8{grid-template-columns:1fr 1fr;} .sheet.c2{grid-template-columns:1fr;}
+  .tk{border:1.5px dashed #6b7a90;border-radius:8px;padding:12px 14px;background:#fff;break-inside:avoid;page-break-inside:avoid;font-size:14px;line-height:1.35;}
+  .tk h4{margin:0 0 6px;font-size:15px;display:flex;justify-content:space-between;gap:8px;}
+  .tk h4 small{font-weight:600;color:#6b7a90;}
+  .tk ol{margin:0;padding-left:20px;} .tk li{margin-bottom:6px;font-weight:600;}
+  .tk .sg{margin-top:8px;font-size:12px;color:#6b7a90;}
+  .ans .tk{border-style:solid;font-size:12.5px;break-inside:auto;page-break-inside:auto;margin-bottom:10px;}
+  .ans .tk .a{font-weight:500;white-space:pre-wrap;margin:2px 0 8px;color:#1b2b44;} .ans .tk .src{font-size:11px;color:#6b7a90;}
+  .pg{break-after:page;page-break-after:always;}
+  @media print{
+    body{background:#fff !important;} .noprint{display:none !important;} .wrap{max-width:none;padding:0;margin:0;}
+    .sheet{margin:0;gap:8mm;} .tk{font-size:12.5pt;border-color:#000;padding:8mm;}
+    .c4 .tk{min-height:62mm;} .c6 .tk{min-height:40mm;font-size:11pt;padding:5mm;} .c8 .tk{min-height:30mm;font-size:10pt;padding:4mm;} .c2 .tk{min-height:110mm;font-size:14pt;}
+    @page{size:A4;margin:10mm;}
+  }
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="noprint">
+  <div class="top"><a class="back" href="biletlar.html" aria-label="Orqaga">←</a><span class="brand">BILETLARNI CHOP ETISH</span></div>
+  <h1>Biletlarni chop etish</h1>
+  <p class="sub">Guruhni tanlang, A4 varaqqa sig'adigan biletlar sonini belgilang va "Chop etish" tugmasini bosing. Javoblar varag'i alohida chiqariladi</p>
+  <div id="msg"></div>
+  <div class="opts">
+    <select id="g" aria-label="Guruh"></select>
+    <label>Bilet №: dan <input class="txt" type="number" id="from" min="1" value="1"> gacha <input class="txt" type="number" id="to" min="1" value="10"></label>
+    <select id="mode" aria-label="Turi"><option value="q">Faqat savollar (kesib tarqatish uchun)</option><option value="a">Javoblar bilan (o'qituvchi uchun)</option></select>
+    <select id="per" aria-label="Bir sahifada"><option value="4">Sahifada 4 ta</option><option value="6">Sahifada 6 ta</option><option value="8">Sahifada 8 ta</option><option value="2">Sahifada 2 ta</option></select>
+    <button class="btn" id="pr">🖨 Chop etish</button>
+  </div>
+  <p id="info" style="color:var(--ink-soft);font-weight:700"></p>
+</div>
+<div id="out"></div>
+</div>
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  var B=[];
+  fetch('biletlar.html').then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    var sc=new DOMParser().parseFromString(t,'text/html').getElementById('data'),cb=null,cq=null,field=null,g='Biletlar',m;
+    sc.textContent.split('\n').forEach(function(l){var s=l.trim();
+      if(m=s.match(/^GURUH:\s*(.+)/i)){g=m[1];cb=null;cq=null;field=null;}
+      else if(m=s.match(/^BILET:\s*(.+)/i)){cb={n:m[1],g:g,qs:[]};B.push(cb);cq=null;field=null;}
+      else if(cb&&(m=s.match(/^SAVOL:\s*(.*)/i))){cq={q:m[1],a:'',m:''};cb.qs.push(cq);field='q';}
+      else if(cq&&(m=s.match(/^JAVOB:\s*(.*)/i))){cq.a=m[1];field='a';}
+      else if(cq&&(m=s.match(/^MANBA:\s*(.*)/i))){cq.m=m[1];field=null;}
+      else if(cq&&s&&field){cq[field]+=(cq[field]?'\n':'')+s;}});
+    var gs=[];B.forEach(function(b){if(gs.indexOf(b.g)<0)gs.push(b.g);});
+    document.getElementById('g').innerHTML=gs.map(function(x){return '<option>'+esc(x)+'</option>';}).join('');
+    var p=new URLSearchParams(location.search).get('g');if(p&&gs.indexOf(p)>=0)document.getElementById('g').value=p;
+    upd();
+  }).catch(function(){document.getElementById('msg').innerHTML='<div class="card" style="padding:22px;font-weight:600">Biletlarni yuklab bo\'lmadi. Sayt internetda (GitHub Pages) ochilganda ishlaydi.</div>';});
+  function sel(){var g=document.getElementById('g').value,L=B.filter(function(b){return b.g===g;});
+    var f=Math.max(1,+document.getElementById('from').value||1),t=+document.getElementById('to').value||L.length;
+    return {g:g,L:L,S:L.filter(function(b,i){return i+1>=f&&i+1<=t;})};}
+  function upd(){var s=sel();document.getElementById('info').textContent=s.L.length+' ta bilet bor; tanlangan: '+s.S.length+' ta';draw();}
+  function draw(){
+    var s=sel(),mode=document.getElementById('mode').value,per=+document.getElementById('per').value,out=document.getElementById('out');out.innerHTML='';
+    if(mode==='q'){
+      for(var i=0;i<s.S.length;i+=per){
+        var sh=document.createElement('div');sh.className='sheet c'+per+(i+per<s.S.length?' pg':'');
+        s.S.slice(i,i+per).forEach(function(b){
+          var d=document.createElement('div');d.className='tk';
+          d.innerHTML='<h4><span>Bilet № '+esc(b.n)+'</span><small>'+esc(b.g)+'</small></h4><ol>'+b.qs.map(function(q){return '<li>'+esc(q.q)+'</li>';}).join('')+'</ol><div class="sg">Beruniy ilmi maktabi</div>';
+          sh.appendChild(d);
+        });
+        out.appendChild(sh);
+      }
+    }else{
+      var sh=document.createElement('div');sh.className='ans';
+      s.S.forEach(function(b){
+        var d=document.createElement('div');d.className='tk';
+        d.innerHTML='<h4><span>Bilet № '+esc(b.n)+'</span><small>'+esc(b.g)+'</small></h4>'+b.qs.map(function(q,i){return '<div><b>'+(i+1)+'. '+esc(q.q)+'</b><div class="a">'+esc(q.a)+'</div>'+(q.m?'<div class="src">Izoh: '+esc(q.m)+'</div>':'')+'</div>';}).join('');
+        sh.appendChild(d);
+      });
+      out.appendChild(sh);
+    }
+  }
+  ['g','from','to','mode','per'].forEach(function(id){document.getElementById(id).onchange=upd;document.getElementById(id).oninput=upd;});
+  document.getElementById('pr').onclick=function(){window.print();};
+</script></body></html>

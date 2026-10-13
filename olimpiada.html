@@ -33,7 +33,7 @@
   .warn{background:rgba(229,72,77,.08);border:1px solid var(--red);color:#9a3a30;padding:14px 18px;border-radius:14px;margin-bottom:14px;font-weight:600;}
   @media (max-width:700px){.modes{grid-template-columns:1fr;}.opt{font-size:18px;padding:14px;}}
   @media (min-width:1000px){.opt{font-size:24px;padding:20px 26px;}}
-</style></head>
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">OLIMPIADA TESTLARI</span></div>
 
@@ -269,7 +269,7 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
     document.getElementById('qcount').textContent=(cur+1)+' / '+Q.length;
     document.getElementById('fill').style.width=(picked.filter(function(x){return x>=0;}).length/Q.length*100)+'%';
     document.getElementById('media').innerHTML=q.img.map(function(s){return '<img src="'+esc(s)+'" alt="" style="max-width:100%;border-radius:14px;margin-bottom:14px">';}).join('');
-    document.getElementById('qtext').innerHTML=esc(q.text).split('\n').join('<br>');
+    var qt=document.getElementById('qtext');qt.className='qtext'+(q.text.length>170?' sm':'');qt.innerHTML=esc(q.text).split('\n').join('<br>');
     var o=document.getElementById('opts');o.innerHTML='';
     q.opts.forEach(function(t,i){
       var b=document.createElement('button');b.className='opt';

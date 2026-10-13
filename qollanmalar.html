@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qo'llanmalar — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .fi{display:flex;align-items:center;gap:16px;padding:18px 22px;margin-bottom:12px;flex-wrap:wrap;}
+  .fi .ext{flex-shrink:0;width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;background:var(--blue);}
+  .fi .ext.pdf{background:#e5484d;} .fi .ext.doc{background:#2b6cd8;} .fi .ext.xls{background:#23a05d;} .fi .ext.ppt{background:#d98a0b;}
+  .fi .tx{flex:1;min-width:200px;} .fi .tx b{display:block;font-size:19px;font-weight:800;} .fi .tx small{color:var(--ink-soft);font-weight:600;font-size:15px;}
+  .fi a{text-decoration:none;display:inline-block;padding:9px 16px;font-size:15px;}
+  .gh{margin:22px 0 8px;font-weight:800;font-size:18px;color:var(--blue-dark,#1457b5);}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">BERUNIY ILMI MAKTABI</span></div>
+<h1>Qo'llanmalar</h1>
+<p class="sub">Qo'llanma, uslubiy material va hujjatlar. Ko'rish yoki yuklab olish mumkin</p>
+<div class="field"><input class="txt" id="q" placeholder="Qo'llanma qidirish..." style="flex:1;min-width:200px"></div>
+<div id="box"></div>
+</div>
+
+<!--
+  QO'LLANMA QO'SHISH:
+  1) Faylni (PDF, Word, Excel, PPT) "fayllar" papkasiga joylang (GitHub: fayllar papkasiga Upload files).
+  2) Pastdagi blokka bitta qator qo'shing:  Nomi | fayl nomi | qisqa tavsif | guruh (ixtiyoriy)
+  Misol:  O'zbekiston tarixi 7-sinf qo'llanma | uzb-tarixi-7.pdf | Suhbat savollari | Akademiya suhbat
+  Eslatma: bu sayt ochiq. Faqat hammaga ko'rsatishga ruxsat berilgan fayllarni qo'shing.
+-->
+<script type="text/plain" id="data">
+</script>
+
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+  var F=[];
+  document.getElementById('data').textContent.split('\n').forEach(function(l){
+    l=l.trim();if(!l||l.charAt(0)==='#')return;var p=l.split('|').map(function(x){return x.trim();});
+    if(p.length>=2&&p[0]&&p[1])F.push({n:p[0],f:p[1],d:p[2]||'',g:p[3]||'Umumiy'});
+  });
+  function ext(f){var e=(f.split('.').pop()||'').toLowerCase();return e;}
+  function cls(e){return /pdf/.test(e)?'pdf':/docx?|odt/.test(e)?'doc':/xlsx?|csv/.test(e)?'xls':/pptx?/.test(e)?'ppt':'';}
+  function draw(){
+    var t=document.getElementById('q').value.trim().toLowerCase(),box=document.getElementById('box');box.innerHTML='';
+    var L=F.filter(function(x){return !t||(x.n+' '+x.d+' '+x.g).toLowerCase().indexOf(t)>=0;});
+    if(!F.length){box.innerHTML='<div class="card" style="padding:30px;font-weight:600;color:var(--ink-soft)">Hozircha qo\'llanma qo\'shilmagan. Fayl ichidagi izohni o\'qib, ro\'yxatga qo\'shing.</div>';return;}
+    if(!L.length){box.innerHTML='<div class="card" style="padding:24px;font-weight:600;color:var(--ink-soft)">Hech narsa topilmadi.</div>';return;}
+    var last=null;
+    L.forEach(function(x){
+      if(x.g!==last){last=x.g;var h=document.createElement('div');h.className='gh';h.textContent=x.g;box.appendChild(h);}
+      var e=ext(x.f),u='fayllar/'+encodeURI(x.f),d=document.createElement('div');d.className='card fi';
+      d.innerHTML='<div class="ext '+cls(e)+'">'+esc(e.toUpperCase().slice(0,4))+'</div><div class="tx"><b>'+esc(x.n)+'</b><small>'+esc(x.d)+'</small></div>'+
+        '<a class="btn ghost" href="'+u+'" target="_blank" rel="noopener">Ko\'rish</a><a class="btn" href="'+u+'" download>Yuklab olish</a>';
+      box.appendChild(d);
+    });
+  }
+  document.getElementById('q').oninput=draw;draw();
+</script></body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xronologiya va xaritalar — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .tabs{display:flex;gap:8px;margin:6px 0 16px;} .tabs button{font-family:var(--font);font-weight:800;font-size:17px;border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:10px 20px;cursor:pointer;}
+  .tabs button.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+  .tl{position:relative;margin-left:14px;padding-left:26px;border-left:3px solid #c9dcf7;}
+  .ev{position:relative;margin-bottom:14px;padding:14px 18px;}
+  .ev::before{content:"";position:absolute;left:-36px;top:20px;width:15px;height:15px;border-radius:50%;background:var(--blue);border:3px solid #fff;box-shadow:0 0 0 2px #c9dcf7;}
+  .ev .y{font-weight:800;color:var(--blue);font-size:18px;} .ev .t{font-weight:700;font-size:18px;margin-top:2px;} .ev .d{font-weight:600;color:var(--ink-soft);margin-top:4px;}
+  .dh{margin:22px 0 10px;font-weight:800;font-size:20px;}
+  .maps{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+  .mp{padding:0;overflow:hidden;cursor:pointer;border:none;text-align:left;font-family:var(--font);}
+  .mp img{width:100%;height:190px;object-fit:cover;display:block;background:#eef2f6;} .mp div{padding:12px 16px;font-weight:800;} .mp small{display:block;font-weight:600;color:var(--ink-soft);}
+  .lb{position:fixed;inset:0;background:rgba(16,34,61,.88);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;}
+  .lb img{max-width:100%;max-height:82vh;border-radius:12px;background:#fff;} .lb p{color:#fff;font-weight:700;font-size:18px;margin:12px 0 0;text-align:center;}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">BERUNIY ILMI MAKTABI</span></div>
+<h1>Xronologiya va xaritalar</h1>
+<p class="sub">Muhim sanalar lentasi va tarixiy xaritalar</p>
+<div class="tabs"><button id="t1" class="on">Xronologiya</button><button id="t2">Xaritalar</button></div>
+
+<div id="p1">
+  <div class="field"><input class="txt" id="q" placeholder="Sana yoki voqea qidirish (masalan: 1991, Temur)..." style="flex:1;min-width:200px"></div>
+  <div class="tl" id="tl"></div>
+</div>
+<div id="p2" class="hidden"><div class="maps" id="maps"></div></div>
+</div>
+<div class="lb hidden" id="lb"><img id="lbi" alt=""><p id="lbt"></p></div>
+
+<!--
+  XRONOLOGIYA QO'SHISH: pastdagi blokka qator qo'shing:   Yil | Voqea | Qisqa izoh (ixtiyoriy) | Davr (ixtiyoriy)
+  Davr nomi o'zgarsa, yangi sarlavha boshlanadi. Qatorlar kiritilgan tartibda chiqadi.
+  Eslatma: bu namuna sanalar; sinfda ishlatishdan oldin darslik bilan solishtiring.
+-->
+<script type="text/plain" id="xron">
+973 | Abu Rayhon Beruniy tug'ilgan | Kat shahrida (Xorazm) | O'rta asrlar
+1336 | Amir Temur tug'ilgan | Kesh (Shahrisabz) yaqinida | Temuriylar davri
+1370 | Amir Temur Movarounnahr hukmdori bo'ldi | Samarqand poytaxt qilindi | Temuriylar davri
+1402 | Anqara jangi | Amir Temur Usmoniy sultoni Boyazid I ni mag'lub etgan | Temuriylar davri
+1405 | Amir Temur vafot etdi | O'trorda | Temuriylar davri
+1428 | Ulug'bek rasadxonasi qurilgan (taxminan 1420–1428-yillar) | Samarqandda | Temuriylar davri
+1483 | Zahiriddin Muhammad Bobur tug'ilgan | Andijonda | Temuriylar davri
+1501 | Shayboniyxon Samarqandni egalladi | Temuriylar davlatining tugashi | Temuriylar davri
+1991 | O'zbekiston mustaqilligi e'lon qilindi | 31-avgust | Mustaqillik
+1992 | O'zbekiston Respublikasi Konstitutsiyasi qabul qilindi | 8-dekabr | Mustaqillik
+1994 | Milliy valyuta — so'm muomalaga kiritildi | 1-iyul | Mustaqillik
+</script>
+<!--
+  XARITA QO'SHISH: rasmni "xaritalar" papkasiga joylang va bu blokka qator qo'shing:   Nomi | rasm fayl nomi | izoh (ixtiyoriy)
+  Misol:  Amir Temur davlati | temur-xarita.jpg | 1405-yildagi chegaralar
+-->
+<script type="text/plain" id="xar">
+</script>
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
+  var E=[];document.getElementById('xron').textContent.split('\n').forEach(function(l){l=l.trim();if(!l)return;var p=l.split('|').map(function(x){return x.trim();});if(p.length>=2)E.push({y:p[0],t:p[1],d:p[2]||'',g:p[3]||''});});
+  function drawE(){
+    var t=document.getElementById('q').value.trim().toLowerCase(),box=document.getElementById('tl');box.innerHTML='';
+    var L=E.filter(function(x){return !t||(x.y+' '+x.t+' '+x.d+' '+x.g).toLowerCase().indexOf(t)>=0;});
+    if(!L.length){box.innerHTML='<div class="card" style="padding:20px;font-weight:600;color:var(--ink-soft)">Hech narsa topilmadi.</div>';return;}
+    var last=null;L.forEach(function(x){
+      if(x.g&&x.g!==last){last=x.g;var h=document.createElement('div');h.className='dh';h.textContent=x.g;box.appendChild(h);}
+      var d=document.createElement('div');d.className='card ev';d.innerHTML='<div class="y">'+esc(x.y)+'</div><div class="t">'+esc(x.t)+'</div>'+(x.d?'<div class="d">'+esc(x.d)+'</div>':'');box.appendChild(d);});
+  }
+  document.getElementById('q').oninput=drawE;drawE();
+  var M=[];document.getElementById('xar').textContent.split('\n').forEach(function(l){l=l.trim();if(!l)return;var p=l.split('|').map(function(x){return x.trim();});if(p.length>=2)M.push({n:p[0],f:p[1],d:p[2]||''});});
+  var mb=document.getElementById('maps');
+  if(!M.length)mb.innerHTML='<div class="card" style="padding:26px;font-weight:600;color:var(--ink-soft);grid-column:1/-1">Hozircha xarita qo\'shilmagan. Fayl ichidagi izohni o\'qib, rasm va nomini qo\'shing.</div>';
+  M.forEach(function(x){var b=document.createElement('button');b.className='card mp';b.innerHTML='<img loading="lazy" src="xaritalar/'+encodeURI(x.f)+'" alt="'+esc(x.n)+'"><div>'+esc(x.n)+(x.d?'<small>'+esc(x.d)+'</small>':'')+'</div>';
+    b.onclick=function(){document.getElementById('lbi').src='xaritalar/'+encodeURI(x.f);document.getElementById('lbt').textContent=x.n+(x.d?' — '+x.d:'');document.getElementById('lb').classList.remove('hidden');};mb.appendChild(b);});
+  document.getElementById('lb').onclick=function(){this.classList.add('hidden');};
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('lb').classList.add('hidden');});
+  function tab(n){document.getElementById('p1').classList.toggle('hidden',n!==1);document.getElementById('p2').classList.toggle('hidden',n!==2);document.getElementById('t1').className=n===1?'on':'';document.getElementById('t2').className=n===2?'on':'';}
+  document.getElementById('t1').onclick=function(){tab(1);};document.getElementById('t2').onclick=function(){tab(2);};
+</script></body></html>

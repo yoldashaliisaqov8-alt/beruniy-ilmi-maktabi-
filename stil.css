@@ -90,3 +90,6 @@ select,.txt{font-family:var(--font);font-size:17px;font-weight:600;padding:10px 
 .src{font-size:13px;font-weight:600;color:var(--ink-soft,#6b7a90);margin-top:10px;white-space:normal;line-height:1.35;}
 .doska .src,.d-a .src,.d-tq .a .src{font-size:clamp(14px,1.3vw,20px);opacity:.8;}
 .doska .src,.d-a .src,.d-tq .a .src{color:rgba(255,255,255,.78);opacity:1;border-top:1px solid rgba(255,255,255,.25);padding-top:8px;}
+.qtext.sm{font-size:24px;font-weight:700;line-height:1.45;}
+@media (min-width:1000px){.qtext.sm{font-size:28px;}}
+@media (max-width:600px){.qtext.sm{font-size:19px;}}

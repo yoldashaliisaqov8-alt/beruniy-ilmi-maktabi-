@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beruniy ilmi maktabi — Tarix fanidan testlar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f9fb;
+    --card:#ffffff;
+    --ink:#10223d;
+    --ink-soft:#5b6b82;
+    --blue:#1a6ee8;
+    --blue-dark:#1457c0;
+    --yellow:#ffc928;
+    --line:#e6ecf2;
+    --red:#e5484d;
+    --font:'Nunito',-apple-system,'Segoe UI',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:var(--font); color:var(--ink); line-height:1.4;
+    background:var(--bg);
+    background-image:radial-gradient(circle at 12% 0%, #e8f1ff 0, transparent 38%), radial-gradient(circle at 100% 100%, #fff3da 0, transparent 34%);
+    background-attachment:fixed;
+    min-height:100vh;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1240px; margin:0 auto; padding:0 24px;}
+
+  /* Header */
+  header{display:flex; align-items:center; gap:14px; padding:22px 0 18px;}
+  .logo{
+    width:56px; height:56px; border-radius:50%; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .logo svg{width:30px; height:30px;}
+  .brand-name{font-size:28px; font-weight:800; letter-spacing:.5px; line-height:1;}
+  .brand-sub{font-size:11px; font-weight:700; letter-spacing:2px; color:var(--ink-soft); margin-top:6px; text-transform:uppercase;}
+
+  /* Layout */
+  .dash{display:grid; grid-template-columns:1.55fr 1fr; gap:24px; align-items:start;}
+  .right{display:flex; flex-direction:column; gap:20px;}
+
+  /* Hero */
+  .hero{
+    position:relative; overflow:hidden; border-radius:32px; color:#fff;
+    background:url('rasmlar/fon.webp') no-repeat right 4% center/auto 92%, linear-gradient(135deg,#1257d0 0%,#1f78f0 55%,#4aa0ff 100%);
+    padding:44px 44px 36px; min-height:396px;
+    box-shadow:0 22px 40px -22px rgba(26,110,232,.55);
+    display:flex; flex-direction:column;
+  }
+  .hero .deco{position:absolute; right:0; bottom:0; width:60%; height:100%; pointer-events:none;}
+  .hero > *:not(.deco):not(.refresh){position:relative; z-index:1;}
+  .hero .refresh{position:absolute;}
+  .hero h1,.hero p,.hello{text-shadow:0 2px 10px rgba(5,25,70,.35);}
+  .hello{font-size:18px; font-weight:700; margin:0 0 10px;}
+  .hero h1{font-size:40px; font-weight:800; line-height:1.15; margin:0 0 18px; max-width:15ch;}
+  .hero h1 em{font-style:normal; color:var(--yellow); display:block;}
+  .hero p{font-size:18px; font-weight:600; margin:0; max-width:30ch; opacity:.96;}
+  .hero p#motto{margin-bottom:26px;}
+  .score-pill{
+    margin-top:auto; padding-top:0; align-self:flex-start; display:flex; align-items:center; gap:12px;
+    padding:12px 20px 12px 12px; border-radius:22px; background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35); backdrop-filter:blur(4px);
+  }
+  .score-pill .ic{width:46px; height:46px; border-radius:50%; background:var(--blue-dark); display:flex; align-items:center; justify-content:center;}
+  .score-pill .ic svg{width:24px; height:24px;}
+  .score-pill small{display:block; font-size:13px; font-weight:600; opacity:.9;}
+  .score-pill b{font-size:21px; font-weight:800;}
+  .refresh{
+    position:absolute; top:22px; right:22px; width:50px; height:50px; border-radius:50%; z-index:2 !important;
+    border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.18); color:#fff; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .refresh:hover{background:rgba(255,255,255,.3);}
+  .refresh svg{width:22px; height:22px;}
+
+  /* Daily plan */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:30px; box-shadow:0 8px 24px -16px rgba(16,34,61,.25);}
+  .plan{padding:26px 30px 20px;}
+  .plan-top{display:flex; align-items:center; gap:22px;}
+  .ring{position:relative; width:112px; height:112px; flex-shrink:0;}
+  .ring svg{width:100%; height:100%; transform:rotate(-90deg);}
+  .ring .pct{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:800;}
+  .plan-info{flex:1;}
+  .plan-info h3{margin:0 0 4px; font-size:24px; font-weight:800;}
+  .plan-info p{margin:0; font-size:18px; color:var(--ink-soft); font-weight:600;}
+  .streak{text-align:center;}
+  .streak b{display:block; font-size:28px; font-weight:800; color:var(--red); line-height:1.1;}
+  .streak svg{width:22px; height:22px; vertical-align:-3px; margin-right:4px;}
+  .streak span{font-size:14px; color:var(--ink-soft); font-weight:600;}
+  .plan-bottom{display:flex; justify-content:space-between; margin-top:18px; padding-top:16px; border-top:1px solid var(--line); font-size:16px; font-weight:600; color:var(--ink-soft); gap:12px;}
+  .plan-bottom b{color:var(--ink); font-weight:800;}
+
+  /* Tiles */
+  .tiles3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .tile{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+    padding:22px 12px; border-radius:30px; background:var(--card); border:1px solid var(--line);
+    font-weight:800; font-size:20px; cursor:pointer; text-align:center; font-family:var(--font); color:var(--ink);
+    transition:transform .15s, box-shadow .15s; position:relative;
+    box-shadow:0 8px 24px -18px rgba(16,34,61,.3);
+  }
+  .tile:hover{transform:translateY(-3px); box-shadow:0 16px 28px -16px rgba(16,34,61,.35);}
+  .tile .circ{width:78px; height:78px; border-radius:50%; display:flex; align-items:center; justify-content:center;}
+  .tile .circ svg{width:38px; height:38px;}
+  .c-red{background:#fde4e2; color:#e5484d;}
+  .c-blue{background:#d8ebff; color:#1a6ee8;}
+  .c-purple{background:#ece3fb; color:#8b4fd9;}
+  .c-green{background:#d9f3e4; color:#23a05d;}
+  .c-amber{background:#fff0cc; color:#d98a0b;}
+  .badge{position:absolute; top:12px; right:14px; background:var(--red); color:#fff; font-size:13px; font-weight:800; min-width:24px; height:24px; border-radius:12px; padding:0 7px; display:none; align-items:center; justify-content:center;}
+  .bottom{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; margin-top:24px;}
+  .bottom .tile{flex-direction:column; padding:20px 12px; border-radius:26px;}
+  .bottom .tile .circ{width:68px; height:68px;}
+  .bottom .tile .circ svg{width:32px; height:32px;}
+  .soon{font-size:12px; font-weight:700; color:var(--ink-soft); background:#eef2f6; border-radius:10px; padding:2px 8px; margin-top:-4px;}
+
+  .toast{
+    position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(30px); opacity:0;
+    background:var(--ink); color:#fff; padding:14px 22px; border-radius:16px; font-weight:700; font-size:16px;
+    transition:.25s; pointer-events:none; z-index:50; max-width:90vw; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  footer{padding:36px 0 28px; text-align:center; color:var(--ink-soft); font-size:14px; font-weight:600;}
+
+  @media (max-width:980px){
+    .dash{grid-template-columns:1fr;}
+    .hero{min-height:340px;}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 16px;}
+    header{padding:16px 0 14px;}
+    .brand-name{font-size:20px;}
+    .logo{width:48px; height:48px;}
+    .hero{padding:30px 24px 24px; border-radius:26px; min-height:320px;}
+    .hero h1{font-size:30px;}
+    .refresh{width:40px; height:40px; top:14px; right:14px;}
+    .hello{max-width:70%;}
+    .hero p{font-size:16px;}
+    .hero{background-position:right -50px bottom -30px,center; background-size:auto 52%,cover;}
+    .plan{padding:20px;}
+    .ring{width:84px; height:84px;}
+    .plan-info h3{font-size:20px;}
+    .plan-info p{font-size:15px;}
+    .streak b{font-size:22px;}
+    .tile{font-size:16px; padding:16px 6px; border-radius:24px;}
+    .tile .circ{width:56px; height:56px;}
+    .tile .circ svg{width:28px; height:28px;}
+    .bottom{grid-template-columns:repeat(2,1fr);}
+    .bottom .tile .circ{width:52px; height:52px;}
+    .bottom .tile .circ svg{width:26px; height:26px;}
+    .plan-bottom{font-size:14px; flex-direction:column; gap:4px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2.5 9 2.5 12 0v-5"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">BERUNIY ILMI MAKTABI</div>
+      <div class="brand-sub">Tarix — kelajak ko'zgusi</div>
+    </div>
+  </header>
+
+  <main>
+    <div class="dash">
+
+      <section class="hero">
+        <!-- Rasm o'rniga chizilgan bezak -->
+        <svg class="deco" style="display:none" viewBox="0 0 400 400" preserveAspectRatio="xMaxYMax meet" aria-hidden="true">
+          <circle cx="300" cy="120" r="150" fill="#fff" opacity="0.07"/>
+          <circle cx="330" cy="90" r="80" fill="#ffc928" opacity="0.28"/>
+          <g fill="#fff" opacity="0.14">
+            <rect x="230" y="210" width="26" height="190" rx="4"/>
+            <rect x="268" y="190" width="26" height="210" rx="4"/>
+            <rect x="306" y="210" width="26" height="190" rx="4"/>
+            <rect x="344" y="190" width="26" height="210" rx="4"/>
+            <path d="M218 205 L300 150 L382 205 Z"/>
+            <rect x="214" y="396" width="172" height="10" rx="3"/>
+          </g>
+          <g fill="#fff" opacity="0.5"><circle cx="120" cy="330" r="3"/><circle cx="170" cy="280" r="2.5"/><circle cx="90" cy="250" r="2"/><circle cx="200" cy="350" r="2"/></g>
+        </svg>
+
+        <button class="refresh" id="refreshBtn" aria-label="Boshqa so'z" title="Boshqa maslahat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12A9 9 0 0 1 18.5 5.8L21 8"/><path d="M21 3v5h-5"/><path d="M3 21v-5h5"/></svg>
+        </button>
+
+        <p class="hello">Assalomu alaykum!</p>
+        <h1>Beruniy ilmi maktabi <em>ilovasiga xush kelibsiz!</em></h1>
+        <p id="motto">Tarix fanidan mavzulashtirilgan testlar. Barchasi bitta ilovada!</p>
+
+        <div class="score-pill">
+          <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 2.5 9 2.5 12 0v-5"/></svg></div>
+          <div><small>Umumiy ballar</small><b><span id="heroScore">0</span> ball</b></div>
+        </div>
+      </section>
+
+      <div class="right">
+        <section class="card plan">
+          <div class="plan-top">
+            <div class="ring">
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#eef2f6" stroke-width="12"/>
+                <circle id="ringFill" cx="60" cy="60" r="50" fill="none" stroke="#1a6ee8" stroke-width="12" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16" style="transition:stroke-dashoffset .6s ease"/>
+              </svg>
+              <div class="pct" id="pct">0%</div>
+            </div>
+            <div class="plan-info">
+              <h3>Kunlik reja</h3>
+              <p>Bugun <span id="todayCount">0</span> / <span id="goal">20</span> savol</p>
+            </div>
+            <div class="streak">
+              <b><svg viewBox="0 0 24 24" fill="none" stroke="#e5484d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.4-.5-2-1-3-1.1-2.1-.2-4 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.2.4-2.4 1-3 .5.8 1.2 1.5 2.5 2Z"/></svg><span id="streakNum" style="font-size:inherit;color:inherit">0</span></b>
+              <span>kun ketma-ket</span>
+            </div>
+          </div>
+          <div class="plan-bottom">
+            <div>Umumiy to'p: <b id="totalAns">0</b></div>
+            <div>Eng uzun streak: <b><span id="bestStreak">0</span> kun</b></div>
+          </div>
+        </section>
+
+        <div class="tiles3">
+          <button class="tile" data-soon="Xatolar ustida ishlash bo'limi tez orada qo'shiladi">
+            <span class="badge" id="wrongBadge">0</span>
+            <span class="circ c-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg></span>
+            Xatolar
+          </button>
+          <a class="tile" href="test.html">
+            <span class="circ c-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="m9 13 2 2 4-4"/></svg></span>
+            Sinov
+          </a>
+          <button class="tile" data-soon="Reyting jadvali serverga ulangach ishga tushadi">
+            <span class="circ c-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>
+            Reyting
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <a class="tile" href="test.html">
+        <span class="circ c-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4z"/><path d="m13.5 5.5 3.7-1 3 15.4-3.8.9z"/></svg></span>
+        Testlar
+      </a>
+      <a class="tile" href="fanlar.html">
+        <span class="circ c-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg></span>
+        Fanlar
+      </a>
+      <a class="tile" href="slaydlar.html">
+        <span class="circ c-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span>
+        Slaydlar
+      </a>
+      <a class="tile" href="videolar.html">
+        <span class="circ c-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor"/></svg></span>
+        Videolar
+      </a>
+      <a class="tile" href="oyinlar.html">
+        <span class="circ c-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1" fill="currentColor"/><circle cx="18" cy="14.5" r="1" fill="currentColor"/></svg></span>
+        O'yinlar
+      </a>
+      <button class="tile" data-soon="Attestatsiya bo'limi tez orada qo'shiladi">
+        <span class="circ c-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="m9 14-1 7 4-2 4 2-1-7"/></svg></span>
+        Attestatsiya
+      </button>
+      <button class="tile" data-soon="Qo'llanmalar bo'limi tez orada qo'shiladi">
+        <span class="circ c-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 7h6M8 11h6"/></svg></span>
+        Qo'llanmalar
+      </button>
+    </div>
+  </main>
+
+  <footer>© Beruniy ilmi maktabi</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---- Statistika (brauzer xotirasida saqlanadi) ----
+  var GOAL = 20;
+  function todayKey(d){ d = d || new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function loadStats(){
+    try { var s = JSON.parse(localStorage.getItem('tm_stats')); if (s && s.days) return s; } catch(e){}
+    return {total:0, correct:0, wrong:0, best:0, days:{}};
+  }
+  function calcStreak(days){
+    var n = 0, d = new Date();
+    if (!days[todayKey(d)]) d.setDate(d.getDate()-1);   // bugun hali yechilmagan bo'lsa, kechadan sanaymiz
+    while (days[todayKey(d)]) { n++; d.setDate(d.getDate()-1); }
+    return n;
+  }
+  function render(){
+    var s = loadStats();
+    var today = s.days[todayKey()] || 0;
+    var pct = Math.min(100, Math.round(today / GOAL * 100));
+    var streak = calcStreak(s.days);
+    var best = Math.max(s.best || 0, streak);
+    document.getElementById('todayCount').textContent = today;
+    document.getElementById('goal').textContent = GOAL;
+    document.getElementById('pct').textContent = pct + '%';
+    document.getElementById('ringFill').style.strokeDashoffset = 314.16 * (1 - pct/100);
+    document.getElementById('streakNum').textContent = streak;
+    document.getElementById('totalAns').textContent = s.total;
+    document.getElementById('bestStreak').textContent = best;
+    document.getElementById('heroScore').textContent = s.correct;
+    var b = document.getElementById('wrongBadge');
+    if (s.wrong > 0) { b.textContent = s.wrong; b.style.display = 'flex'; }
+  }
+  render();
+
+  // ---- Maslahatlar ----
+  var mottos = [
+    "Tarix fanidan mavzulashtirilgan testlar. Barchasi bitta ilovada!",
+    "Har kuni 20 ta savol — bir oyda katta natija.",
+    "Tarixni bilgan kelajakni ko'ra oladi.",
+    "Xato qilish — o'rganishning eng tez yo'li.",
+    "Kichik qadamlar katta marralarga olib boradi."
+  ];
+  var mi = 0;
+  document.getElementById('refreshBtn').addEventListener('click', function(){
+    mi = (mi + 1) % mottos.length;
+    document.getElementById('motto').textContent = mottos[mi];
+  });
+
+  // ---- "Tez orada" xabari ----
+  var toastEl = document.getElementById('toast'), toastTimer;
+  document.querySelectorAll('[data-soon]').forEach(function(el){
+    el.addEventListener('click', function(){
+      toastEl.textContent = el.getAttribute('data-soon');
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2600);
+    });
+  });
+</script>
+</body>
+</html>

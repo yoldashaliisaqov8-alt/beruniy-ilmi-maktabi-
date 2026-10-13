@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O'yinlar — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .gm{padding:28px;margin-bottom:20px;}
+  .gm h2{margin:0 0 4px;font-size:26px;font-weight:800;}
+  .gm .d{color:var(--ink-soft);font-weight:600;margin:0 0 18px;}
+  .item{display:flex;align-items:center;gap:12px;padding:14px 18px;margin-bottom:10px;border:1.5px solid var(--line);border-radius:16px;font-size:19px;font-weight:700;background:#fff;}
+  .item .t{flex:1;}
+  .item .y{font-weight:800;color:var(--blue);min-width:56px;text-align:right;}
+  .mv{border:none;background:#eef4ff;color:var(--blue);width:38px;height:38px;border-radius:12px;font-size:18px;font-weight:800;cursor:pointer;}
+  .mv:hover{background:#dbe9ff;}
+  .item.ok{border-color:var(--green);background:rgba(47,154,95,.1);}
+  .item.bad{border-color:var(--red);background:rgba(229,72,77,.08);}
+  .msg{font-weight:800;font-size:19px;margin:14px 0 0;min-height:26px;}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px 26px;}
+  .opt{padding:14px 18px;border:1.5px solid var(--line);border-radius:16px;background:#fff;font-family:var(--font);font-size:18px;font-weight:700;text-align:left;cursor:pointer;color:var(--ink);}
+  .opt:hover{border-color:var(--blue);}
+  .opt.sel{border-color:var(--blue);background:#eaf2ff;}
+  .opt.done{border-color:var(--green);background:rgba(47,154,95,.12);cursor:default;}
+  .opt.wrong{border-color:var(--red);background:rgba(229,72,77,.08);}
+  .actions{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;}
+  @media (max-width:600px){.cols{grid-template-columns:1fr;}.gm{padding:20px;}.item{font-size:16px;padding:12px;}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">BERUNIY ILMI MAKTABI</span></div>
+<h1>O'yinlar</h1>
+<p class="sub">O'ynab o'rganing</p>
+
+<section class="card gm" id="g1">
+  <h2>Xronologiya</h2>
+  <p class="d">Voqealarni eng qadimgisidan eng yangisiga qarab tartiblang (↑ ↓ tugmalar bilan). Mavzu: Yuz yillik urush.</p>
+  <div id="chrono"></div>
+  <div class="actions"><button class="btn" id="chk">Tekshirish</button><button class="btn ghost" id="again1">Boshqatdan</button></div>
+  <div class="msg" id="msg1"></div>
+</section>
+
+<section class="card gm" id="g2">
+  <h2>Shaxs va voqea</h2>
+  <p class="d">Chapdan shaxsni, o'ngdan unga mos voqeani bosing.</p>
+  <div class="cols"><div id="left"></div><div id="right"></div></div>
+  <div class="actions"><button class="btn ghost" id="again2">Boshqatdan</button></div>
+  <div class="msg" id="msg2"></div>
+</section>
+</div>
+
+<script>
+  // ---------- Ma'lumotlar (shu yerda o'zgartirib, yangi savollar qo'shing) ----------
+  var events = [
+    {t:"Yuz yillik urush boshlandi", y:1337},
+    {t:"Kresi jangi", y:1346},
+    {t:"Puate jangi", y:1356},
+    {t:"Janna d'Ark Orleanni ozod qildi", y:1429},
+    {t:"Yuz yillik urush tugadi", y:1453}
+  ];
+  var pairs = [
+    ["Gugo Kapet", "Kapetinglar sulolasi asoschisi (987-yil)"],
+    ["Eduard III", "Angliya qiroli, Kresi jangidagi g'olib"],
+    ["Ioann Saxiy", "Puate jangida asirga tushgan qirol"],
+    ["Janna d'Ark", "Orlean qamalini yechgan qiz"],
+    ["Karl VII", "Reymsda toj kiygan qirol (1429)"]
+  ];
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+  // ---------- 1-o'yin: Xronologiya ----------
+  var order, checked;
+  function startChrono(){
+    do { order = shuffle(events); } while (order.every(function(e,i){return e===events[i];}));
+    checked = false; document.getElementById('msg1').textContent=''; renderChrono();
+  }
+  function renderChrono(){
+    var box = document.getElementById('chrono'); box.innerHTML='';
+    order.forEach(function(e,i){
+      var d = document.createElement('div'); d.className='item';
+      if (checked) d.className += (e===events[i] ? ' ok' : ' bad');
+      d.innerHTML = '<span class="t">'+esc(e.t)+'</span>' + (checked ? '<span class="y">'+e.y+'</span>' : '') +
+        '<button class="mv" '+(i===0||checked?'disabled':'')+' data-d="-1" data-i="'+i+'">↑</button>'+
+        '<button class="mv" '+(i===order.length-1||checked?'disabled':'')+' data-d="1" data-i="'+i+'">↓</button>';
+      box.appendChild(d);
+    });
+    box.querySelectorAll('.mv').forEach(function(b){ b.onclick=function(){
+      var i=+b.dataset.i, j=i+(+b.dataset.d), t=order[i]; order[i]=order[j]; order[j]=t; renderChrono();
+    };});
+  }
+  document.getElementById('chk').onclick=function(){
+    checked = true; renderChrono();
+    var ok = order.filter(function(e,i){return e===events[i];}).length;
+    document.getElementById('msg1').textContent = ok===events.length ? "Barakalla! Hammasi to'g'ri 🎉" : ok+" / "+events.length+" to'g'ri joyda. Yillarga qarab qayta urinib ko'ring.";
+  };
+  document.getElementById('again1').onclick=startChrono;
+
+  // ---------- 2-o'yin: Shaxs va voqea ----------
+  var selL, matched;
+  function startMatch(){
+    selL=null; matched=0; document.getElementById('msg2').textContent='';
+    var L=document.getElementById('left'), R=document.getElementById('right'); L.innerHTML=''; R.innerHTML='';
+    shuffle(pairs.map(function(p,i){return i;})).forEach(function(i){ add(L,pairs[i][0],i,'L'); });
+    shuffle(pairs.map(function(p,i){return i;})).forEach(function(i){ add(R,pairs[i][1],i,'R'); });
+  }
+  function add(col,text,i,side){
+    var b=document.createElement('button'); b.className='opt'; b.textContent=text; b.dataset.i=i; b.style.display='block'; b.style.width='100%'; b.style.marginBottom='10px';
+    b.onclick=function(){
+      if (b.classList.contains('done')) return;
+      if (side==='L'){
+        document.querySelectorAll('#left .opt').forEach(function(x){x.classList.remove('sel');});
+        b.classList.add('sel'); selL=b;
+      } else {
+        if(!selL){ document.getElementById('msg2').textContent="Avval chapdan shaxsni tanlang"; return; }
+        if (selL.dataset.i===b.dataset.i){
+          selL.classList.remove('sel'); selL.classList.add('done'); b.classList.add('done'); selL=null; matched++;
+          document.getElementById('msg2').textContent = matched===pairs.length ? "Barakalla! Hammasi to'g'ri 🎉" : '';
+        } else {
+          b.classList.add('wrong'); setTimeout(function(){b.classList.remove('wrong');},500);
+        }
+      }
+    };
+    col.appendChild(b);
+  }
+  document.getElementById('again2').onclick=startMatch;
+
+  startChrono(); startMatch();
+</script></body></html>

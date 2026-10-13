@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test — Beruniy ilmi maktabi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #f6f9fb;
+    --paper-light: #ffffff;
+    --ink: #10223d;
+    --ink-soft: #5b6b82;
+    --wine: #1a6ee8;
+    --wine-dark: #1457c0;
+    --gold: #ffc928;
+    --green: #2f9a5f;
+    --bad: #d4574a;
+    --line: #e6ecf2;
+    --serif: 'Nunito', sans-serif;
+    --sans: 'Nunito', -apple-system, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+  }
+  a{color:var(--ink-soft); text-decoration:none; font-size:16px;}
+  .wrap{max-width:840px; margin:0 auto; padding:0 24px;}
+
+  header{padding:26px 0;}
+  .brand{font-family:var(--serif); font-size:24px; font-weight:600;}
+  .brand span{color:var(--wine);}
+
+  .test-head{padding:10px 0 34px;}
+  .test-head .eyebrow{
+    font-family:var(--serif); font-style:italic; color:var(--wine); font-size:17px; margin-bottom:10px;
+  }
+  .test-head h1{
+    font-family:var(--serif); font-size:42px; font-weight:600; margin:0 0 12px;
+  }
+  .test-head p.sub{color:var(--ink-soft); font-size:18px; margin:0;}
+  .progress-track{
+    height:10px; background:var(--line); border-radius:5px; overflow:hidden; margin-top:22px;
+  }
+  .progress-fill{
+    height:100%; background:var(--wine); width:0%; transition:width 0.3s ease;
+  }
+  .progress-text{font-size:16px; color:var(--ink-soft); margin-top:10px;}
+
+  .card{
+    background:var(--paper-light);
+    border:1px solid var(--line);
+    padding:44px 40px;
+    margin-bottom:26px;
+  }
+  .q-text{
+    font-family:var(--serif);
+    font-size:32px;
+    line-height:1.25;
+    font-weight:600;
+    margin:0 0 32px;
+  }
+  .option{
+    display:block;
+    width:100%;
+    text-align:left;
+    padding:22px 24px;
+    margin-bottom:14px;
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:4px;
+    font-family:var(--sans);
+    font-size:22px;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .option:hover{border-color:var(--ink-soft);}
+  .option.correct{
+    background:rgba(47,154,95,0.14);
+    border-color:var(--green);
+    font-weight:600;
+  }
+  .option.wrong{
+    background:rgba(212,87,74,0.1);
+    border-color:var(--bad);
+  }
+  .option:disabled{cursor:default;}
+
+  .btn{
+    display:inline-block;
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:18px;
+    padding:16px 30px;
+    border-radius:4px;
+    border:none;
+    background:var(--wine);
+    color:var(--paper-light);
+    cursor:pointer;
+  }
+  .btn:disabled{background:var(--line); color:var(--ink-soft); cursor:not-allowed;}
+  .btn-ghost{background:transparent; border:1px solid var(--ink); color:var(--ink);}
+
+  .result{
+    text-align:center;
+    padding:60px 20px;
+  }
+  .result .score{
+    font-family:var(--serif);
+    font-size:72px;
+    font-weight:700;
+    color:var(--wine);
+    margin:0 0 10px;
+  }
+  .result p{color:var(--ink-soft); margin:0 0 32px; font-size:18px;}
+  .hidden{display:none;}
+
+  .topic-list{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .topic-card{
+    background:var(--paper-light);
+    padding:28px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    cursor:pointer;
+    border:none;
+    width:100%;
+    text-align:left;
+    font-family:var(--sans);
+  }
+  .topic-card:hover{background:var(--paper);}
+  .topic-info h3{
+    font-family:var(--serif);
+    font-size:26px;
+    font-weight:600;
+    margin:0 0 6px;
+    color:var(--ink);
+  }
+  .topic-info p{
+    margin:0;
+    font-size:16px;
+    color:var(--ink-soft);
+  }
+  .topic-arrow{
+    font-family:var(--serif);
+    font-style:italic;
+    color:var(--wine);
+    font-size:18px;
+    flex-shrink:0;
+  }
+  .q-image{
+    display:block;
+    max-width:100%;
+    height:auto;
+    border:1px solid var(--line);
+    border-radius:4px;
+    margin:0 0 26px;
+  }
+  .q-table{
+    width:100%;
+    border-collapse:collapse;
+    margin:0 0 26px;
+    font-family:var(--sans);
+    font-size:17px;
+  }
+  .q-table td{
+    border:1px solid var(--line);
+    padding:10px 14px;
+  }
+  .q-table tr:first-child td{
+    background:var(--paper);
+    font-weight:600;
+    font-family:var(--serif);
+  }
+
+  .error-box{
+    background:rgba(212,87,74,0.1);
+    border:1px solid var(--wine);
+    color:#9a3a30;
+    padding:18px 20px;
+    margin-bottom:20px;
+    font-size:15px;
+    border-radius:4px;
+  }
+
+
+  /* Variant harfi belgisi */
+  .option{display:flex; align-items:center; gap:18px;}
+  .opt-key{
+    flex-shrink:0; width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center;
+    border:1.5px solid var(--ink-soft); border-radius:4px; font-weight:600; font-size:18px;
+    font-family:var(--serif); color:var(--ink-soft); background:var(--paper-light);
+  }
+  .option.correct .opt-key{background:var(--green); border-color:var(--green); color:#fff;}
+  .option.wrong .opt-key{background:var(--bad); border-color:var(--bad); color:#fff;}
+  .kbd-hint{display:none; font-size:15px; color:var(--ink-soft); margin-top:6px;}
+
+  /* KOMPYUTER UCHUN: kengroq maket */
+  @media (min-width:1000px){
+    .wrap{max-width:1080px; padding:0 40px;}
+    .test-head h1{font-size:50px;}
+    .test-head p.sub{font-size:20px;}
+    .card{padding:56px 64px;}
+    .q-text{font-size:38px; margin-bottom:40px;}
+    .option{font-size:24px; padding:24px 28px;}
+    .opt-key{width:42px; height:42px; font-size:20px;}
+    .q-table{font-size:20px;}
+    .q-image{max-height:460px; margin-left:auto; margin-right:auto;}
+    .kbd-hint{display:block;}
+    .option:hover{background:var(--paper-light); border-color:var(--wine);}
+  }
+  @media (min-width:1500px){
+    .wrap{max-width:1240px;}
+    .q-text{font-size:42px;}
+    .option{font-size:26px;}
+  }
+
+  @media (max-width:600px){
+    .q-text{font-size:24px;}
+    .option{font-size:18px; padding:18px 18px;}
+    .test-head h1{font-size:32px;}
+    .card{padding:28px 24px;}
+    .topic-info h3{font-size:21px;}
+  }
+
+  body{
+    background-color:var(--paper);
+    background-image:radial-gradient(circle at 12% 0%, #e8f1ff 0, transparent 38%), radial-gradient(circle at 100% 100%, #fff3da 0, transparent 34%);
+    background-attachment:fixed;
+  }
+  .card{border-radius:30px; box-shadow:0 8px 24px -16px rgba(16,34,61,.25);}
+  .option{border-radius:18px;}
+  .btn{border-radius:16px;}
+  .progress-track,.progress-fill{border-radius:6px;}
+  .brand{font-weight:800; letter-spacing:.5px;}
+  .q-text,.test-head h1{font-weight:800;}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="brand">Beruniy <span>ilmi maktabi</span></div>
+</header>
+
+<main class="wrap">
+
+  <div id="topicScreen">
+    <div class="test-head">
+      <div class="eyebrow">I bo'lim — Mavzulashtirilgan testlar</div>
+      <h1>Mavzuni tanlang</h1>
+      <p class="sub">Xohlagan tartibda o'ting.</p>
+    </div>
+    <div id="errorArea"></div>
+    <div class="topic-list" id="topicList"></div>
+  </div>
+
+  <div id="quizScreen" class="hidden">
+    <div class="test-head">
+      <div class="eyebrow">I bo'lim — Mavzulashtirilgan test</div>
+      <h1 id="testTitle">—</h1>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">1 / 5 savol</div>
+    </div>
+    <div id="quizArea"></div>
+  </div>
+
+  <div id="resultArea" class="card result hidden">
+    <div class="score" id="scoreText">0 / 5</div>
+    <p>Natijangiz shu. Qayta urinib ko'rishingiz yoki boshqa mavzuni tanlashingiz mumkin.</p>
+    <button class="btn" onclick="restartQuiz()">Shu mavzuni qayta boshlash</button>
+    <button class="btn btn-ghost" style="margin-left:10px;" onclick="showTopicScreen()">Boshqa mavzu tanlash</button>
+  </div>
+
+</main>
+
+<!-- =====================================================================
+     SAVOLLAR SHU YERDA — HAR BIR MAVZU O'ZINING <script type="text/plain">
+     BLOKIDA. BU BLOK ICHIDA HECH QANDAY DASTURLASH BELGISI (qavs, vergul,
+     tirnoq) KERAK EMAS — shunchaki oddiy matn.
+
+     ODDIY SAVOL FORMATI:
+       Savol matni?
+       A) 1-variant
+       B) 2-variant
+       C) 3-variant
+       D) 4-variant
+       JAVOB: B
+
+     RASM (xarita, diagramma, surat) QO'SHISH — savol matnidan keyin,
+     variantlardan oldin RASM: qatorini yozing:
+       Xaritada belgilangan davlatni aniqlang?
+       RASM: rasmlar/xarita1.jpg
+       A) ...
+       JAVOB: A
+
+     JADVAL QO'SHISH — JADVAL: qatoridan keyin har bir qatorni | belgisi
+     bilan ustunlarga ajratib yozing:
+       Jadvaldagi ma'lumotlarga ko'ra ...?
+       JADVAL:
+       Yil | Voqea
+       1991 | Mustaqillik e'lon qilindi
+       1992 | Konstitutsiya qabul qilindi
+       A) ...
+       JAVOB: A
+
+     Rasm faylini repo ichida "rasmlar" papkasiga joylab, RASM: qatoriga
+     shu papkadagi fayl nomini yozasiz (masalan rasmlar/xarita1.jpg).
+
+     Har bir savoldan keyin BO'SH QATOR qoldiring.
+
+     YANGI MAVZU QO'SHISH UCHUN:
+       Butun shu <script>...</script> blokini nusxalab, pastiga joylashtiring,
+       data-key, data-title, data-desc qiymatlarini o'zgartiring va
+       ichidagi savollarni o'zingiznikiga almashtiring. Boshqa hech
+       qayerga tegishning hojati yo'q.
+     ===================================================================== -->
+
+<script type="text/plain" class="question-data"
+        data-key="qadimgi" data-title="Qadimgi dunyo tarixi" data-desc="5 ta savol">
+Qadimgi Misr piramidalari asosan qaysi maqsadda qurilgan?
+A) Ombor sifatida
+B) Fir'avnlar qabri sifatida
+C) Ibodatxona sifatida
+D) Qal'a sifatida
+JAVOB: B
+
+Yozuvning eng qadimgi turlaridan biri — mixxat qaysi sivilizatsiyada paydo bo'lgan?
+A) Qadimgi Xitoy
+B) Qadimgi Shumer
+C) Qadimgi Yunoniston
+D) Qadimgi Hindiston
+JAVOB: B
+
+«Tarix otasi» deb nomlangan qadimgi yunon tarixchisi kim?
+A) Aristotel
+B) Gerodot
+C) Suqrot
+D) Aflotun
+JAVOB: B
+
+Buyuk Ipak yo'li asosan nimalarni bog'lagan?
+A) Faqat Yevropa shaharlarini
+B) Sharq va G'arb savdo markazlarini
+C) Faqat dengiz portlarini
+D) Faqat harbiy qarorgohlarni
+JAVOB: B
+
+Rim imperiyasi Sharqiy va G'arbiy qismlarga bo'linishi qaysi asrda yuz bergan?
+A) II asrda
+B) IV asrda
+C) VII asrda
+D) X asrda
+JAVOB: B
+</script>
+
+<script type="text/plain" class="question-data"
+        data-key="ortaasr" data-title="O'rta asrlar tarixi" data-desc="5 ta savol">
+Amir Temur davlatining poytaxti qaysi shahar bo'lgan?
+A) Buxoro
+B) Xiva
+C) Samarqand
+D) Andijon
+JAVOB: C
+
+Angliyada «Erkinlikning buyuk xartiyasi» (Magna Carta) qaysi yilda qabul qilingan?
+A) 1187-yil
+B) 1215-yil
+C) 1250-yil
+D) 1302-yil
+JAVOB: B
+
+Yuz yillik urush qaysi ikki davlat o'rtasida bo'lib o'tgan?
+A) Angliya va Ispaniya
+B) Fransiya va Germaniya
+C) Angliya va Fransiya
+D) Ispaniya va Fransiya
+JAVOB: C
+
+Usmonlilar Konstantinopolni qaysi yilda egallagan?
+A) 1389-yil
+B) 1402-yil
+C) 1453-yil
+D) 1492-yil
+JAVOB: C
+
+Mirzo Ulug'bek qaysi shaharda mashhur rasadxona qurdirgan?
+A) Buxoro
+B) Samarqand
+C) Marv
+D) Hirot
+JAVOB: B
+
+Quyidagi jadvalga ko'ra, Yuz yillik urushdagi qaysi jang inglizlar g'alabasi bilan tugagan?
+JADVAL:
+Yil | Jang | G'olib
+1346 | Kresi | Angliya
+1429 | Orlean | Fransiya
+1453 | Kastiyon | Fransiya
+A) Kresi
+B) Orlean
+C) Kastiyon
+D) Hech biri
+JAVOB: A
+
+Rasmda (xaritada) belgilangan hudud O'rta asrlarda qaysi davlatga tegishli bo'lgan?
+RASM: rasmlar/xarita-namuna.jpg
+A) Vizantiya imperiyasi
+B) Usmonlilar davlati
+C) Fransiya qirolligi
+D) Muqaddas Rim imperiyasi
+JAVOB: A
+</script>
+
+<script type="text/plain" class="question-data"
+        data-key="yangi" data-title="Yangi tarix" data-desc="5 ta savol">
+Amerika mustaqillik deklaratsiyasi qaysi yilda qabul qilingan?
+A) 1776-yil
+B) 1789-yil
+C) 1804-yil
+D) 1812-yil
+JAVOB: A
+
+Fransiya inqilobi qaysi yilda boshlangan?
+A) 1776-yil
+B) 1789-yil
+C) 1799-yil
+D) 1804-yil
+JAVOB: B
+
+Sanoat inqilobi dastlab qaysi davlatda boshlangan?
+A) Fransiya
+B) Germaniya
+C) Angliya
+D) AQSH
+JAVOB: C
+
+Napoleon Bonapart o'zini imperator deb e'lon qilgan yil qaysi?
+A) 1799-yil
+B) 1804-yil
+C) 1812-yil
+D) 1815-yil
+JAVOB: B
+
+Rossiyada krepostnoylik huquqi qaysi yilda bekor qilingan?
+A) 1848-yil
+B) 1861-yil
+C) 1881-yil
+D) 1905-yil
+JAVOB: B
+</script>
+
+<script type="text/plain" class="question-data"
+        data-key="engyangi" data-title="Eng yangi tarix" data-desc="5 ta savol">
+Birinchi jahon urushi qaysi yillarda bo'lib o'tgan?
+A) 1905–1907
+B) 1914–1918
+C) 1918–1922
+D) 1939–1945
+JAVOB: B
+
+Ikkinchi jahon urushi qaysi yili tugagan?
+A) 1943-yil
+B) 1944-yil
+C) 1945-yil
+D) 1947-yil
+JAVOB: C
+
+O'zbekiston mustaqilligini qaysi yili e'lon qilgan?
+A) 1989-yil
+B) 1990-yil
+C) 1991-yil
+D) 1992-yil
+JAVOB: C
+
+Birlashgan Millatlar Tashkiloti (BMT) qaysi yilda tuzilgan?
+A) 1919-yil
+B) 1929-yil
+C) 1945-yil
+D) 1957-yil
+JAVOB: C
+
+Sovuq urush asosan qaysi ikki davlat o'rtasidagi qarama-qarshilik edi?
+A) AQSH va Xitoy
+B) AQSH va SSSR
+C) Angliya va Germaniya
+D) Fransiya va SSSR
+JAVOB: B
+</script>
+
+
+<script>
+  // =====================================================================
+  // BU YERDAN PASTGA TEGISHNING HOJATI YO'Q — bu qism yuqoridagi oddiy
+  // matnni avtomatik o'qib, testga aylantiradi.
+  // =====================================================================
+
+  // 1) Bitta mavzu matnini savollar ro'yxatiga aylantiruvchi funksiya
+  function parseTopicText(rawText) {
+    const blocks = rawText.trim().split(/\n\s*\n/); // bo'sh qatordan bo'lib olamiz
+    const result = [];
+    const warnings = [];
+
+    blocks.forEach((block, blockIndex) => {
+      const lines = block.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length === 0) return;
+
+      const questionLines = [lines[0]];
+      const images = [];
+      const tableRows = [];
+      const options = [];
+      let correctLetter = null;
+      let mode = 'question'; // 'question' | 'table'
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+
+        const imgMatch = line.match(/^RASM:\s*(.+)$/i);
+        if (imgMatch) { images.push(imgMatch[1].trim()); mode = 'question'; continue; }
+
+        if (/^JADVAL:?$/i.test(line)) { mode = 'table'; continue; }
+
+        const optMatch = line.match(/^([A-D])\)\s*(.+)$/i);
+        if (optMatch) { options.push(optMatch[2]); mode = 'options'; continue; }
+
+        const ansMatch = line.match(/^JAVOB:\s*([A-D])/i);
+        if (ansMatch) { correctLetter = ansMatch[1].toUpperCase(); continue; }
+
+        if (mode === 'table' && line.includes('|')) {
+          tableRows.push(line.split('|').map(cell => cell.trim()));
+          continue;
+        }
+
+        if (mode === 'question') {
+          questionLines.push(line); // savol matni bir necha qatorli bo'lishi mumkin
+        }
+      }
+
+      if (options.length !== 4 || !correctLetter) {
+        warnings.push(`${blockIndex + 1}-savolda xatolik bor (variantlar yoki JAVOB qatori to'liq emas): "${questionLines[0].slice(0, 40)}..."`);
+        return;
+      }
+
+      result.push({
+        text: questionLines.join('\n'),
+        images: images,
+        table: tableRows,
+        options: options,
+        correct: "ABCD".indexOf(correctLetter)
+      });
+    });
+
+    return { questions: result, warnings: warnings };
+  }
+
+  // 2) Sahifadagi barcha mavzu bloklarini o'qib, questionSets ni yasaymiz
+  const questionSets = {};
+  const allWarnings = [];
+
+  document.querySelectorAll('script.question-data').forEach(block => {
+    const key = block.dataset.key;
+    const parsed = parseTopicText(block.textContent);
+    questionSets[key] = {
+      title: block.dataset.title,
+      desc: block.dataset.desc,
+      questions: parsed.questions
+    };
+    parsed.warnings.forEach(w => allWarnings.push(`«${block.dataset.title}» mavzusida — ${w}`));
+  });
+
+  // Agar formatlashda xato bo'lsa, o'chirib tashlamay, o'qituvchiga ko'rsatamiz
+  if (allWarnings.length > 0) {
+    document.getElementById('errorArea').innerHTML =
+      '<div class="error-box"><strong>Diqqat, quyidagi savollarni tekshiring:</strong><br>' +
+      allWarnings.join('<br>') + '</div>';
+  }
+
+  let questions = [];
+  let currentTopicKey = "";
+  let current = 0;
+  let score = 0;
+
+  function renderTopicList() {
+    const list = document.getElementById('topicList');
+    list.innerHTML = '';
+    for (const key in questionSets) {
+      const set = questionSets[key];
+      if (set.questions.length === 0) continue; // savoli yo'q mavzuni ko'rsatmaymiz
+      const card = document.createElement('button');
+      card.className = 'topic-card';
+      card.innerHTML = `
+        <div class="topic-info">
+          <h3>${set.title}</h3>
+          <p>${set.questions.length} ta savol</p>
+        </div>
+        <div class="topic-arrow">Boshlash →</div>
+      `;
+      card.onclick = () => startQuiz(key);
+      list.appendChild(card);
+    }
+  }
+
+  function startQuiz(key) {
+    currentTopicKey = key;
+    questions = questionSets[key].questions;
+    current = 0;
+    score = 0;
+
+    document.getElementById('testTitle').textContent = questionSets[key].title;
+    document.getElementById('topicScreen').classList.add('hidden');
+    document.getElementById('resultArea').classList.add('hidden');
+    document.getElementById('quizScreen').classList.remove('hidden');
+
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const q = questions[current];
+    const quizArea = document.getElementById('quizArea');
+
+    let mediaHtml = '';
+    (q.images || []).forEach(src => {
+      mediaHtml += `<img class="q-image" src="${src}" alt="Savolga tegishli rasm">`;
+    });
+    if (q.table && q.table.length > 0) {
+      mediaHtml += '<table class="q-table">';
+      q.table.forEach(row => {
+        mediaHtml += '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
+      });
+      mediaHtml += '</table>';
+    }
+
+    let optionsHtml = '';
+    q.options.forEach((opt, i) => {
+      optionsHtml += `<button class="option" onclick="checkAnswer(${i})"><span class="opt-key">${'ABCD'[i]}</span><span>${opt}</span></button>`;
+    });
+
+    const questionTextHtml = q.text.split('\n').join('<br>');
+
+    quizArea.innerHTML = `
+      <div class="card">
+        <div class="q-text">${questionTextHtml}</div>
+        ${mediaHtml}
+        ${optionsHtml}
+        <div class="kbd-hint">Klaviatura: A, B, C, D tugmalari bilan javob bering</div>
+      </div>
+    `;
+    answered = false;
+
+    document.getElementById('progressText').textContent = `${current + 1} / ${questions.length} savol`;
+    document.getElementById('progressFill').style.width = `${(current / questions.length) * 100}%`;
+  }
+
+  let answered = false;
+
+  // Bosh sahifadagi statistika uchun (brauzer xotirasi)
+  function recordAnswer(isCorrect){
+    try {
+      var st; try { st = JSON.parse(localStorage.getItem('tm_stats')); } catch(e){}
+      if (!st || !st.days) st = {total:0, correct:0, wrong:0, best:0, days:{}};
+      var d = new Date(), k = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      st.days[k] = (st.days[k]||0) + 1;
+      st.total++; if (isCorrect) st.correct++; else st.wrong++;
+      var n=0, c=new Date(); while(st.days[c.getFullYear()+'-'+String(c.getMonth()+1).padStart(2,'0')+'-'+String(c.getDate()).padStart(2,'0')]){n++; c.setDate(c.getDate()-1);}
+      if (n > (st.best||0)) st.best = n;
+      localStorage.setItem('tm_stats', JSON.stringify(st));
+    } catch(e){}
+  }
+
+  function checkAnswer(selectedIndex) {
+    if (answered) return;
+    answered = true;
+    const q = questions[current];
+    const buttons = document.querySelectorAll('.option');
+
+    buttons.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.correct) btn.classList.add('correct');
+      if (i === selectedIndex && selectedIndex !== q.correct) btn.classList.add('wrong');
+    });
+
+    if (selectedIndex === q.correct) score++;
+    recordAnswer(selectedIndex === q.correct);
+
+    setTimeout(() => {
+      current++;
+      if (current < questions.length) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }, 900);
+  }
+
+  function showResult() {
+    document.getElementById('quizScreen').classList.add('hidden');
+    document.getElementById('resultArea').classList.remove('hidden');
+    document.getElementById('scoreText').textContent = `${score} / ${questions.length}`;
+  }
+
+  function restartQuiz() {
+    startQuiz(currentTopicKey);
+  }
+
+  function showTopicScreen() {
+    document.getElementById('resultArea').classList.add('hidden');
+    document.getElementById('quizScreen').classList.add('hidden');
+    document.getElementById('topicScreen').classList.remove('hidden');
+  }
+
+  // Klaviatura: A/B/C/D yoki 1/2/3/4
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const quiz = document.getElementById('quizScreen');
+    if (!quiz || quiz.classList.contains('hidden')) return;
+    const keys = {a:0, b:1, c:2, d:3, '1':0, '2':1, '3':2, '4':3};
+    const idx = keys[e.key.toLowerCase()];
+    if (idx === undefined) return;
+    const btns = document.querySelectorAll('#quizArea .option');
+    if (idx < btns.length) { e.preventDefault(); checkAnswer(idx); }
+  });
+
+  renderTopicList();
+</script>
+
+</body>
+</html>

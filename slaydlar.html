@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slaydlar — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .stage{position:relative;border-radius:32px;color:#fff;min-height:440px;padding:56px 64px;
+    background:linear-gradient(135deg,#1566e6 0%,#2a82f5 60%,#4aa0ff 100%);box-shadow:0 22px 40px -22px rgba(26,110,232,.55);
+    display:flex;flex-direction:column;justify-content:center;overflow:hidden;}
+  .stage h2{font-size:44px;font-weight:800;margin:0 0 22px;line-height:1.15;}
+  .stage.cover h2{font-size:54px;color:#ffc928;}
+  .stage ul{margin:0;padding-left:28px;font-size:28px;font-weight:600;line-height:1.5;}
+  .stage li{margin-bottom:10px;}
+  .stage p{font-size:28px;font-weight:600;margin:0 0 12px;}
+  .stage img{max-width:100%;max-height:300px;border-radius:18px;margin-top:18px;align-self:flex-start;}
+  .bar{display:flex;align-items:center;gap:14px;margin-top:20px;}
+  .track{flex:1;height:10px;border-radius:5px;background:#dde6f0;overflow:hidden;}
+  .fill{height:100%;background:var(--blue);width:0;transition:width .3s;}
+  .count{font-weight:700;color:var(--ink-soft);min-width:70px;text-align:right;}
+  .hint{color:var(--ink-soft);font-size:14px;font-weight:600;margin-top:10px;}
+  @media (max-width:600px){.stage{padding:34px 24px;min-height:360px;}.stage h2{font-size:30px;}.stage.cover h2{font-size:36px;}.stage ul,.stage p{font-size:20px;}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">BERUNIY ILMI MAKTABI</span></div>
+
+<div id="listScreen">
+  <h1>Slaydlar</h1>
+  <p class="sub">Mavzuni tanlang va slaydlarni ketma-ket ko'ring</p>
+  <div class="list" id="list"></div>
+</div>
+
+<div id="viewScreen" class="hidden">
+  <h1 id="deckTitle" style="font-size:28px;margin-top:10px"></h1>
+  <div class="stage" id="stage"></div>
+  <div class="bar">
+    <button class="btn ghost" id="prev">← Oldingi</button>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <span class="count" id="count"></span>
+    <button class="btn" id="next">Keyingi →</button>
+  </div>
+  <div class="hint">Klaviatura: ← → strelkalar, F — to'liq ekran, Esc — ro'yxatga qaytish</div>
+  <p><button class="btn ghost" id="toList">Ro'yxatga qaytish</button></p>
+</div>
+</div>
+
+<!--
+  YANGI SLAYD QO'SHISH: pastdagi namuna blokini nusxalab, matnni o'zgartiring.
+  Slaydlar "---" qatori bilan ajratiladi.
+  "# " bilan boshlangan qator — sarlavha; "- " — punkt; oddiy qator — matn; "RASM: rasmlar/fayl.jpg" — rasm.
+  Birinchi slayd (muqova) uchun faqat "# Sarlavha" yozing.
+-->
+<script type="text/plain" class="deck" data-title="Yuz yillik urush (1337–1453)" data-desc="5 ta slayd">
+# Yuz yillik urush
+---
+# Qachon va kimlar o'rtasida?
+- 1337–1453-yillar
+- Angliya va Fransiya o'rtasida
+- Taxt masalasi va Flandriya hamda Akvitaniya uchun kurash
+---
+# Muhim janglar
+- 1346 — Kresi jangi: ingliz uzun kamonchilari g'alaba qozondi
+- 1356 — Puate jangi: Fransiya qiroli Ioann Saxiy asirga tushdi
+---
+# Janna d'Ark
+- 1429-yil: Orlean qamali yechildi
+- Dofin Karl Reymsda Karl VII sifatida toj kiydi
+- 1431-yil: Janna d'Ark Ruanda yondirildi
+---
+# Natija
+- 1453-yilda urush Fransiya g'alabasi bilan tugadi
+- Angliya Kale shahrinigina saqlab qoldi
+- Fransiyada qirol hokimiyati kuchaydi
+</script>
+
+<script>
+  var decks = [];
+  document.querySelectorAll('script.deck').forEach(function(sc){
+    var slides = sc.textContent.trim().split(/^\s*---\s*$/m).map(function(block){
+      var sl = {title:'', bullets:[], text:[], images:[]};
+      block.trim().split('\n').forEach(function(line){
+        line = line.trim(); if(!line) return;
+        if (/^#\s+/.test(line)) sl.title = line.replace(/^#\s+/,'');
+        else if (/^-\s+/.test(line)) sl.bullets.push(line.replace(/^-\s+/,''));
+        else if (/^RASM:\s*/i.test(line)) sl.images.push(line.replace(/^RASM:\s*/i,''));
+        else sl.text.push(line);
+      });
+      return sl;
+    });
+    decks.push({title:sc.dataset.title, desc:sc.dataset.desc||'', slides:slides});
+  });
+  function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+  var list = document.getElementById('list');
+  decks.forEach(function(d,i){
+    var el = document.createElement('div'); el.className='card row';
+    el.innerHTML = '<div>'+esc(d.title)+'<small>'+esc(d.desc)+'</small></div><span class="arrow">›</span>';
+    el.onclick = function(){ openDeck(i); };
+    list.appendChild(el);
+  });
+
+  var cur = null, idx = 0;
+  function openDeck(i){
+    cur = decks[i]; idx = 0;
+    document.getElementById('listScreen').classList.add('hidden');
+    document.getElementById('viewScreen').classList.remove('hidden');
+    document.getElementById('deckTitle').textContent = cur.title;
+    show();
+  }
+  function show(){
+    var s = cur.slides[idx], isCover = idx===0 && !s.bullets.length && !s.text.length;
+    var h = '<h2>'+esc(s.title)+'</h2>';
+    if (s.bullets.length) h += '<ul>'+s.bullets.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul>';
+    s.text.forEach(function(t){ h += '<p>'+esc(t)+'</p>'; });
+    s.images.forEach(function(src){ h += '<img src="'+esc(src)+'" alt="">'; });
+    var st = document.getElementById('stage'); st.className = 'stage'+(isCover?' cover':''); st.innerHTML = h;
+    document.getElementById('count').textContent = (idx+1)+' / '+cur.slides.length;
+    document.getElementById('fill').style.width = ((idx+1)/cur.slides.length*100)+'%';
+    document.getElementById('prev').disabled = idx===0;
+    document.getElementById('next').disabled = idx===cur.slides.length-1;
+  }
+  function go(d){ if(!cur) return; var n = idx+d; if(n>=0 && n<cur.slides.length){ idx=n; show(); } }
+  function toList(){ cur=null; document.getElementById('viewScreen').classList.add('hidden'); document.getElementById('listScreen').classList.remove('hidden'); }
+  document.getElementById('prev').onclick=function(){go(-1)};
+  document.getElementById('next').onclick=function(){go(1)};
+  document.getElementById('toList').onclick=toList;
+  document.addEventListener('keydown',function(e){
+    if(!cur) return;
+    if(e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); go(1); }
+    else if(e.key==='ArrowLeft') go(-1);
+    else if(e.key==='Escape') toList();
+    else if(e.key.toLowerCase()==='f'){ var el=document.getElementById('stage'); if(document.fullscreenElement) document.exitFullscreen(); else if(el.requestFullscreen) el.requestFullscreen(); }
+  });
+</script></body></html>

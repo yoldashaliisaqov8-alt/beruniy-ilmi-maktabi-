@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fanlar — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css"></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">BERUNIY ILMI MAKTABI</span></div>
+<h1>Fanlar</h1>
+<p class="sub">Fanni tanlang va testni boshlang</p>
+<div class="list" id="list"></div>
+</div>
+<script>
+  // Yangi fan qo'shish: ro'yxatga bitta qator yozing.
+  // href — fan testi sahifasi. href bo'lmasa "Tez orada" bo'lib turadi.
+  var subjects = [
+    {name:"Tarix (Mavzulashgan)", note:"Qadimgi dunyo, O'rta asrlar, Yangi va Eng yangi davr", href:"test.html"},
+    {name:"Ingliz tili (Mavzulashgan)"},
+    {name:"Biologiya (Mavzulashgan)"},
+    {name:"Matematika (Mavzulashgan)"},
+    {name:"Fizika (Mavzulashgan)"}
+  ];
+  var list = document.getElementById('list');
+  subjects.forEach(function(s){
+    var el = document.createElement(s.href ? 'a' : 'div');
+    el.className = 'card row' + (s.href ? '' : ' soon');
+    if (s.href) el.href = s.href;
+    el.innerHTML = '<div>' + s.name + (s.note ? '<small>' + s.note + '</small>' : '') + '</div>' +
+      (s.href ? '<span class="arrow">›</span>' : '<span class="pill" style="margin-left:auto">Tez orada</span>');
+    list.appendChild(el);
+  });
+</script></body></html>

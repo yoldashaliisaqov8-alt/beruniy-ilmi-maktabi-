@@ -6,8 +6,9 @@
   raw.split('\n').forEach(function(l){
     var t=l.trim();
     if(m=t.match(/^MAVZU:\s*(.+)/i)){mavzu=m[1];cur=null;field=null;}
-    else if(m=t.match(/^SAVOL:\s*(.*)/i)){cur={mavzu:mavzu,q:m[1],a:''};items.push(cur);field='q';}
+    else if(m=t.match(/^SAVOL:\s*(.*)/i)){cur={mavzu:mavzu,q:m[1],a:'',m:''};items.push(cur);field='q';}
     else if(cur&&(m=t.match(/^JAVOB:\s*(.*)/i))){cur.a=m[1];field='a';}
+    else if(cur&&(m=t.match(/^MANBA:\s*(.*)/i))){cur.m=m[1];field=null;}
     else if(cur&&t&&field){cur[field]+=(cur[field]?'\n':'')+t;}
   });
   var app=document.getElementById('app'), idx=0, showA=false, tmr=null, left=0;
@@ -32,7 +33,7 @@
     f.forEach(function(o,k){
       if(o.x.mavzu!==last){last=o.x.mavzu;var h=document.createElement('div');h.className='mv-head';h.textContent=o.x.mavzu;box.appendChild(h);}
       var d=document.createElement('div');d.className='card qitem';
-      d.innerHTML='<div class="n">'+(o.i+1)+'</div><div style="flex:1"><div class="t">'+esc(o.x.q)+'</div><div class="a hidden">'+esc(o.x.a||'(javob kiritilmagan)')+'</div></div><button class="btn ghost" style="padding:8px 14px;font-size:15px">Javob</button><button class="btn" style="padding:8px 14px;font-size:15px">Doskaga</button>';
+      d.innerHTML='<div class="n">'+(o.i+1)+'</div><div style="flex:1"><div class="t">'+esc(o.x.q)+'</div><div class="a hidden">'+esc(o.x.a||'(javob kiritilmagan)')+(o.x.m?'<div class="src">Izoh: '+esc(o.x.m)+'</div>':'')+'</div></div><button class="btn ghost" style="padding:8px 14px;font-size:15px">Javob</button><button class="btn" style="padding:8px 14px;font-size:15px">Doskaga</button>';
       var bs=d.querySelectorAll('button');
       bs[0].onclick=function(e){e.stopPropagation();d.querySelector('.a').classList.toggle('hidden');};
       bs[1].onclick=function(e){e.stopPropagation();openBoard(o.i);};
@@ -58,7 +59,7 @@
   }
   function toggleA(){
     var q=items[idx];showA=!showA;
-    document.getElementById('dA').innerHTML=showA?'<div class="d-a'+((q.a||'').length>1200?' xl':(q.a||'').length>500?' long':'')+'">'+esc(q.a||'(javob kiritilmagan)')+'</div>':'';
+    document.getElementById('dA').innerHTML=showA?'<div class="d-a'+((q.a||'').length>1200?' xl':(q.a||'').length>500?' long':'')+'">'+esc(q.a||'(javob kiritilmagan)')+(q.m?'<div class="src">Izoh: '+esc(q.m)+'</div>':'')+'</div>':'';
     document.getElementById('dShow').textContent=showA?'Javobni yashirish':'Javobni ko\'rish';
   }
   function go(d){var n=idx+d;if(n>=0&&n<items.length){idx=n;renderB();}}

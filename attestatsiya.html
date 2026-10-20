@@ -34,9 +34,40 @@
   .rv.bad{border-color:var(--red);} .rv.good{border-color:var(--green);}
   .rv b{font-weight:800;} .rv p{margin:6px 0 0;font-weight:600;color:var(--ink-soft);}
   .warn{background:rgba(229,72,77,.08);border:1px solid var(--red);color:#9a3a30;padding:14px 18px;border-radius:14px;margin-bottom:14px;font-weight:600;}
-  @media (max-width:700px){.modes{grid-template-columns:1fr;}.opt{font-size:18px;padding:14px;}}
-  @media (min-width:1000px){.opt{font-size:24px;padding:20px 26px;}}
-</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+  .qlay{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+  .qcard{background:#f3f4f6;border-radius:28px;padding:26px 30px;position:relative}
+  .qtop{display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid #e0e3e8;padding-bottom:16px;margin-bottom:20px}
+  .qtop h2{margin:0;font-size:24px;font-weight:800;flex:1}
+  .objb{background:#fde4e4;color:#e5484d;border:0;border-radius:18px;padding:12px 20px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:15px}
+  .objb.on{background:#e5484d;color:#fff}
+  .tmbox{text-align:right;min-width:150px}.tmbox .tm{margin:0;font-size:26px;font-weight:800;color:var(--ink)}.tmbox .tm.low{color:var(--red)}
+  .tmbox small{display:block;color:#98a2b3;font-weight:700;font-size:17px}
+  .qcard .qtext{font-size:20px;font-weight:600}
+  .qcard .opt{background:#fff;border:2px solid transparent;border-radius:16px;padding:18px 20px;font-size:19px;font-weight:600;margin-bottom:10px}
+  .qcard .opt:hover{border-color:#cfd8e6}
+  .qcard .opt .k{width:18px;height:18px;border-radius:50%;border:1.6px solid #6b7280;background:#fff}
+  .qcard .opt.sel{background:#eaf2ff;border-color:var(--blue)}
+  .qcard .opt.sel .k{border-color:var(--blue);background:radial-gradient(circle,var(--blue) 0 45%,#fff 50%)}
+  .qcard .opt.ok .k{background:var(--green);border-color:var(--green)}.qcard .opt.no .k{background:var(--red);border-color:var(--red)}
+  .qfoot{display:flex;justify-content:flex-end;gap:12px;margin-top:16px}
+  .pill{border:0;border-radius:22px;padding:13px 24px;font-family:var(--font);font-weight:700;font-size:15px;cursor:pointer;background:#fff;color:var(--ink);box-shadow:0 1px 3px #0001}
+  .pill:disabled{background:#eceff3;color:#a6afbd;cursor:default;box-shadow:none}
+  .qpanel{background:#f3f4f6;border-radius:28px;padding:20px}
+  .prow{display:flex;gap:12px;margin-bottom:14px}
+  .pbtn{flex:1;border:0;border-radius:22px;padding:15px 8px;background:#dfe3e8;font-weight:700;font-family:var(--font);font-size:15px;cursor:pointer;color:var(--ink)}
+  .pbtn:disabled{opacity:.5;cursor:default}
+  .lang{width:100%;border:2px solid #111;border-radius:22px;padding:12px 14px;font-family:var(--font);font-weight:600;background:#fff;margin:2px 0 8px}
+  .glab{font-size:14px;font-weight:600;margin:6px 2px 10px}
+  .pnav{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+  .pnav button{height:44px;border-radius:12px;border:2px solid transparent;background:#fff;font-family:var(--font);font-weight:800;cursor:pointer;color:var(--ink)}
+  .pnav button.done{background:#dbe9ff}
+  .pnav button.flag{border-color:#e5484d}
+  .pnav button.cur{background:#1f2937;color:#fff}
+  .veil{position:absolute;inset:0;background:#f3f4f6;border-radius:28px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-weight:800;font-size:22px;z-index:3}
+  .veil.on{display:flex}
+  @media (max-width:900px){.qlay{grid-template-columns:1fr}.qcard{padding:18px}.qtop{flex-wrap:wrap}}
+  @media (max-width:700px){.modes{grid-template-columns:1fr;}.qcard .opt{font-size:17px;padding:14px;}}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="sert-kartasi.js" defer></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ATTESTATSIYA</span></div>
 
@@ -58,16 +89,28 @@
 </div>
 
 <div id="sQuiz" class="hidden">
-  <div class="qhead"><span id="qcount" style="font-weight:800"></span><div class="track"><div class="fill" id="fill"></div></div><span class="tm" id="tm"></span></div>
-  <div class="card qbox" style="padding:30px 34px">
-    <div id="media"></div>
-    <p class="qtext" id="qtext"></p>
-    <div id="opts"></div>
-    <div id="exp"></div>
-    <div class="btnrow" id="qbtns"></div>
+  <div class="qlay">
+    <div>
+      <div class="qcard">
+        <div class="veil" id="veil"><span>⏸ Test to'xtatildi</span><button class="pill" id="resume">Davom etish</button></div>
+        <div class="qtop"><h2 id="secName"></h2>
+          <button class="objb" id="objb">ⓘ E'tiroz</button>
+          <div class="tmbox"><p class="tm" id="tm"></p><small id="tmlab">Qolgan vaqt</small></div></div>
+        <div id="media"></div>
+        <p class="qtext" id="qtext"></p>
+        <div id="opts"></div>
+        <div id="exp"></div>
+        <div class="btnrow" id="qbtns" style="display:none"></div>
+      </div>
+      <div class="qfoot"><button class="pill" id="prevB">‹ Ortga</button><button class="pill" id="nextB">Keyingi ›</button></div>
+      <div class="hint" id="hint" style="color:var(--ink-soft);font-weight:600;font-size:14px;margin-top:10px;text-align:right">Klaviatura: A, B, C, D — javob; ← → — savollar orasida</div>
+    </div>
+    <div class="qpanel">
+      <div class="prow"><button class="pbtn" id="pauseB">❚❚ To'xtatish</button><button class="pbtn" id="endB">⚑ Yakunlash</button></div>
+      <select class="lang" id="lang"><option>O'zbekcha</option></select>
+      <div id="nav"></div>
+    </div>
   </div>
-  <div class="nav" id="nav"></div>
-  <div class="hint" id="hint" style="color:var(--ink-soft);font-weight:600;font-size:14px">Klaviatura: A, B, C, D — javob; ← → — savollar orasida</div>
 </div>
 
 <div id="sRes" class="hidden">
@@ -76,7 +119,7 @@
     <p style="font-size:56px;font-weight:800;margin:8px 0 0" id="rScore"></p>
     <p style="font-size:20px;font-weight:700;color:var(--ink-soft);margin:6px 0" id="rPct"></p>
     <p style="font-size:19px;font-weight:700;margin:6px 0" id="rMsg"></p>
-    <div class="btnrow" style="justify-content:center"><button class="btn" id="rAgain">Qayta urinish</button><button class="btn ghost" id="rList">Boshqa to'plam</button></div>
+    <div class="btnrow" style="justify-content:center"><button class="btn" id="rCert" style="background:#c9a24a">🏅 Sertifikat (PDF, A4 vertikal)</button><button class="btn" id="rAgain">Qayta urinish</button><button class="btn ghost" id="rList">Boshqa to'plam</button></div>
   </div>
   <h2 style="font-weight:800">Savollar tahlili</h2>
   <div id="review"></div>
@@ -98,7 +141,7 @@
       JADVAL: (ixtiyoriy; keyingi qatorlar | bilan ajratiladi, birinchisi sarlavha; sarlavhasiz jadval uchun JADVAL0:)
 -->
 
-<script type="text/plain" class="set" data-title="Demo test kuzgi 2026" data-desc="Attestatsiya 2026 (kuzgi) rasmiy demo test, javoblar bilan">
+<script type="text/plain" class="set" data-title="Demo test kuzgi 2026" data-desc="Attestatsiya 2026 (kuzgi) rasmiy demo test, javoblar bilan" data-time="90" data-sections="Tarix:35">
 1547-yilda Gabsburglar va Usmonlilar o'rtasida imzolangan shartnoma xaritadagi 3-raqamdagi davlatga qanday ta'sir ko'rsatdi?
 RASM: rasmlar/att-demo-01.webp
 A) Mazkur davlat hududlari Turkiya va Avstriya o'rtasida bo'lib olindi
@@ -450,6 +493,2397 @@ D) 1-a, 2-d, 3-b
 JAVOB: A
 </script>
 
+<script type="text/plain" class="set" data-title="Attestatsiya tarix 3-variant" data-desc="50 savol, javoblar bilan: 1–35 tarix, 36–40 kasb standarti, 41–50 pedagogik mahorat" data-time="90" data-sections="Tarix:35,Kasbiy standart:5,Pedagogik mahorat:10">
+Quyidagi voqealarni to'g'ri xronologik ketma-ketlikda joylashtiring.
+1) Marafon jangi;
+2) Rimda respublika tuzumining o'rnatilishi;
+3) Sin Shixuandi tomonidan Xitoyning birlashtirilishi;
+4) Kir II ning massagetlar bilan jangda halok bo'lishi;
+5) Gavgamela jangi;
+6) Oktavian flotining Aksiy burni yaqinida g'alaba qozonishi.
+A) 4, 2, 1, 5, 3, 6
+B) 2, 4, 1, 5, 3, 6
+C) 4, 1, 2, 5, 3, 6
+D) 4, 2, 1, 3, 5, 6
+JAVOB: A
+
+Sin Shixuandi hukmronligi davriga oid ma'lumotlarni aniqlang.
+1) mil. av. 221-yilda Xitoy yagona davlatga birlashtirildi;
+2) butun mamlakatda yagona o'lchov birliklari va pul joriy etildi;
+3) Buyuk Xitoy devori qurilishi keng ko'lamda olib borildi;
+4) buddaviylik davlat dini deb e'lon qilindi;
+5) Konfutsiy ta'limotiga oid kitoblar yoqib yuborildi;
+6) Xan sulolasiga asos solindi.
+A) 1, 3, 4, 5
+B) 1, 2, 4, 6
+C) 2, 3, 5, 6
+D) 1, 2, 3, 5
+JAVOB: D
+
+Manbalarda «Perikl asri» deb atalgan davr Periklning Afinani necha yil va qaysi yillarda boshqargan davrini qamrab oladi?
+A) 15 yil, mil. av. 459–444-yillar
+B) 15 yil, mil. av. 444–429-yillar
+C) 20 yil, mil. av. 449–429-yillar
+D) 10 yil, mil. av. 439–429-yillar
+JAVOB: B
+
+Qadimgi davlatlar va ularga oid ma'lumotlarni moslashtiring.
+1. Qadimgi Xorazm
+2. Qang' davlati
+3. Davan
+a) mil. av. IV asrda Ahamoniylardan mustaqil bo'lgan; Qo'yqirilganqal'a ibodatxonasi
+b) poytaxti Qang'diz (Bityan); Sho'rabashot va Uchqo'rg'on shaharlari
+c) poytaxti Ershi; «samoviy otlar» sababli Xan imperiyasi yurishiga uchragan
+d) poytaxti Marokanda bo'lgan
+e) poytaxti Baqtra bo'lgan
+A) 1-a, 2-b, 3-c
+B) 1-a, 2-d, 3-c
+C) 1-e, 2-b, 3-c
+D) 1-a, 2-b, 3-d
+JAVOB: A
+
+Buxorxudotlarga oid TO'G'RI ma'lumotlar soni nechta?
+1) Buxorxudot Kono o'z tasviri va «Buxoro hokimi» yozuvi tushirilgan kumush dirhamlar zarb qildirgan;
+2) 715-yilda Qutayba ibn Muslim o'ldirilgach, buxorxudotlar Buxoroni bir yil mustaqil idora qilgan;
+3) so'nggi buxorxudot Bunyod Muqanna qo'zg'olonini qo'llab-quvvatlagani uchun 782-yilda qatl etilgan;
+4) Xo'tak xotun 673–692-yillarda hukmronlik qilgan;
+5) buxorxudotlar hududiga Samarqand va Kattaqo'rg'on ham kirgan;
+6) buxorxudotlar Tohiriylar sulolasiga asos solgan.
+A) beshta
+B) to'rtta
+C) ikkita
+D) uchta
+JAVOB: B
+
+Talas jangiga oid to'g'ri ma'lumotlarni aniqlang.
+1) jang 751-yilda bo'lib o'tgan;
+2) Tan qo'shiniga koreys millatiga mansub Gao Syanchji boshchilik qilgan;
+3) jang paytida qarluqlar arablar tomoniga o'tgan;
+4) jang natijasida Tan imperiyasi Movarounnahrni bosib oldi;
+5) asir olingan xitoylik hunarmandlar Buxoroga keltirilib, qog'oz ishlab chiqarishni yo'lga qo'ygan.
+A) 2, 4, 5
+B) 1, 2, 3
+C) 1, 2, 5
+D) 1, 3, 5
+JAVOB: B
+
+Quyidagi voqealarni to'g'ri xronologik ketma-ketlikda joylashtiring.
+1) Tohir ibn Husaynning Xuroson noibi etib tayinlanishi;
+2) Ma'munning xalifa taxtiga o'tirishi;
+3) Ismoil Somoniyning Balx yaqinida Amr ibn Laysni yengishi;
+4) Tohir ibn Husaynning Ray yaqinida Ali ibn Iso (Moxon) qo'shinini tor-mor etishi;
+5) Ma'munning Xuroson noibi etib tayinlanishi.
+A) 4, 5, 2, 1, 3
+B) 5, 4, 1, 2, 3
+C) 5, 4, 2, 1, 3
+D) 5, 2, 4, 1, 3
+JAVOB: C
+
+Somoniylar davlatidagi devonlar va ularning vazifalarini moslashtiring.
+1. Mustavfiy devoni
+2. Barid devoni
+3. Muhtasib devoni
+4. Mushrif devoni
+a) davlat moliyasi — daromad va xarajatlar ishlari
+b) pochta aloqasi va mamlakatdagi voqealar haqida axborot yetkazish
+c) bozorlarda tarozi, narx-navo va jamoat axloqi ustidan nazorat
+d) davlat mulki va xazina kirim-chiqimini taftish qilish
+e) rasmiy hujjatlar va diplomatik yozishmalarni tayyorlash
+A) 1-a, 2-e, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-b, 3-d, 4-e
+D) 1-d, 2-b, 3-c, 4-a
+JAVOB: B
+
+Qoraxoniylar davriga oid to'g'ri ma'lumotlarni aniqlang.
+1) 999-yilda Buxoro egallanib, Somoniylar davlatiga barham berildi;
+2) Sotuq Bug'raxon islomni qabul qilgan;
+3) Mahmud Koshg'ariy «Devonu lug'otit turk»ni Mahmud G'aznaviyga bag'ishlagan;
+4) G'arbiy Qoraxoniylar xoqonligining markazi Samarqand bo'lgan;
+5) Yusuf Xos Hojib «Qutadg'u bilig» dostonini 1069-yilda yozib tugatgan;
+6) G'arbiy Qoraxoniylar xoqonligining markazi Buxoro bo'lgan.
+A) 1, 2, 5, 6
+B) 1, 2, 4, 5
+C) 2, 3, 5, 6
+D) 1, 3, 4, 6
+JAVOB: B
+
+Barcha ma'lumotlarni tahlil qilib, to'g'ri va noto'g'ri hukmlar uyg'unligi berilgan javobni aniqlang. t/r Ma'lumot 1 G'aznaviylar davlati 977–1186-yillarda mavjud bo'lgan. 2 Sulton Mahmud G'aznaviy 1017-yilda Xorazmni bosib olgan. 3 1040-yilgi Dandanaqon jangida Sulton Mas'ud saljuqiylarga yengilgan. 4 Bag'dod xalifasi Mahmud G'aznaviyga «Yamin ud-davla va amin ul-milla» unvonini bergan. 5 G'aznaviylar davlatining poytaxti Buxoro shahri bo'lgan. 6 Sulton Mas'ud Dandanaqon jangida g'alaba qozonib, Xurosonni saqlab qolgan.
+A) 1-noto'g'ri, 2-to'g'ri; 3-to'g'ri, 4-to'g'ri; 5-to'g'ri, 6-noto'g'ri
+B) 1-to'g'ri, 2-to'g'ri; 3-to'g'ri, 4-to'g'ri; 5-noto'g'ri, 6-noto'g'ri
+C) 1-to'g'ri, 2-noto'g'ri; 3-to'g'ri, 4-to'g'ri; 5-noto'g'ri, 6-to'g'ri
+D) 1-to'g'ri, 2-to'g'ri; 3-noto'g'ri, 4-to'g'ri; 5-noto'g'ri, 6-noto'g'ri
+JAVOB: B
+
+Saljuqiylar tarixiga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Dandanaqon jangi;
+2) Qatvon jangi;
+3) Malikshoh hukmronligining boshlanishi;
+4) Malazgird (Manzikert) jangi;
+5) Sulton Sanjarning vafoti.
+A) 4, 1, 3, 2, 5
+B) 1, 3, 4, 2, 5
+C) 1, 4, 3, 5, 2
+D) 1, 4, 3, 2, 5
+JAVOB: D
+
+Anushteginiylar sulolasi vakillari va ularning faoliyatini moslashtiring.
+1. Anushtegin
+2. Otsiz
+3. Takash
+4. Alovuddin Muhammad
+a) saljuqiylar saroyida tashtdor bo'lgan, sulola uning nomi bilan ataladi
+b) Xorazm mustaqilligi uchun Sulton Sanjarga qarshi kurashgan
+c) 1194-yilda To'g'rul III ni yengib, Iroq saljuqiylari hukmronligiga barham bergan
+d) 1210-yilda qoraxitoylarni yengib, 1212-yilda Samarqanddagi qo'zg'olonni bostirgan
+e) Parvon yaqinida mo'g'ul qo'shinini tor-mor etgan
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-d, 4-e
+D) 1-b, 2-a, 3-c, 4-e
+JAVOB: A
+
+Arab xalifaligi tarixiga oid TO'G'RI ma'lumotlar soni nechta?
+1) Umaviylar sulolasiga 661-yilda Muoviya asos solgan;
+2) Umaviylar xalifaligining poytaxti Damashq bo'lgan;
+3) Abbosiylar 750-yilda hokimiyatga kelgan;
+4) Bag'dod shahriga 762-yilda xalifa al-Mansur asos solgan;
+5) xalifa Ma'mun davrida «Bayt ul-hikma» faoliyati yuksaldi;
+6) 1258-yilda Bag'dod Chingizxon qo'shini tomonidan egallangan.
+A) oltita
+B) to'rtta
+C) beshta
+D) uchta
+JAVOB: C
+
+Salib yurishlari tarixiga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Quddusning birinchi salib yurishi qatnashchilari tomonidan egallanishi;
+2) Hittin jangi;
+3) Konstantinopolning salibchilar tomonidan egallanishi;
+4) Papa Urban II ning Klermon soboridagi chaqirig'i;
+5) Akka qal'asining qulashi;
+6) Ikkinchi salib yurishi.
+A) 4, 1, 6, 2, 3, 5
+B) 4, 1, 6, 3, 2, 5
+C) 4, 6, 1, 2, 3, 5
+D) 1, 4, 6, 2, 3, 5
+JAVOB: A
+
+O'rta asrlar Yevropasidagi hujjatlar va ularning mazmunini moslashtiring.
+1. Verden shartnomasi
+2. Vorms konkordati
+3. «Buyuk erkinliklar xartiyasi»
+4. «Oltin bulla»
+a) Karolinglar imperiyasi uch qismga bo'lindi
+b) imperator va papa o'rtasida investitura masalasida murosaga kelindi
+c) Angliya qiroli baronlar va ritsarlarga imtiyozlar berishga majbur bo'ldi
+d) imperatorni yetti kurfyurst saylash tartibi belgilandi
+e) Fransiyada General shtatlar ilk bor chaqirildi
+A) 1-a, 2-e, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-b, 3-d, 4-c
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: B
+
+Nuqtalar o'rnida tushirib qoldirilgan ma'lumotlarni aniqlang. O'tror shahri mo'g'ullar qamaliga 1. ............... oy davomida bardosh berdi. Shahar hokimi 2. ............... asirga olinib, qatl etildi. Xo'jand himoyasiga esa 3. ............... boshchilik qildi.
+A) 1 — 5, 2 — Temur Malik, 3 — G'oyirxon
+B) 1 — 5, 2 — G'oyirxon, 3 — Temur Malik
+C) 1 — 9, 2 — Qoraxo'ja, 3 — Temur Malik
+D) 1 — 3, 2 — G'oyirxon, 3 — Jaloliddin
+JAVOB: B
+
+Nuqtalar o'rnida tushirib qoldirilgan ma'lumotlarni aniqlang. 1370-yilda Balxdagi qurultoyda Movarounnahr amiri deb e'lon qilingan Temur chingiziy malika
+1. ............... ga uylangani uchun «Ko'ragon» unvonini oldi. U poytaxt qilib 2. ............... ni tanladi, ona yurti Keshda esa 3. ............... saroyini qurdirdi.
+A) 1 — Saroymulkxonim, 2 — Samarqand, 3 — Oqsaroy
+B) 1 — Cho'lponmulk og'a, 2 — Samarqand, 3 — Oqsaroy
+C) 1 — Tumanog'a, 2 — Samarqand, 3 — Ko'ksaroy
+D) 1 — Saroymulkxonim, 2 — Shahrisabz, 3 — Ko'ksaroy
+JAVOB: A
+
+Amir Temurning yurishlari va ular davomida yuz bergan voqealarni moslashtiring.
+1. «Uch yillik» yurish
+2. «Besh yillik» yurish
+3. «Yetti yillik» yurish
+a) Tabriz va Tiflis egallandi
+b) Muzaffariylar sulolasiga barham berildi, Terek bo'yida To'xtamish tor-mor etildi
+c) Damashq egallandi, Anqara jangida Boyazid I asir olindi
+d) Dehli egallandi
+A) 1-a, 2-d, 3-c
+B) 1-a, 2-b, 3-d
+C) 1-b, 2-a, 3-c
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+Temuriylar davri madaniyatiga oid NOTO'G'RI ma'lumotlar soni nechta?
+1) Ulug'bek rasadxonasi Samarqanddagi Ko'hak (Cho'ponota) tepaligida qurilgan;
+2) Ali Qushchi Ulug'bek vafotidan keyin Istanbulga borib, faoliyatini davom ettirgan;
+3) Kamoliddin Behzod Hirot miniatyura maktabining yirik vakili bo'lgan;
+4) Alisher Navoiy «Xamsa»ni 1483–1485-yillarda yozgan;
+5) Bibixonim jome masjidi Shohruh Mirzo buyrug'i bilan qurilgan;
+6) Hirotda Gavharshodbegim madrasasi barpo etilgan;
+7) Buxorodagi Ulug'bek madrasasi 1417-yilda qurilgan;
+8) «Zafarnoma» asarini Mirzo Ulug'bek yozgan.
+A) ikkita
+B) to'rtta
+C) uchta
+D) bitta
+JAVOB: A
+
+XVI–XVIII asrlardagi voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Shayboniyxonning Saripul jangidan so'ng Samarqandni uzil-kesil egallashi;
+2) G'ijduvon jangi;
+3) Abdullaxon II ning vafoti;
+4) Ashtarxoniylar sulolasining hokimiyatga kelishi;
+5) Shayboniyxonning Marv yaqinida halok bo'lishi;
+6) Nodirshohning Buxoro va Xivaga yurishi.
+A) 1, 5, 2, 4, 3, 6
+B) 1, 2, 5, 3, 4, 6
+C) 1, 5, 2, 3, 4, 6
+D) 5, 1, 2, 3, 4, 6
+JAVOB: C
+
+Hukmdorlar va ular bilan bog'liq ma'lumotlarni moslashtiring.
+1. Shohmurod
+2. Eltuzar
+3. Olimxon
+a) mang'itlardan birinchi bo'lib «amir» unvonini qabul qilgan
+b) qo'ng'irotlardan birinchi bo'lib «xon» unvonini qabul qilgan
+c) minglardan birinchi bo'lib «xon» unvonini olgan, Toshkentni xonlikka qo'shib olgan
+d) mang'itlardan birinchi bo'lib «xon» unvonini olgan
+e) Qo'qon xonligiga asos solgan
+A) 1-a, 2-c, 3-b
+B) 1-a, 2-b, 3-c
+C) 1-a, 2-b, 3-e
+D) 1-d, 2-b, 3-c
+JAVOB: B
+
+Reformatsiya va kontrreformatsiya arboblarini ularning faoliyati bilan moslashtiring.
+1. Martin Lyuter
+2. Jan Kalvin
+3. Ignatiy Loyola
+4. Genrix VIII
+a) 1517-yilda «95 tezis»ni e'lon qildi
+b) Jenevada cherkov islohotini o'tkazdi, taqdiri azal (predestinatsiya) ta'limotini ilgari surdi
+c) iyezuitlar ordeniga asos soldi
+d) Angliya cherkovini papadan ajratib, uning boshlig'i bo'ldi
+e) Trident soborini chaqirdi
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-b, 3-e, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: A
+
+Nuqtalar o'rnida tushirib qoldirilgan ma'lumotlarni aniqlang. 1492-yilda 1. ............... Ispaniya bayrog'i ostida Bagama orollariga yetib keldi. 1498-yilda 2. ............... Afrikani aylanib o'tib, Hindistonning Kalikut shahriga yetdi. 1519–1522-yillarda 3. ............... ekspeditsiyasi dunyo bo'ylab birinchi sayohatni amalga oshirdi.
+A) 1 — Xristofor Kolumb, 2 — Bartolomeu Dias, 3 — Magellan
+B) 1 — Xristofor Kolumb, 2 — Vasko da Gama, 3 — Jeyms Kuk
+C) 1 — Amerigo Vespuchchi, 2 — Vasko da Gama, 3 — Magellan
+D) 1 — Xristofor Kolumb, 2 — Vasko da Gama, 3 — Magellan
+JAVOB: D
+
+Sanoat to'ntarishi davri ixtirochilari va ularning ixtirolarini moslashtiring.
+1. Jeyms Uatt
+2. Jorj Stefenson
+3. Robert Fulton
+4. Jon Key
+a) universal bug' mashinasi
+b) «Raketa» parovozi
+c) «Klermont» paroxodi
+d) «uchar moki»
+e) «Jenni» yigiruv mashinasi
+A) 1-b, 2-a, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-e
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-c, 3-b, 4-d
+JAVOB: C
+
+XIX asrdagi voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Rossiyada krepostnoylik huquqining bekor qilinishi;
+2) Vena kongressi;
+3) Yevropadagi «xalqlar bahori» inqiloblari;
+4) Fransiyadagi Iyul inqilobi;
+5) Rimning birlashgan Italiya poytaxtiga aylanishi;
+6) AQSHda fuqarolar urushining tugashi.
+A) 4, 2, 3, 1, 6, 5
+B) 2, 4, 3, 6, 1, 5
+C) 2, 3, 4, 1, 6, 5
+D) 2, 4, 3, 1, 6, 5
+JAVOB: D
+
+Quyidagi ma'lumotlarni tahlil qilib, Eyler–Venn diagrammasiga mos keladigan javobni aniqlang.
+a) «Inson va fuqaro huquqlari deklaratsiyasi» qabul qilindi;
+b) Mustaqillik deklaratsiyasi matnini T. Jefferson tayyorladi;
+c) qirol sud hukmi bilan qatl etildi;
+d) 1787-yilda konstitutsiya qabul qilindi;
+e) ma'rifatparvarlik g'oyalari mafkuraviy asos bo'ldi; f) respublika tuzumi o'rnatildi.
+A) I – a, c; II – b, d; III – e, f
+B) I – a, c, f; II – b, d; III – e
+C) I – a, d; II – b, c; III – e, f
+D) I – a, c; II – b, d, f; III – e
+JAVOB: A
+
+Barcha ma'lumotlarni tahlil qilib, to'g'ri va noto'g'ri hukmlar uyg'unligi berilgan javobni aniqlang. t/r Ma'lumot 1 1865-yilda Toshkent general M. G. Chernyayev qo'shini tomonidan egallandi. 2 1867-yilda Turkiston general-gubernatorligi tuzilib, unga K. P. Kaufman boshchilik qildi. 3 1868-yilgi shartnomaga ko'ra Buxoro amirligi Rossiyaga vassal davlatga aylandi. 4 1873-yilgi Gandimiyon shartnomasiga ko'ra Amudaryoning chap sohili Rossiyaga o'tdi. 5 1876-yilda Qo'qon xonligi tugatilib, uning o'rnida Farg'ona viloyati tuzildi. 6 1881-yilda Go'kteppa qal'asi rus qo'shinlari tomonidan egallandi.
+A) 1-to'g'ri, 2-noto'g'ri; 3-to'g'ri, 4-noto'g'ri; 5-to'g'ri, 6-to'g'ri
+B) 1-to'g'ri, 2-to'g'ri; 3-noto'g'ri, 4-noto'g'ri; 5-to'g'ri, 6-to'g'ri
+C) 1-to'g'ri, 2-to'g'ri; 3-to'g'ri, 4-noto'g'ri; 5-to'g'ri, 6-to'g'ri
+D) 1-to'g'ri, 2-to'g'ri; 3-to'g'ri, 4-to'g'ri; 5-to'g'ri, 6-to'g'ri
+JAVOB: C
+
+Jadid ma'rifatparvarlari va ularning faoliyatini moslashtiring.
+1. Mahmudxo'ja Behbudiy
+2. Munavvarqori Abdurashidxonov
+3. Abdulla Avloniy
+4. Abdurauf Fitrat
+a) «Padarkush» dramasi, «Oyna» jurnali
+b) «Xurshid» gazetasi, «Adibi avval» alifbe kitobi
+c) «Turkiy guliston yoxud axloq» asari, «Turon» teatr truppasi
+d) «Munozara», «Hind sayyohining qissasi» asarlari
+e) «Sadoi Farg'ona» gazetasi
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-e, 4-d
+D) 1-d, 2-b, 3-c, 4-a
+JAVOB: A
+
+Quyidagi voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Turkiston ASSRning tuzilishi;
+2) Buxoro Xalq Sovet Respublikasining tuzilishi;
+3) Xorazm Xalq Sovet Respublikasining tuzilishi;
+4) O'zbekiston SSRning tashkil topishi;
+5) Tojikistonning alohida ittifoqdosh respublikaga aylanishi;
+6) Qoraqalpog'iston ASSRning O'zbekiston SSR tarkibiga kiritilishi.
+A) 1, 3, 2, 4, 5, 6
+B) 1, 2, 3, 4, 5, 6
+C) 1, 3, 2, 4, 6, 5
+D) 3, 1, 2, 4, 5, 6
+JAVOB: A
+
+1937–1938-yillardagi qatag'on qurbonlarini aniqlang.
+1) Fayzulla Xo'jayev; 2) Mahmudxo'ja Behbudiy; 3) Abdulla Qodiriy; 4) Hamza Hakimzoda Niyoziy; 5) Akmal Ikromov; 6) Abdulhamid Cho'lpon.
+A) 1, 3, 4, 6
+B) 2, 3, 4, 6
+C) 1, 3, 5, 6
+D) 1, 2, 4, 5
+JAVOB: C
+
+Ikkinchi jahon urushi voqealarini xronologik ketma-ketlikda joylashtiring.
+1) Kursk jangi;
+2) Germaniyaning Polshaga hujumi;
+3) Ittifoqchilarning Normandiyaga desant tushirishi;
+4) Yaponiyaning Pyorl-Xarborga hujumi;
+5) Germaniyaning SSSRga hujumi;
+6) Stalingrad jangining tugashi.
+A) 2, 5, 4, 1, 6, 3
+B) 2, 4, 5, 6, 1, 3
+C) 5, 2, 4, 6, 1, 3
+D) 2, 5, 4, 6, 1, 3
+JAVOB: D
+
+Xitoy tarixiga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) «Madaniy inqilob»ning boshlanishi;
+2) Xitoy Xalq Respublikasining tashkil topishi;
+3) Gonkongning Xitoyga qaytarilishi;
+4) Sinxay inqilobi;
+5) Den Syaopin boshchiligidagi islohotlarning boshlanishi;
+6) «Katta sakrash» siyosatining boshlanishi.
+A) 4, 2, 1, 6, 5, 3
+B) 4, 6, 2, 1, 5, 3
+C) 2, 4, 6, 1, 5, 3
+D) 4, 2, 6, 1, 5, 3
+JAVOB: D
+
+Xalqaro tashkilotlar va ular tashkil topgan yillarni moslashtiring.
+1. NATO
+2. Varshava shartnomasi tashkiloti
+3. Mustaqil Davlatlar Hamdo'stligi
+4. Shanxay hamkorlik tashkiloti
+a) 1949-yil
+b) 1955-yil
+c) 1991-yil
+d) 2001-yil
+e) 1945-yil
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-e, 2-b, 3-c, 4-d
+C) 1-b, 2-a, 3-c, 4-d
+D) 1-a, 2-b, 3-d, 4-c
+JAVOB: A
+
+O'zbekiston Respublikasining davlat ramzlari va ular qabul qilingan sanalarni moslashtiring.
+1. Davlat bayrog'i
+2. Davlat gerbi
+3. Davlat madhiyasi
+a) 1991-yil 18-noyabr
+b) 1992-yil 2-iyul
+c) 1992-yil 10-dekabr
+d) 1992-yil 8-dekabr
+e) 1991-yil 31-avgust
+A) 1-a, 2-b, 3-d
+B) 1-a, 2-c, 3-b
+C) 1-e, 2-b, 3-c
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+2023-yil 30-aprelda referendum orqali qabul qilingan O'zbekiston Respublikasi Konstitutsiyasiga oid to'g'ri ma'lumotlarni aniqlang.
+1) Prezidentning vakolat muddati 7 yil etib belgilandi;
+2) bir shaxs ketma-ket ikki muddatdan ortiq Prezident bo'lishi mumkin emas;
+3) O'zbekiston ijtimoiy davlat deb e'lon qilindi;
+4) o'lim jazosi taqiqlandi;
+5) Konstitutsiya 128 moddadan iborat;
+6) Senat a'zolari soni 150 nafar etib belgilandi.
+A) 1, 3, 5, 6
+B) 1, 2, 5, 6
+C) 1, 2, 3, 4
+D) 2, 3, 4, 6
+JAVOB: C
+
+Kasb standartiga ko'ra «Ta'lim va tarbiya jarayonini boshqarish» (A) umumlashtirilgan mehnat vazifasiga kiruvchi mehnat vazifalarini aniqlang.
+1) O'quv jarayonini rejalashtirish;
+2) O'z-o'zini rivojlantirish va kasbiy o'sish;
+3) O'zlashtirishni baholash va qayta aloqani taqdim etish;
+4) Tarbiyaviy faoliyatni tashkil etish;
+5) Hamkasblar va ta'lim oluvchilarning ota-onalari bilan hamkorlik;
+6) Xavfsiz rivojlantiruvchi ta'lim muhitini yaratish va ta'minlash;
+7) Ta'lim samaradorligini ta'minlash.
+A) 2, 3, 4, 5, 7
+B) 1, 2, 3, 4, 6
+C) 1, 3, 4, 6, 7
+D) 1, 3, 5, 6, 7
+JAVOB: C
+
+Kasb standartiga ko'ra o'qituvchi toifalari va ular uchun talab qilinadigan amaliy ish tajribasini moslashtiring.
+1. 2-toifali o'qituvchi
+2. 1-toifali o'qituvchi
+3. Oliy toifali o'qituvchi
+a) kamida 3 yillik ish tajribasi
+b) kamida 5 yillik ish tajribasi
+c) kamida 8 yillik ish tajribasi
+d) kamida 10 yillik ish tajribasi
+e) ish tajribasi talab qilinmaydi
+A) 1-a, 2-b, 3-d
+B) 1-e, 2-a, 3-b
+C) 1-b, 2-c, 3-d
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+Kasb standartida «O'zlashtirishni baholash va qayta aloqani taqdim etish» mehnat vazifasi qaysi kod va malaka darajasi bilan belgilangan?
+A) A/03.5; 5-malaka darajasi
+B) B/01.6; 6-malaka darajasi
+C) A/02.6; 6-malaka darajasi
+D) A/03.6; 6-malaka darajasi
+JAVOB: D
+
+O'qituvchi o'quv yili boshida ta'limning aniq va o'lchanadigan natijalarini belgilab, ularga erishish uchun yil, chorak va dars bo'yicha vazifalarni rejalarda shakllantirdi. Kasb standartiga ko'ra bu qaysi mehnat vazifasining zarur ko'nikmasi hisoblanadi?
+A) A/02.6 — Ta'lim samaradorligini ta'minlash
+B) A/01.6 — O'quv jarayonini rejalashtirish
+C) B/01.6 — O'z-o'zini rivojlantirish va kasbiy o'sish
+D) A/03.6 — O'zlashtirishni baholash va qayta aloqani taqdim etish
+JAVOB: B
+
+Quyidagilardan qaysi biri kasb standartida A/02.6 «Ta'lim samaradorligini ta'minlash» mehnat vazifasining mehnat harakatlari qatoriga KIRMAYDI?
+A) O'qitishning faol usullaridan foydalanish (frontal ta'lim ustun bo'la olmaydi)
+B) O'quvchilarga metakognitiv strategiyalarni o'rgatishda turli yondashuvlardan foydalanish
+C) O'quvchilarning jamoaviy va loyihaviy ishlarini tashkil etish
+D) Davlat ta'lim standartlari va o'quv dasturlari maqsadlariga muvofiq o'quv rejalarini ishlab chiqish
+JAVOB: D
+
+B. Bloom taksonomiyasi ilk bor qachon e'lon qilingan va 2001-yilda kimlar tomonidan qayta ko'rib chiqilgan?
+A) 1948-yil; B. Skinner va B. Bloom
+B) 1956-yil; G. Gardner va J. Piaje
+C) 1965-yil; L. Anderson va D. Krathwohl
+D) 1956-yil; L. Anderson va D. Krathwohl
+JAVOB: D
+
+Bloom taksonomiyasining yangilangan modeli bo'yicha kognitiv soha darajalarini quyidan yuqoriga qarab joylashtiring.
+1) yaratish; 2) tushunish; 3) tahlil qilish; 4) eslab qolish; 5) baholash; 6) qo'llash.
+A) 4, 2, 3, 6, 5, 1
+B) 4, 2, 6, 3, 5, 1
+C) 4, 6, 2, 3, 5, 1
+D) 2, 4, 6, 3, 1, 5
+JAVOB: B
+
+Baholashga oid tushunchalar va ularning ta'riflarini moslashtiring.
+1. Ipsativ baholash
+2. Ishonchlilik
+3. Mazmuniy validlik
+4. Mezonli baholash
+a) o'quvchi natijasini uning shu mazmundagi oldingi natijalari bilan solishtirish
+b) baholash vositalarining tasodifiy xatolardan xolilik darajasi, natijalarning barqarorligi
+c) test topshiriqlarining o'lchanishi lozim bo'lgan domen mazmuniga mosligi
+d) oldindan belgilangan talablarni bajarish yoki bajara olmaslikni tekshirish
+e) o'quvchi natijasini boshqa o'quvchilar natijalari bilan taqqoslash
+A) 1-e, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: C
+
+Xalqaro baholash dasturlari va ularning maqsadini moslashtiring.
+1. PIRLS
+2. PISA
+3. TIMSS
+4. TALIS
+a) boshlang'ich 4-sinf o'quvchilarining matnni o'qish va tushunish darajasini baholash
+b) 15 yoshli o'quvchilarning o'qish, matematika va tabiiy fanlar bo'yicha savodxonligini baholash
+c) 4 va 8-sinf o'quvchilarining matematika va tabiiy fanlarni o'zlashtirishini baholash
+d) pedagoglarning o'qitish muhiti va ish sharoitlarini o'rganish
+e) AQShning akademik baholash testi
+A) 1-b, 2-a, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-e
+C) 1-c, 2-b, 3-a, 4-d
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+O'qituvchi dars uchun texnologik xarita tuzdi, mavzuga oid multimedia materiallari va original tarqatmalar tayyorladi, topshiriqlar uchun baholash mezonlarini ishlab chiqdi. O'. Tolipov tasnifiga ko'ra pedagogning qaysi qobiliyati namoyon bo'lgan?
+A) konstruktiv qobiliyat
+B) kommunikativ qobiliyat
+C) tashkilotchilik qobiliyati
+D) perseptiv-pedagogik qobiliyat
+JAVOB: A
+
+Mantiqiy xulosaga kelish uchun dalillar yetarli bo'lmagan vaziyatda qidiruv yo'nalishlari asosida masala yechimini topishga yo'naltirilgan evristik (unumli ijodiy) jarayon qanday ataladi?
+A) pedagogik empatiya
+B) pedagogik refleksiya
+C) pedagogik intuitsiya
+D) pedagogik perseptsiya
+JAVOB: C
+
+Pedagoglar va ularning asarlarini moslashtiring.
+1. Ya. A. Komenskiy
+2. J. J. Russo
+3. A. Disterveg
+4. Abdulla Avloniy
+a) «Buyuk didaktika»
+b) «Emil yoki tarbiya haqida»
+c) «Nemis o'qituvchilarini tarbiyalash uchun qo'llanma»
+d) «Turkiy guliston yoxud axloq»
+e) «Lingard va Gertruda»
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-b, 3-e, 4-d
+C) 1-a, 2-e, 3-c, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: A
+
+Tarix darsida o'quvchilar bir davrda turli mamlakatlarda sodir bo'lgan voqealarni bitta jadvalda yonma-yon joylashtirib, ularni taqqosladilar. O'quvchilar qanday vositadan foydalandilar?
+A) klaster
+B) sinxronistik jadval
+C) «T-sxema»
+D) xronologik jadval
+JAVOB: B
+
+«Ta'limda baholash va monitoring asoslari» qo'llanmasiga ko'ra «ko'p baholash» (over-assessment) nimani anglatadi?
+A) o'quvchilarga asossiz yuqori baho qo'yilishini
+B) bitta ishni bir nechta o'qituvchi tomonidan baholanishini
+C) ta'lim jarayonida haddan tashqari ko'p summativ baholashni amalga oshirishni
+D) formativ baholashdan har darsda foydalanishni
+JAVOB: C
+
+Maktab rahbariyati ta'lim sifatining mavjud holatini aniqlash va rivojlanish uchun zarur choralarni ko'rish maqsadida o'qituvchilar va o'quvchilar faoliyatini, ta'lim muhitini hamda o'qituvchilarning ota-onalar bilan hamkorlik darajasini o'rgandi. Bu monitoringning qaysi turi?
+A) xalqaro baholash
+B) tashqi monitoring
+C) ichki monitoring
+D) milliy baholash tadqiqoti
+JAVOB: C
+</script>
+
+<script type="text/plain" class="set" data-title="Attestatsiya tarix 4-variant" data-desc="50 savol, javoblar bilan: 1–35 tarix, 36–40 kasb standarti, 41–50 pedagogik mahorat" data-time="90" data-sections="Tarix:35,Kasbiy standart:5,Pedagogik mahorat:10">
+Qadimgi Sharq tarixiga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Nineviyaning qulashi va Ossuriya davlatining tugatilishi;
+2) Iskandar Zulqarnaynning Bobilda vafot etishi;
+3) Xammurapi qonunlarining yaratilishi;
+4) Kir II tomonidan Bobilning egallanishi;
+5) Tutmos III ning Old Osiyoga yurishlari;
+6) Doro I ning davlatni satrapliklarga bo'lish islohoti.
+A) 3, 5, 1, 4, 6, 2
+B) 3, 1, 5, 4, 6, 2
+C) 5, 3, 1, 4, 6, 2
+D) 3, 5, 4, 1, 6, 2
+JAVOB: A
+
+Qadimgi Yunonistonga oid atamalarni ularning izohi bilan moslashtiring.
+1. polis
+2. ostrakizm
+3. ekklesiya
+4. ilotlar
+a) shahar-davlat
+b) xavfli deb topilgan fuqaroni sopol parchalariga yozib ovoz berish orqali surgun qilish
+c) Afinadagi xalq majlisi
+d) Spartadagi davlatga qarashli qaram dehqonlar
+e) Rimdagi oddiy erkin aholi — plebeylar
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-c, 2-b, 3-a, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: A
+
+Qadimgi Rim arboblari va ularning faoliyatini moslashtiring.
+1. Tiberiy Grakx
+2. Gay Yuliy Sezar
+3. Oktavian Avgust
+4. Konstantin
+a) yer islohoti qonunini ilgari surgan xalq tribuni
+b) Galliyani bosib olgan, umrbod diktator deb e'lon qilingan
+c) «prinseps» unvonini olib, prinsipat tuzumiga asos solgan
+d) Milan edikti chiqarilgan, poytaxt Konstantinopolga ko'chirilgan
+e) imperiyani G'arbiy va Sharqiy qismlarga bo'lib, o'g'illariga meros qoldirgan
+A) 1-a, 2-c, 3-b, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: C
+
+Qadimgi Sharq mutafakkirlari va ular bilan bog'liq ta'limot yoki asarlarni moslashtiring.
+1. Konfutsiy
+2. Lao-szi
+3. Siddxartha Gautama
+4. Sima Syan
+a) «Lun yuy» («Suhbatlar va mulohazalar»)
+b) «Dao de szin»
+c) «to'rt oliy haqiqat» ta'limoti
+d) «Tarixiy xotiralar» («Shiszi»)
+e) «Arthashastra»
+A) 1-a, 2-b, 3-e, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-d, 3-c, 4-b
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+Zardushtiylik va «Avesto»ga oid TO'G'RI ma'lumotlar soni nechta?
+1) «Avesto» zardushtiylarning muqaddas kitobi hisoblanadi;
+2) «Avesto»ning bizgacha taxminan to'rtdan bir qismi yetib kelgan;
+3) zardushtiylikda olov muqaddas sanalgan;
+4) rivoyatga ko'ra «Avesto» o'n ikki ming ho'kiz terisiga oltin suvi bilan yozilgan;
+5) zardushtiylikda ezgulik xudosi Axura Mazda hisoblangan;
+6) zardushtiylik Ashoka davrida Hindistonda davlat dini deb e'lon qilingan.
+A) to'rtta
+B) beshta
+C) uchta
+D) oltita
+JAVOB: B
+
+Nuqtalar o'rnida tushirib qoldirilgan ma'lumotlarni aniqlang. Eftaliylar bilan urushda sosoniy shohi 1. ............... asirga olindi. Bu voqeaga Vizantiya imperatori
+2. ............... aralashib, uni katta to'lov evaziga ozod qilishni so'radi. 567-yilda eftaliylar 3. ............... yaqinida turklardan mag'lub bo'ldi.
+A) 1 — Pero'z, 2 — Yustinian, 3 — Samarqand
+B) 1 — Xusrav Anushervon, 2 — Zenon, 3 — Buxoro
+C) 1 — Pero'z, 2 — Zenon, 3 — Buxoro
+D) 1 — Kavod, 2 — Zenon, 3 — Buxoro
+JAVOB: C
+
+Ilk o'rta asrlarga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Turk xoqonligining tashkil topishi;
+2) eftaliylarning Buxoro yaqinida turklardan mag'lub bo'lishi;
+3) Pero'zning sosoniylar taxtiga chiqishi;
+4) eftaliylarning Lyang sulolasi hukmdori huzuriga elchi yuborishi;
+5) Turk xoqonligining G'arbiy va Sharqiy qismlarga bo'linishi;
+6) Talas jangi.
+A) 4, 3, 1, 2, 5, 6
+B) 3, 4, 1, 2, 5, 6
+C) 3, 4, 2, 1, 5, 6
+D) 3, 1, 4, 2, 5, 6
+JAVOB: B
+
+Turk xoqonligiga oid manbalarda uchraydigan unvon va lavozimlarni ularning ma'nosi bilan moslashtiring.
+1. tutuq
+2. apatarxon
+3. sangun
+4. chabish
+a) harbiy voliy
+b) bosh lashkarboshi
+c) qo'mondon, general
+d) harbiy amaldor
+e) xoqon taxtining vorisi
+A) 1-a, 2-b, 3-c, 4-e
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: B
+
+Muqanna boshchiligidagi qo'zg'olonga oid TO'G'RI ma'lumotlar soni nechta?
+1) qo'zg'olonchilarning qarorgohi Kesh vohasidagi Som qal'asi bo'lgan;
+2) harakat «oq kiyimlilar» harakati deb atalgan;
+3) qo'zg'olon ayniqsa Sug'dda avj olgan;
+4) so'nggi buxorxudot Bunyod qo'zg'olonni qo'llab-quvvatlagan;
+5) qo'zg'olon Abbosiylar xalifaligi tomonidan bostirilgan;
+6) Muqanna Abu Muslimni o'ldirgan shaxs bo'lgan;
+7) qo'zg'olonni Ismoil Somoniy bostirgan.
+A) beshta
+B) to'rtta
+C) oltita
+D) uchta
+JAVOB: A
+
+Narshaxiyning «Buxoro tarixi» asarida tasvirlangan «Bayt ut-tiroz» to'qimachilik korxonasiga oid to'g'ri ma'lumotlarni aniqlang.
+1) korxona hisor bilan shahriston o'rtasida, masjidi jome yaqinida joylashgan;
+2) unda xalifa uchun palos, darparda, yostiq jildlari va kiyimlar to'qilgan;
+3) bitta darpardaga butun Buxoro xiroji sarf bo'lgan;
+4) Bag'doddan har yili maxsus omil kelib, Buxoro xirojining evaziga mahsulotni olib ketgan;
+5) Xurosonga ketgan ustalar bundan ham sifatliroq mato to'qishga erishgan;
+6) korxona Narshaxiy davrida ham to'liq quvvat bilan ishlab turgan;
+7) korxona mahsulotlari Shom, Misr va Rum shaharlariga olib ketilgan.
+A) 1, 3, 4, 6, 7
+B) 2, 3, 4, 5, 6
+C) 1, 2, 5, 6, 7
+D) 1, 2, 3, 4, 7
+JAVOB: D
+
+Somoniy hukmdorlarni hukmronlik qilgan davrlari bo'yicha xronologik ketma-ketlikda joylashtiring.
+1) Ismoil ibn Ahmad; 2) Nasr II ibn Ahmad; 3) Ahmad ibn Ismoil; 4) Nuh I ibn Nasr; 5) Nasr I ibn Ahmad;
+6) Abdulmalik II.
+A) 5, 1, 2, 3, 4, 6
+B) 1, 5, 3, 2, 4, 6
+C) 5, 3, 1, 2, 4, 6
+D) 5, 1, 3, 2, 4, 6
+JAVOB: D
+
+Xorazmdagi «Ma'mun akademiyasi»da faoliyat ko'rsatgan olimlarni aniqlang.
+1) Abu Rayhon Beruniy;
+2) Abu Ali ibn Sino;
+3) Abu Sahl Masihiy;
+4) Abu Nasr ibn Iroq;
+5) Muhammad ibn Muso al-Xorazmiy;
+6) Mahmud Koshg'ariy;
+7) Abulxayr Hammor.
+A) 1, 3, 4, 5, 6
+B) 1, 2, 5, 6, 7
+C) 1, 2, 3, 4, 7
+D) 2, 3, 4, 6, 7
+JAVOB: C
+
+Quyidagi ma'lumotlarni tahlil qilib, Eyler–Venn diagrammasiga mos keladigan javobni aniqlang.
+a) poytaxti Buxoro bo'lgan;
+b) davlat G'arbiy va Sharqiy xoqonliklarga bo'lingan;
+c) hukmdori 900-yilda Balx yaqinida Amr ibn Laysni yengan;
+d) shu davlat hududida «Qutadg'u bilig» dostoni yaratilgan;
+e) islom davlat dini bo'lgan; f) Movarounnahr hududini boshqargan.
+A) I – c; II – b, d; III – a, e, f
+B) I – a, c, e; II – b, d; III – f
+C) I – a, d; II – b, c; III – e, f
+D) I – a, c; II – b, d; III – e, f
+JAVOB: D
+
+Qatvon jangi (1141) va uning oqibatlariga oid to'g'ri ma'lumotlarni aniqlang.
+1) Sulton Sanjar boshchiligidagi qo'shin mag'lub bo'ldi;
+2) Movarounnahr qoraxitoylarga qaram bo'lib qoldi;
+3) jangda qoraxitoylar gurxoni Yelyuy Dashi g'alaba qozondi;
+4) xorazmshoh Otsiz vaziyatdan foydalanib Xurosonga yurish qildi;
+5) Saljuqiylar davlati butunlay barham topdi;
+6) xorazmshoh Otsiz bu jangda Sanjar tomonida turib halok bo'ldi.
+A) 1, 2, 3, 4
+B) 1, 2, 5, 6
+C) 1, 3, 5, 6
+D) 2, 3, 4, 6
+JAVOB: A
+
+Mo'g'ullar davridagi shaxslar va ularning faoliyatini moslashtiring.
+1. Mahmud Yalavoch
+2. Mas'udbek
+3. Kebekxon
+4. Tarmashirin
+a) Movarounnahrni boshqargan mo'g'ul noibi, qarorgohi Xo'jandda bo'lgan
+b) Mahmud Yalavochning o'g'li, 1271-yilda pul islohoti o'tkazgan
+c) pul va ma'muriy islohotlar o'tkazgan, Nasaf yaqinida saroy qurdirgan
+d) islomni qabul qilib, Alouddin unvonini olgan xon
+e) Chig'atoy ulusiga asos solgan
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: C
+
+Amir Temur faoliyatiga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Urganchning vayron etilishi;
+2) «Loy jangi»;
+3) Damashqning egallanishi;
+4) Balxdagi qurultoy;
+5) Bag'dodning birinchi marta egallanishi;
+6) Qunduzcha daryosi bo'yidagi jang.
+A) 2, 4, 1, 5, 6, 3
+B) 2, 4, 1, 6, 5, 3
+C) 2, 4, 6, 1, 5, 3
+D) 4, 2, 1, 6, 5, 3
+JAVOB: B
+
+Temuriy hukmdorlar va ular bilan bog'liq ma'lumotlarni moslashtiring.
+1. Shohruh Mirzo
+2. Mirzo Ulug'bek
+3. Sulton Abusaid
+4. Sulton Husayn Boyqaro
+a) poytaxtni Hirotga ko'chirgan
+b) Movarounnahrni qariyb 40 yil boshqargan, rasadxona qurdirgan
+c) 1469-yilda Uzun Hasanga asir tushib, o'ldirilgan
+d) 1469–1506-yillarda Hirotda hukmronlik qilgan
+e) 1449-yilda otasiga qarshi chiqib, uni o'ldirtirgan
+A) 1-a, 2-b, 3-e, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-e, 3-c, 4-d
+JAVOB: C
+
+Barcha ma'lumotlarni tahlil qilib, to'g'ri va noto'g'ri hukmlar uyg'unligi berilgan javobni aniqlang. t/r Ma'lumot 1 Abulxayrxon 1428-yilda ko'chmanchi o'zbeklar davlatining xoni deb e'lon qilingan. 2 Muhammad Shayboniyxon 1507-yilda Hirotni egallagan. 3 1512-yilgi G'ijduvon jangida Ubaydullaxon Najmi Soniy qo'shinini tor-mor etgan. 4 Abdullaxon II davrida poytaxt Buxorodan Samarqandga ko'chirilgan. 5 Imomqulixon davrida Ashtarxoniylar davlati kuchaygan. 6 Ubaydullaxon II 1711-yilda fitna natijasida o'ldirilgan.
+A) 1-to'g'ri, 2-to'g'ri; 3-noto'g'ri, 4-noto'g'ri; 5-noto'g'ri, 6-to'g'ri
+B) 1-to'g'ri, 2-noto'g'ri; 3-to'g'ri, 4-noto'g'ri; 5-to'g'ri, 6-to'g'ri
+C) 1-to'g'ri, 2-to'g'ri; 3-to'g'ri, 4-noto'g'ri; 5-to'g'ri, 6-to'g'ri
+D) 1-to'g'ri, 2-to'g'ri; 3-to'g'ri, 4-to'g'ri; 5-to'g'ri, 6-to'g'ri
+JAVOB: C
+
+Tarixchilar va ularning asarlarini moslashtiring.
+1. Abulg'ozixon
+2. Munis va Ogahiy
+3. Mirzo Olim Toshkandiy
+4. Muhammad Hakimxon to'ra
+a) «Shajarai turk» va «Shajarai tarokima»
+b) «Firdavs ul-iqbol»
+c) «Ansob us-salotin va tavorix ul-xavoqin»
+d) «Muntaxab at-tavorix»
+e) «Tarixi Muqimxoniy»
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-e, 3-c, 4-d
+JAVOB: C
+
+Buxoro amirligi (mang'itlar sulolasi) hukmdorlarini hokimiyatga kelgan vaqti bo'yicha xronologik ketma-ketlikda joylashtiring.
+1) Amir Haydar; 2) Muhammad Rahim; 3) Amir Muzaffar; 4) Shohmurod; 5) Amir Olimxon; 6) Amir Nasrullo.
+A) 2, 4, 1, 6, 3, 5
+B) 4, 2, 1, 6, 3, 5
+C) 2, 1, 4, 6, 3, 5
+D) 2, 4, 6, 1, 3, 5
+JAVOB: A
+
+Nuqtalar o'rnida tushirib qoldirilgan ma'lumotlarni aniqlang. 1867-yilda tuzilgan Turkiston general-gubernatorligi dastlab 1. ............... va 2. ............... viloyatlaridan iborat bo'lib, uning markazi 3. ............... shahri edi.
+A) 1 — Sirdaryo, 2 — Yettisuv, 3 — Toshkent
+B) 1 — Samarqand, 2 — Yettisuv, 3 — Toshkent
+C) 1 — Sirdaryo, 2 — Farg'ona, 3 — Toshkent
+D) 1 — Sirdaryo, 2 — Yettisuv, 3 — Vernıy
+JAVOB: A
+
+Xalq qo'zg'olonlari va ularga oid ma'lumotlarni moslashtiring.
+1. 1916-yilgi Jizzax qo'zg'oloni
+2. 1898-yilgi Andijon qo'zg'oloni
+3. 1892-yilgi Toshkentdagi «vabo qo'zg'oloni»
+4. 1873–1876-yillardagi Po'latxon qo'zg'oloni
+a) mahalliy aholini front orqasidagi ishlarga safarbar qilish haqidagi farmonga qarshi
+b) Dukchi eshon boshchiligida ko'tarilgan
+c) vabo epidemiyasiga qarshi ko'rilgan choralardagi zo'ravonliklarga qarshi
+d) Qo'qon xonligida Xudoyorxon va Rossiya ta'siriga qarshi
+e) Xiva xonligida yer solig'ining oshirilishiga qarshi
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-c, 2-b, 3-a, 4-d
+C) 1-a, 2-b, 3-c, 4-e
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+Turkistondagi davriy nashrlarni ular chiqa boshlagan yillar bo'yicha xronologik ketma-ketlikda joylashtiring.
+1) «Taraqqiy»; 2) «Oyna»; 3) «Sadoi Turkiston»; 4) «Turkiston viloyatining gazeti»; 5) «Najot».
+A) 1, 4, 2, 3, 5
+B) 4, 1, 2, 3, 5
+C) 4, 1, 3, 2, 5
+D) 4, 2, 1, 3, 5
+JAVOB: B
+
+Turkiston muxtoriyati hukumatiga oid to'g'ri ma'lumotni aniqlang.
+A) hukumatga dastlab Mustafo Cho'qay, keyin Muhammadjon Tinishboyev boshchilik qilgan
+B) hukumatga dastlab Muhammadjon Tinishboyev, keyin Ubaydullaxo'ja Asadullaxo'jayev boshchilik qilgan
+C) hukumatga dastlab Muhammadjon Tinishboyev, keyin Mustafo Cho'qay boshchilik qilgan
+D) hukumatga dastlab Munavvarqori, keyin Mustafo Cho'qay boshchilik qilgan
+JAVOB: C
+
+Sovet davriga oid NOTO'G'RI ma'lumotlar soni nechta?
+1) 1925–1929-yillarda yer-suv islohoti o'tkazilgan;
+2) 1927-yilda «hujum» harakati boshlangan;
+3) 1930-yilda O'zbekiston SSR poytaxti Samarqanddan Toshkentga ko'chirilgan;
+4) 1939-yilda Katta Farg'ona kanali 45 kunda qurilgan;
+5) Toshkent zilzilasi 1956-yilda sodir bo'lgan;
+6) 1977-yilda Toshkent metropoliteni ishga tushirilgan;
+7) 1983-yilda O'zbekiston SSR poytaxti yana Samarqandga ko'chirilgan.
+A) bitta
+B) uchta
+C) to'rtta
+D) ikkita
+JAVOB: D
+
+Mustaqillik arafasi va dastlabki yillaridagi voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Mustaqillik deklaratsiyasining qabul qilinishi;
+2) O'zbekistonda Prezident lavozimining joriy etilishi;
+3) davlat mustaqilligining e'lon qilinishi;
+4) umumxalq referendumi va Prezident saylovi;
+5) O'zbekiston Respublikasi Konstitutsiyasining qabul qilinishi;
+6) so'm-kuponning muomalaga kiritilishi.
+A) 2, 1, 3, 4, 5, 6
+B) 2, 1, 3, 5, 4, 6
+C) 2, 3, 1, 4, 5, 6
+D) 1, 2, 3, 4, 5, 6
+JAVOB: A
+
+Yangi O'zbekistonga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) «O'zbekiston — 2030» strategiyasining tasdiqlanishi;
+2) Harakatlar strategiyasining qabul qilinishi;
+3) Konstitutsiya bo'yicha umumxalq referendumi;
+4) Yangi O'zbekistonning taraqqiyot strategiyasining qabul qilinishi;
+5) muddatidan oldin o'tkazilgan Prezident saylovi.
+A) 4, 2, 3, 5, 1
+B) 2, 4, 3, 5, 1
+C) 2, 3, 4, 5, 1
+D) 2, 4, 3, 1, 5
+JAVOB: B
+
+O'zbekiston va u a'zo bo'lgan xalqaro tashkilotlarni a'zolik yillari bilan moslashtiring.
+1. Mustaqil Davlatlar Hamdo'stligi
+2. Birlashgan Millatlar Tashkiloti
+3. Shanxay hamkorlik tashkiloti
+4. Turkiy tilli davlatlar hamkorlik kengashi
+a) 1991-yil
+b) 1992-yil
+c) 2001-yil
+d) 2019-yil
+e) 1996-yil
+A) 1-a, 2-e, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-b, 2-a, 3-c, 4-d
+D) 1-a, 2-b, 3-d, 4-c
+JAVOB: B
+
+Vizantiya imperiyasiga oid TO'G'RI ma'lumotlar soni nechta?
+1) Yustinian I davrida Avliyo Sofiya ibodatxonasi qurilgan;
+2) Yustinian davrida «Fuqarolik huquqi majmuasi» tuzilgan;
+3) 1054-yilda xristian cherkovi katolik va pravoslav cherkovlariga bo'lingan;
+4) VIII–IX asrlarda ikonoborchilik harakati bo'lgan;
+5) 1453-yilda Vizantiya Usmonlilar tomonidan tugatilgan;
+6) Vizantiyaning poytaxti Ravenna shahri bo'lgan;
+7) «Nika» qo'zg'oloni Yustinian davrida bo'lgan.
+A) oltita
+B) yettita
+C) beshta
+D) to'rtta
+JAVOB: A
+
+O'rta asrlar Yevropasidagi janglarni xronologik ketma-ketlikda joylashtiring.
+1) Grunvald jangi; 2) Gastings jangi; 3) Orleanning ozod qilinishi; 4) Kresi jangi; 5) Buvin jangi; 6) Azenkur jangi.
+A) 2, 5, 4, 6, 1, 3
+B) 2, 4, 5, 1, 6, 3
+C) 5, 2, 4, 1, 6, 3
+D) 2, 5, 4, 1, 6, 3
+JAVOB: D
+
+Uyg'onish davri namoyandalari va ularning asarlarini moslashtiring.
+1. Dante Aligyeri
+2. Franchesko Petrarka
+3. Jovanni Bokkachcho
+4. Erazm Rotterdamskiy
+a) «Ilohiy komediya»
+b) Lauraga bag'ishlangan sonetlar («Kansonyere»)
+c) «Dekameron»
+d) «Ahmoqlikni maqtash»
+e) «Utopiya»
+A) 1-a, 2-b, 3-c, 4-e
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: B
+
+Usmonli imperiyasi va Turkiya tarixiga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Turkiya Respublikasining e'lon qilinishi;
+2) Tanzimot islohotlarining boshlanishi;
+3) «Yosh turklar» inqilobi;
+4) Sulton Mahmud II tomonidan yangicharilar qo'shinining tugatilishi;
+5) Midhat posho konstitutsiyasining qabul qilinishi;
+6) xalifalikning bekor qilinishi.
+A) 4, 2, 5, 3, 6, 1
+B) 4, 2, 3, 5, 1, 6
+C) 4, 2, 5, 3, 1, 6
+D) 2, 4, 5, 3, 1, 6
+JAVOB: C
+
+Xalqaro kelishuvlar va ularning mazmunini moslashtiring.
+1. Versal tinchlik shartnomasi
+2. Vashington konferensiyasi
+3. Lokarno konferensiyasi
+4. Myunxen kelishuvi
+a) Elzas va Lotaringiya Fransiyaga qaytarildi
+b) Uzoq Sharq va Tinch okeani masalalari bo'yicha «to'rt davlat» va «to'qqiz davlat» shartnomalari
+c) Germaniyaning g'arbiy chegaralari daxlsizligi kafolatlandi
+d) Chexoslovakiyaning Sudet viloyati Germaniyaga berildi
+e) Germaniya Millatlar Ligasidan chiqdi
+A) 1-a, 2-b, 3-c, 4-e
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-d, 2-b, 3-c, 4-a
+D) 1-a, 2-c, 3-b, 4-d
+JAVOB: B
+
+Osiyo davlatlari rahbarlari va ularning faoliyatini moslashtiring.
+1. Javoharlal Neru
+2. Muhammad Ali Jinna
+3. Sukarno
+4. Xo Shi Min
+a) mustaqil Hindistonning birinchi bosh vaziri
+b) Pokiston davlatining asoschisi
+c) Indoneziyaning birinchi prezidenti
+d) 1945-yilda Vyetnam Demokratik Respublikasini e'lon qilgan
+e) Bangladesh davlatining asoschisi
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-e, 3-c, 4-d
+D) 1-a, 2-b, 3-d, 4-c
+JAVOB: A
+
+«Sovuq urush» yakuniga oid voqealarni xronologik ketma-ketlikda joylashtiring.
+1) Berlin devorining qulashi;
+2) Germaniyaning birlashishi;
+3) Varshava shartnomasi tashkilotining tarqatib yuborilishi;
+4) Belovej kelishuvi va SSSRning tarqalishi;
+5) Maastrixt shartnomasining imzolanishi;
+6) sovet qo'shinlarining Afg'onistondan olib chiqilishining yakunlanishi.
+A) 6, 1, 2, 4, 3, 5
+B) 1, 6, 2, 3, 4, 5
+C) 6, 1, 3, 2, 4, 5
+D) 6, 1, 2, 3, 4, 5
+JAVOB: D
+
+O'qituvchi o'quvchining ta'lim olishdagi qiyinchiliklari bo'yicha shu sinfda dars beradigan hamkasblari, so'ngra psixolog bilan maslahatlashdi. Kasb standartiga ko'ra bu harakatlar qaysi mehnat vazifasiga kiradi?
+A) B/02.6 — Hamkasblar va ota-onalar bilan hamkorlik
+B) A/05.6 — Xavfsiz rivojlantiruvchi ta'lim muhitini yaratish va ta'minlash
+C) A/03.6 — O'zlashtirishni baholash va qayta aloqani taqdim etish
+D) A/04.6 — Tarbiyaviy faoliyatni tashkil etish
+JAVOB: C
+
+O'qituvchi o'quvchilarga zamonaviy ommaviy axborot vositalari dunyosida xavfsiz ishlashni o'rgatdi, favqulodda vaziyatlarda harakatlar ketma-ketligini tushuntirdi. Kasb standartiga ko'ra bu qaysi mehnat vazifasiga kiradi?
+A) A/04.6 — Tarbiyaviy faoliyatni tashkil etish
+B) A/05.6 — Xavfsiz rivojlantiruvchi ta'lim muhitini yaratish va ta'minlash
+C) A/02.6 — Ta'lim samaradorligini ta'minlash
+D) B/01.6 — O'z-o'zini rivojlantirish va kasbiy o'sish
+JAVOB: B
+
+Kasb standartiga ko'ra A/05.6 «Xavfsiz rivojlantiruvchi ta'lim muhitini yaratish va ta'minlash» mehnat vazifasining mehnat harakatlarini aniqlang.
+1) jinsi, millati, ona tili, dini va oilaviy holatidan qat'i nazar har bir o'quvchiga teng imkoniyatlar yaratish;
+2) o'quvchilarga turli tahdidlar mohiyatini, favqulodda vaziyatlardagi harakatlar ketma-ketligini tushuntirish;
+3) o'quvchilarning o'zini o'zi boshqarish organlari faoliyatini tashkil qilishda yordam berish;
+4) ta'lim natijalarini diagnostika qilish uchun turli usul va vositalardan foydalanish;
+5) o'quvchilarning maxsus ta'limiy ehtiyojlari asosida individuallashtirilgan ish olib borish;
+6) nizoli vaziyatlarni yetarli darajada hal qilish.
+A) 1, 2, 5, 6
+B) 2, 3, 4, 5
+C) 1, 3, 4, 6
+D) 1, 2, 3, 6
+JAVOB: A
+
+O'qituvchi o'quvchilar uchun ekskursiya va o'lkashunoslik ekspeditsiyasini tashkil qilib, ular orqali vatanparvarlik ruhida tarbiyalash usullarini qo'lladi. Kasb standartiga ko'ra bu qaysi mehnat vazifasining zarur ko'nikmasi hisoblanadi?
+A) B/02.6 — Hamkasblar va ota-onalar bilan hamkorlik
+B) A/05.6 — Xavfsiz rivojlantiruvchi ta'lim muhitini yaratish va ta'minlash
+C) A/04.6 — Tarbiyaviy faoliyatni tashkil etish
+D) A/01.6 — O'quv jarayonini rejalashtirish
+JAVOB: C
+
+Kasb standartidagi XALIKK-2017 tasniflagichi kodlarini lavozim nomlari bilan moslashtiring.
+1. 2310
+2. 2330
+3. 3310
+a) O'qituvchi
+b) Umumiy o'rta ta'lim maktablarining yuqori sinflari o'qituvchisi
+c) Boshlang'ich (kichik) sinflar o'qituvchisi
+d) Maktabgacha ta'lim tashkiloti tarbiyachisi
+A) 1-b, 2-a, 3-c
+B) 1-a, 2-b, 3-d
+C) 1-a, 2-c, 3-b
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+Test turlari va ularning ta'riflarini moslashtiring.
+1. Adaptiv test
+2. Binar test
+3. Gradual test
+4. Geterogen test
+a) to'g'ri javobdan keyin qiyinroq, noto'g'ri javobdan keyin osonroq topshiriq avtomatik taqdim etiladi
+b) hukmning to'g'ri yoki noto'g'ri ekanini tasdiqlovchi javob variantlaridan iborat
+c) javoblar ichidan eng to'g'risi tanlanadigan darajali test
+d) bir nechta fan sohasini qamrab oladi
+e) faqat bir fan sohasi bo'yicha topshiriqlardan iborat
+A) 1-c, 2-b, 3-a, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: B
+
+O'qituvchi o'quvchilarga o'z mahallasining tarixini o'rganib, real hayotiy vaziyatda qo'llaniladigan loyiha (ko'rgazma va ekskursiya marshruti) tayyorlashni topshirdi va shu asosda ularni baholadi. Bu baholashning qaysi turi?
+A) ipsativ baholash
+B) normativ baholash
+C) an'anaviy baholash
+D) autentik baholash
+JAVOB: D
+
+Baholashga oid tushunchalar va ularning ta'riflarini moslashtiring.
+1. Aprobatsiya
+2. Benchmarking
+3. Bashorat validligi
+4. Dastlabki ekspertiza
+a) test topshiriqlari sifatini aniqlash uchun o'tkaziladigan tajriba-sinov ishlari
+b) ta'lim sifatini xalqaro, mahalliy va ta'lim tashkilotlari kesimida taqqoslash, eng yaxshi amaliyotlarni aniqlash
+c) test natijasiga qarab ko'nikma va qobiliyatlarni egallay olishni oldindan aytib bera olish
+d) test muallifi tomonidan testni qonuniyatlarga muvofiqligi bo'yicha nazariy o'rganib, o'zgartirish kiritish
+e) imtihon natijasidan norozilarning e'tirozlarini ko'rib chiqish
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-e, 2-b, 3-c, 4-d
+JAVOB: C
+
+Test topshirig'idagi «distraktorlar» deganda nima tushuniladi?
+A) testning to'g'ri javobiga yaqin bo'lgan chalg'ituvchi variantlar
+B) javobini yozishni talab etadigan ochiq topshiriqlar
+C) test topshiriqlarini bajarish uchun ajratilgan vaqt
+D) testning psixometrik xarakteristikalari
+JAVOB: A
+
+O'quvchilarning his-tuyg'ulari, munosabatlari, qiziqishlari, qadriyatlari va motivatsiyasi bilan bog'liq ko'nikmalar Bloom taksonomiyasining qaysi sohasiga kiradi?
+A) affektiv soha
+B) metakognitiv soha
+C) kognitiv soha
+D) psixomotor soha
+JAVOB: A
+
+«Ta'limda baholash va monitoring asoslari» qo'llanmasiga ko'ra diagnostik (tashxislovchi) baholash qanday tarzda o'tkaziladi?
+A) har bir dars davomida natijani yaxshilash uchun ko'rsatmalar berish shaklida
+B) chorak yakunida rasmiy nazorat ishi shaklida
+C) faqat bitiruv sinflarida bosqichli davlat imtihoni shaklida
+D) o'quv yili boshida va oxirida o'quvchi bilim va ko'nikmalarini norasmiy tashxislash shaklida
+JAVOB: D
+
+O'qituvchi o'quvchilar va ota-onalar bilan oson muloqotga kirisha oladi, suhbatda o'z fikrini to'g'ri ifodalab, uni muvaffaqiyatli himoya qiladi va suhbatdoshlari tomonidan samimiy qabul qilinadi. Pedagogning qaysi qobiliyati namoyon bo'lmoqda?
+A) kommunikativ qobiliyat
+B) akademik qobiliyat
+C) perseptiv qobiliyat
+D) konstruktiv qobiliyat
+JAVOB: A
+
+Ya. A. Komenskiyning yosh davrlariga bo'lish tizimi va maktab turlarini moslashtiring.
+1. tug'ilgandan 6 yoshgacha
+2. 6–12 yosh
+3. 12–18 yosh
+4. 18–24 yosh
+a) ona maktabi
+b) xalq maktabi (ona tili maktabi)
+c) gimnaziya (lotin maktabi)
+d) universitet (akademiya)
+e) pansofiya maktabi
+A) 1-b, 2-a, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-e, 4-d
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+Ya. A. Komenskiyning asarlarini aniqlang.
+1) «Tillar va hamma fanlarning ochiq eshigi»;
+2) «Buyuk didaktika»;
+3) «Onalar maktabi»;
+4) «Emil yoki tarbiya haqida»;
+5) «Pansofiya maktabi»;
+6) «Lingard va Gertruda».
+A) 1, 2, 4, 6
+B) 1, 2, 3, 5
+C) 1, 3, 5, 6
+D) 2, 3, 4, 5
+JAVOB: B
+
+Dars boshida o'quvchilar jadvalning birinchi ustuniga mavzu bo'yicha bilganlarini, ikkinchisiga bilishni xohlaganlarini yozdilar; dars oxirida esa uchinchi ustunga yangi o'rganganlarini qayd etdilar. O'qituvchi qaysi grafik organayzerdan foydalandi?
+A) Venn diagrammasi
+B) Klaster
+C) Insert jadvali
+D) BBB (Bilaman – Bilishni xohlayman – Bildim) jadvali
+JAVOB: D
+</script>
+
+<script type="text/plain" class="set" data-title="Attestatsiya tarix 3-variant (rus tilida)" data-desc="50 savol, rus tilida, javoblar bilan: 1–35 tarix, 36–40 kasb standarti, 41–50 pedagogik mahorat" data-time="90" data-sections="Tarix:35,Kasbiy standart:5,Pedagogik mahorat:10">
+Расположите следующие события в правильной хронологической последовательности.
+1) Марафонская битва;
+2) установление республиканского строя в Риме;
+3) объединение Китая Цинь Шихуанди;
+4) гибель Кира II в битве с массагетами;
+5) битва при Гавгамелах;
+6) победа флота Октавиана у мыса Акций.
+A) 4, 2, 1, 5, 3, 6
+B) 2, 4, 1, 5, 3, 6
+C) 4, 1, 2, 5, 3, 6
+D) 4, 2, 1, 3, 5, 6
+JAVOB: A
+
+Определите сведения, относящиеся к периоду правления Цинь Шихуанди.
+1) в 221 году до н. э. Китай был объединён в единое государство;
+2) по всей стране были введены единые меры и деньги;
+3) в широких масштабах велось строительство Великой Китайской стены;
+4) буддизм был провозглашён государственной религией;
+5) были сожжены книги, связанные с учением Конфуция;
+6) была основана династия Хань.
+A) 1, 3, 4, 5
+B) 1, 2, 4, 6
+C) 2, 3, 5, 6
+D) 1, 2, 3, 5
+JAVOB: D
+
+Период, названный в источниках «веком Перикла», охватывает правление Перикла в Афинах. Сколько лет и в какие годы длился этот период?
+A) 15 лет, 459–444 гг. до н. э.
+B) 15 лет, 444–429 гг. до н. э.
+C) 20 лет, 449–429 гг. до н. э.
+D) 10 лет, 439–429 гг. до н. э.
+JAVOB: B
+
+Установите соответствие между древними государствами и сведениями о них.
+1. Древний Хорезм
+2. Государство Кангюй
+3. Давань
+a) в IV в. до н. э. стал независимым от Ахеменидов; храм Кой-Крылган-кала
+b) столица — Кангдиз (Битянь); города Шурабашат и Учкурган
+c) столица — Эрши; из-за «небесных коней» подвергся походу империи Хань
+d) столицей была Мараканда
+e) столицей была Бактра
+A) 1-a, 2-b, 3-c
+B) 1-a, 2-d, 3-c
+C) 1-e, 2-b, 3-c
+D) 1-a, 2-b, 3-d
+JAVOB: A
+
+Сколько ВЕРНЫХ сведений о бухар-худатах приведено ниже?
+1) бухар-худат Кана чеканил серебряные дирхемы со своим изображением и надписью «правитель Бухары»;
+2) после убийства Кутейбы ибн Муслима в 715 году бухар-худаты в течение года самостоятельно управляли Бухарой;
+3) последний бухар-худат Бунят был казнён в 782 году за поддержку восстания Муканны;
+4) Хутак-хатун правила в 673–692 годах;
+5) во владения бухар-худатов входили также Самарканд и Каттакурган;
+6) бухар-худаты основали династию Тахиридов.
+A) пять
+B) четыре
+C) два
+D) три
+JAVOB: B
+
+Определите верные сведения о Таласской битве.
+1) битва произошла в 751 году;
+2) войском Тан командовал Гао Сяньчжи, кореец по происхождению;
+3) в ходе битвы карлуки перешли на сторону арабов;
+4) в результате битвы империя Тан захватила Мавераннахр;
+5) пленные китайские ремесленники были доставлены в Бухару и наладили там производство бумаги.
+A) 2, 4, 5
+B) 1, 2, 3
+C) 1, 2, 5
+D) 1, 3, 5
+JAVOB: B
+
+Расположите следующие события в правильной хронологической последовательности.
+1) назначение Тахира ибн Хусейна наместником Хорасана;
+2) восшествие Мамуна на престол халифа;
+3) победа Исмаила Самани над Амром ибн Лейсом близ Балха;
+4) разгром Тахиром ибн Хусейном войска Али ибн Исы (ибн Махана) у Рея;
+5) назначение Мамуна наместником Хорасана.
+A) 4, 5, 2, 1, 3
+B) 5, 4, 1, 2, 3
+C) 5, 4, 2, 1, 3
+D) 5, 2, 4, 1, 3
+JAVOB: C
+
+Установите соответствие между диванами государства Саманидов и их функциями.
+1. Диван мустауфи
+2. Диван барида
+3. Диван мухтасиба
+4. Диван мушрифа
+a) государственные финансы — доходы и расходы
+b) почтовая связь и доставка сведений о событиях в стране
+c) надзор за весами, ценами на рынках и общественной нравственностью
+d) ревизия государственного имущества, прихода и расхода казны
+e) составление официальных документов и дипломатической переписки
+A) 1-a, 2-e, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-b, 3-d, 4-e
+D) 1-d, 2-b, 3-c, 4-a
+JAVOB: B
+
+Определите верные сведения, относящиеся к периоду Караханидов.
+1) в 999 году была захвачена Бухара и прекратило существование государство Саманидов;
+2) Сатук Богра-хан принял ислам;
+3) Махмуд Кашгари посвятил «Диван лугат ат-турк» Махмуду Газневи;
+4) центром Западнокараханидского каганата был Самарканд;
+5) Юсуф Хас Хаджиб завершил поэму «Кутадгу билиг» в 1069 году;
+6) центром Западнокараханидского каганата была Бухара.
+A) 1, 2, 5, 6
+B) 1, 2, 4, 5
+C) 2, 3, 5, 6
+D) 1, 3, 4, 6
+JAVOB: B
+
+Проанализируйте все сведения и определите ответ с правильным сочетанием верных и неверных суждений. № Сведения 1 Государство Газневидов существовало в 977–1186 годах. 2 Султан Махмуд Газневи в 1017 году завоевал Хорезм. 3 В Данданаканской битве 1040 года султан Масуд потерпел поражение от Сельджукидов. 4 Багдадский халиф пожаловал Махмуду Газневи титул «Йамин ад-даула ва амин ал-милла». 5 Столицей государства Газневидов был город Бухара. 6 Султан Масуд одержал победу в Данданаканской битве и сохранил Хорасан.
+A) 1-неверно, 2-верно; 3-верно, 4-верно; 5-верно, 6-неверно
+B) 1-верно, 2-верно; 3-верно, 4-верно; 5-неверно, 6-неверно
+C) 1-верно, 2-неверно; 3-верно, 4-верно; 5-неверно, 6-верно
+D) 1-верно, 2-верно; 3-неверно, 4-верно; 5-неверно, 6-неверно
+JAVOB: B
+
+Расположите события истории Сельджукидов в хронологической последовательности.
+1) Данданаканская битва;
+2) Катванская битва;
+3) начало правления Малик-шаха;
+4) битва при Манцикерте (Малазгирте);
+5) смерть султана Санджара.
+A) 4, 1, 3, 2, 5
+B) 1, 3, 4, 2, 5
+C) 1, 4, 3, 5, 2
+D) 1, 4, 3, 2, 5
+JAVOB: D
+
+Установите соответствие между представителями династии Ануштегинидов и их деятельностью.
+1. Ануштегин
+2. Атсыз
+3. Текеш
+4. Алаеддин Мухаммед
+a) был таштдаром при дворе Сельджукидов, династия названа его именем
+b) боролся против султана Санджара за независимость Хорезма
+c) в 1194 году разбил Тогрула III и положил конец власти иракских Сельджукидов
+d) в 1210 году разбил каракитаев, в 1212 году подавил восстание в Самарканде
+e) разгромил монгольское войско близ Парвана
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-d, 4-e
+D) 1-b, 2-a, 3-c, 4-e
+JAVOB: A
+
+Сколько ВЕРНЫХ сведений об истории Арабского халифата приведено ниже?
+1) династию Омейядов основал Муавия в 661 году;
+2) столицей Омейядского халифата был Дамаск;
+3) Аббасиды пришли к власти в 750 году;
+4) город Багдад основал халиф аль-Мансур в 762 году;
+5) в период правления халифа Мамуна расцвела деятельность «Байт аль-хикма»;
+6) в 1258 году Багдад был захвачен войском Чингисхана.
+A) шесть
+B) четыре
+C) пять
+D) три
+JAVOB: C
+
+Расположите события истории крестовых походов в хронологической последовательности.
+1) взятие Иерусалима участниками Первого крестового похода;
+2) битва при Хаттине;
+3) взятие Константинополя крестоносцами;
+4) призыв папы Урбана II на Клермонском соборе;
+5) падение крепости Акра;
+6) Второй крестовый поход.
+A) 4, 1, 6, 2, 3, 5
+B) 4, 1, 6, 3, 2, 5
+C) 4, 6, 1, 2, 3, 5
+D) 1, 4, 6, 2, 3, 5
+JAVOB: A
+
+Установите соответствие между документами средневековой Европы и их содержанием.
+1. Верденский договор
+2. Вормсский конкордат
+3. «Великая хартия вольностей»
+4. «Золотая булла»
+a) империя Каролингов была разделена на три части
+b) был достигнут компромисс между императором и папой по вопросу инвеституры
+c) английский король был вынужден предоставить привилегии баронам и рыцарям
+d) установлен порядок избрания императора семью курфюрстами
+e) во Франции впервые были созваны Генеральные штаты
+A) 1-a, 2-e, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-b, 3-d, 4-c
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: B
+
+Определите сведения, пропущенные на месте точек. Город Отрар выдерживал монгольскую осаду в течение 1. ............... месяцев. Правитель города
+2. ............... был взят в плен и казнён. Обороной Ходжента руководил 3. ............... .
+A) 1 — 5, 2 — Тимур-Мелик, 3 — Гаир-хан
+B) 1 — 5, 2 — Гаир-хан, 3 — Тимур-Мелик
+C) 1 — 9, 2 — Караджа, 3 — Тимур-Мелик
+D) 1 — 3, 2 — Гаир-хан, 3 — Джалаладдин
+JAVOB: B
+
+Определите сведения, пропущенные на месте точек. Провозглашённый в 1370 году на курултае в Балхе эмиром Мавераннахра Темур получил титул «Гурган», так как женился на чингизидке 1. ............... . Столицей он избрал 2. ............... , а на родине, в Кеше, построил дворец 3. ............... .
+A) 1 — Сарай-мульк ханым, 2 — Самарканд, 3 — Ак-Сарай
+B) 1 — Чолпан-мульк ага, 2 — Самарканд, 3 — Ак-Сарай
+C) 1 — Туман-ага, 2 — Самарканд, 3 — Кок-Сарай
+D) 1 — Сарай-мульк ханым, 2 — Шахрисабз, 3 — Кок-Сарай
+JAVOB: A
+
+Установите соответствие между походами Амира Темура и событиями, произошедшими в их ходе.
+1. «Трёхлетний» поход
+2. «Пятилетний» поход
+3. «Семилетний» поход
+a) были захвачены Тебриз и Тифлис
+b) ликвидирована династия Музаффаридов, на Тереке разгромлен Тохтамыш
+c) взят Дамаск, в Анкарской битве пленён Баязид I
+d) взят Дели
+A) 1-a, 2-d, 3-c
+B) 1-a, 2-b, 3-d
+C) 1-b, 2-a, 3-c
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+Сколько НЕВЕРНЫХ сведений о культуре эпохи Темуридов приведено ниже?
+1) обсерватория Улугбека построена на холме Кухак (Чупан-ата) в Самарканде;
+2) после смерти Улугбека Али Кушчи переехал в Стамбул и продолжил там свою деятельность;
+3) Камолиддин Бехзод был крупным представителем гератской школы миниатюры;
+4) Алишер Навои написал «Хамсу» в 1483–1485 годах;
+5) соборная мечеть Биби-ханым построена по приказу Шахруха;
+6) в Герате было возведено медресе Гаухаршад-бегим;
+7) медресе Улугбека в Бухаре построено в 1417 году;
+8) произведение «Зафар-наме» написал Мирзо Улугбек.
+A) два
+B) четыре
+C) три
+D) одно
+JAVOB: A
+
+Расположите события XVI–XVIII веков в хронологической последовательности.
+1) окончательное овладение Шейбани-ханом Самаркандом после битвы при Сарипуле;
+2) Гиждуванская битва;
+3) смерть Абдулла-хана II;
+4) приход к власти династии Аштарханидов;
+5) гибель Шейбани-хана близ Мерва;
+6) поход Надир-шаха на Бухару и Хиву.
+A) 1, 5, 2, 4, 3, 6
+B) 1, 2, 5, 3, 4, 6
+C) 1, 5, 2, 3, 4, 6
+D) 5, 1, 2, 3, 4, 6
+JAVOB: C
+
+Установите соответствие между правителями и сведениями о них.
+1. Шахмурад
+2. Эльтузар
+3. Алим-хан
+a) первым из мангытов принял титул «эмир»
+b) первым из кунгратов принял титул «хан»
+c) первым из мингов принял титул «хан», присоединил Ташкент к ханству
+d) первым из мангытов принял титул «хан»
+e) основал Кокандское ханство
+A) 1-a, 2-c, 3-b
+B) 1-a, 2-b, 3-c
+C) 1-a, 2-b, 3-e
+D) 1-d, 2-b, 3-c
+JAVOB: B
+
+Установите соответствие между деятелями Реформации и Контрреформации и их деятельностью.
+1. Мартин Лютер
+2. Жан Кальвин
+3. Игнатий Лойола
+4. Генрих VIII
+a) в 1517 году обнародовал «95 тезисов»
+b) провёл церковную реформу в Женеве, выдвинул учение о предопределении
+c) основал орден иезуитов
+d) отделил Английскую церковь от папы и стал её главой
+e) созвал Тридентский собор
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-b, 3-e, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: A
+
+Определите сведения, пропущенные на месте точек. В 1492 году 1. ............... под испанским флагом достиг Багамских островов. В 1498 году 2. ............... , обогнув Африку, достиг индийского города Каликут. В 1519–1522 годах экспедиция 3. ............... совершила первое кругосветное плавание.
+A) 1 — Христофор Колумб, 2 — Бартоломеу Диаш, 3 — Магеллан
+B) 1 — Христофор Колумб, 2 — Васко да Гама, 3 — Джеймс Кук
+C) 1 — Америго Веспуччи, 2 — Васко да Гама, 3 — Магеллан
+D) 1 — Христофор Колумб, 2 — Васко да Гама, 3 — Магеллан
+JAVOB: D
+
+Установите соответствие между изобретателями эпохи промышленного переворота и их изобретениями.
+1. Джеймс Уатт
+2. Джордж Стефенсон
+3. Роберт Фултон
+4. Джон Кей
+a) универсальная паровая машина
+b) паровоз «Ракета»
+c) пароход «Клермонт»
+d) «летающий челнок»
+e) прядильная машина «Дженни»
+A) 1-b, 2-a, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-e
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-c, 3-b, 4-d
+JAVOB: C
+
+Расположите события XIX века в хронологической последовательности.
+1) отмена крепостного права в России;
+2) Венский конгресс;
+3) революции «весны народов» в Европе;
+4) Июльская революция во Франции;
+5) превращение Рима в столицу объединённой Италии;
+6) окончание Гражданской войны в США.
+A) 4, 2, 3, 1, 6, 5
+B) 2, 4, 3, 6, 1, 5
+C) 2, 3, 4, 1, 6, 5
+D) 2, 4, 3, 1, 6, 5
+JAVOB: D
+
+Проанализируйте приведённые сведения и определите ответ, соответствующий диаграмме Эйлера–Венна.
+a) была принята «Декларация прав человека и гражданина»;
+b) текст Декларации независимости подготовил Т. Джефферсон;
+c) король был казнён по приговору суда;
+d) в 1787 году была принята конституция;
+e) идеологической основой стали идеи Просвещения; f) был установлен республиканский строй.
+A) I – a, c; II – b, d; III – e, f
+B) I – a, c, f; II – b, d; III – e
+C) I – a, d; II – b, c; III – e, f
+D) I – a, c; II – b, d, f; III – e
+JAVOB: A
+
+Проанализируйте все сведения и определите ответ с правильным сочетанием верных и неверных суждений. № Сведения 1 В 1865 году Ташкент был взят войсками генерала М. Г. Черняева. 2 В 1867 году было образовано Туркестанское генерал-губернаторство во главе с К. П. Кауфманом. 3 По договору 1868 года Бухарский эмират превратился в вассальное государство России. 4 По Гандимиянскому договору 1873 года к России отошёл левый берег Амударьи. 5 В 1876 году Кокандское ханство было упразднено, на его месте образована Ферганская область. 6 В 1881 году русские войска взяли крепость Геок-Тепе.
+A) 1-верно, 2-неверно; 3-верно, 4-неверно; 5-верно, 6-верно
+B) 1-верно, 2-верно; 3-неверно, 4-неверно; 5-верно, 6-верно
+C) 1-верно, 2-верно; 3-верно, 4-неверно; 5-верно, 6-верно
+D) 1-верно, 2-верно; 3-верно, 4-верно; 5-верно, 6-верно
+JAVOB: C
+
+Установите соответствие между джадидскими просветителями и их деятельностью.
+1. Махмудходжа Бехбуди
+2. Мунаввар-кари Абдурашидханов
+3. Абдулла Авлони
+4. Абдурауф Фитрат
+a) драма «Падаркуш», журнал «Ойина»
+b) газета «Хуршид», букварь «Адиби аввал»
+c) произведение «Тюркский гулистан, или Нравственность», театральная труппа «Туран»
+d) произведения «Спор» («Мунозара»), «Рассказы индийского путешественника»
+e) газета «Садои Фаргона»
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-e, 4-d
+D) 1-d, 2-b, 3-c, 4-a
+JAVOB: A
+
+Расположите следующие события в хронологической последовательности.
+1) образование Туркестанской АССР;
+2) образование Бухарской Народной Советской Республики;
+3) образование Хорезмской Народной Советской Республики;
+4) образование Узбекской ССР;
+5) преобразование Таджикистана в отдельную союзную республику;
+6) включение Каракалпакской АССР в состав Узбекской ССР.
+A) 1, 3, 2, 4, 5, 6
+B) 1, 2, 3, 4, 5, 6
+C) 1, 3, 2, 4, 6, 5
+D) 3, 1, 2, 4, 5, 6
+JAVOB: A
+
+Определите жертв репрессий 1937–1938 годов.
+1) Файзулла Ходжаев; 2) Махмудходжа Бехбуди; 3) Абдулла Кадыри; 4) Хамза Хакимзаде Ниязи; 5) Акмаль Икрамов; 6) Абдулхамид Чулпан.
+A) 1, 3, 4, 6
+B) 2, 3, 4, 6
+C) 1, 3, 5, 6
+D) 1, 2, 4, 5
+JAVOB: C
+
+Расположите события Второй мировой войны в хронологической последовательности.
+1) Курская битва;
+2) нападение Германии на Польшу;
+3) высадка союзников в Нормандии;
+4) нападение Японии на Пёрл-Харбор;
+5) нападение Германии на СССР;
+6) окончание Сталинградской битвы.
+A) 2, 5, 4, 1, 6, 3
+B) 2, 4, 5, 6, 1, 3
+C) 5, 2, 4, 6, 1, 3
+D) 2, 5, 4, 6, 1, 3
+JAVOB: D
+
+Расположите события истории Китая в хронологической последовательности.
+1) начало «культурной революции»;
+2) образование Китайской Народной Республики;
+3) возвращение Гонконга Китаю;
+4) Синьхайская революция;
+5) начало реформ под руководством Дэн Сяопина;
+6) начало политики «большого скачка».
+A) 4, 2, 1, 6, 5, 3
+B) 4, 6, 2, 1, 5, 3
+C) 2, 4, 6, 1, 5, 3
+D) 4, 2, 6, 1, 5, 3
+JAVOB: D
+
+Установите соответствие между международными организациями и годами их создания.
+1. НАТО
+2. Организация Варшавского договора
+3. Содружество Независимых Государств
+4. Шанхайская организация сотрудничества
+a) 1949 год
+b) 1955 год
+c) 1991 год
+d) 2001 год
+e) 1945 год
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-e, 2-b, 3-c, 4-d
+C) 1-b, 2-a, 3-c, 4-d
+D) 1-a, 2-b, 3-d, 4-c
+JAVOB: A
+
+Установите соответствие между государственными символами Республики Узбекистан и датами их принятия.
+1. Государственный флаг
+2. Государственный герб
+3. Государственный гимн
+a) 18 ноября 1991 года
+b) 2 июля 1992 года
+c) 10 декабря 1992 года
+d) 8 декабря 1992 года
+e) 31 августа 1991 года
+A) 1-a, 2-b, 3-d
+B) 1-a, 2-c, 3-b
+C) 1-e, 2-b, 3-c
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+Определите верные сведения о Конституции Республики Узбекистан, принятой на референдуме 30 апреля 2023 года.
+1) срок полномочий Президента установлен в 7 лет;
+2) одно и то же лицо не может быть Президентом более двух сроков подряд;
+3) Узбекистан провозглашён социальным государством;
+4) смертная казнь запрещена;
+5) Конституция состоит из 128 статей;
+6) число членов Сената установлено в 150 человек.
+A) 1, 3, 5, 6
+B) 1, 2, 5, 6
+C) 1, 2, 3, 4
+D) 2, 3, 4, 6
+JAVOB: C
+
+Определите трудовые функции, входящие согласно профессиональному стандарту в обобщённую трудовую функцию «Управление учебно-воспитательным процессом» (A).
+1) Планирование учебного процесса;
+2) Саморазвитие и профессиональный рост;
+3) Оценивание усвоения и предоставление обратной связи;
+4) Организация воспитательной деятельности;
+5) Сотрудничество с коллегами и родителями обучающихся;
+6) Создание и обеспечение безопасной развивающей образовательной среды;
+7) Обеспечение эффективности обучения.
+A) 2, 3, 4, 5, 7
+B) 1, 2, 3, 4, 6
+C) 1, 3, 4, 6, 7
+D) 1, 3, 5, 6, 7
+JAVOB: C
+
+Установите соответствие между категориями учителей и требуемым согласно профессиональному стандарту практическим стажем работы.
+1. Учитель второй категории
+2. Учитель первой категории
+3. Учитель высшей категории
+a) стаж работы не менее 3 лет
+b) стаж работы не менее 5 лет
+c) стаж работы не менее 8 лет
+d) стаж работы не менее 10 лет
+e) стаж работы не требуется
+A) 1-a, 2-b, 3-d
+B) 1-e, 2-a, 3-b
+C) 1-b, 2-c, 3-d
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+Каким кодом и уровнем квалификации обозначена в профессиональном стандарте трудовая функция «Оценивание усвоения и предоставление обратной связи»?
+A) A/03.5; 5-й уровень квалификации
+B) B/01.6; 6-й уровень квалификации
+C) A/02.6; 6-й уровень квалификации
+D) A/03.6; 6-й уровень квалификации
+JAVOB: D
+
+В начале учебного года учитель определил чёткие и измеримые результаты обучения и сформулировал в планах задачи на год, четверть и урок для их достижения. Необходимым умением какой трудовой функции согласно профессиональному стандарту это является?
+A) A/02.6 — Обеспечение эффективности обучения
+B) A/01.6 — Планирование учебного процесса
+C) B/01.6 — Саморазвитие и профессиональный рост
+D) A/03.6 — Оценивание усвоения и предоставление обратной связи
+JAVOB: B
+
+Какое из следующих действий НЕ ВХОДИТ в трудовые действия функции A/02.6 «Обеспечение эффективности обучения» профессионального стандарта?
+A) Использование активных методов обучения (фронтальное обучение не может преобладать)
+B) Использование различных подходов при обучении учащихся метакогнитивным стратегиям
+C) Организация коллективной и проектной работы учащихся
+D) Разработка учебных планов в соответствии с целями государственных образовательных стандартов и учебных программ
+JAVOB: D
+
+Когда впервые была опубликована таксономия Б. Блума и кем она была пересмотрена в 2001 году?
+A) 1948 год; Б. Скиннер и Б. Блум
+B) 1956 год; Г. Гарднер и Ж. Пиаже
+C) 1965 год; Л. Андерсон и Д. Кратволь
+D) 1956 год; Л. Андерсон и Д. Кратволь
+JAVOB: D
+
+Расположите уровни когнитивной сферы по обновлённой модели таксономии Блума снизу вверх.
+1) создание; 2) понимание; 3) анализ; 4) запоминание; 5) оценивание; 6) применение.
+A) 4, 2, 3, 6, 5, 1
+B) 4, 2, 6, 3, 5, 1
+C) 4, 6, 2, 3, 5, 1
+D) 2, 4, 6, 3, 1, 5
+JAVOB: B
+
+Установите соответствие между понятиями оценивания и их определениями.
+1. Ипсативное оценивание
+2. Надёжность
+3. Содержательная валидность
+4. Критериальное оценивание
+a) сравнение результата ученика с его же предыдущими результатами по тому же содержанию
+b) степень свободы средств оценивания от случайных ошибок, устойчивость результатов
+c) соответствие тестовых заданий содержанию измеряемой области (домена)
+d) проверка выполнения или невыполнения заранее установленных требований
+e) сравнение результата ученика с результатами других учеников
+A) 1-e, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: C
+
+Установите соответствие между международными программами оценивания и их целями.
+1. PIRLS
+2. PISA
+3. TIMSS
+4. TALIS
+a) оценка уровня чтения и понимания текста учащимися 4-го класса начальной школы
+b) оценка грамотности 15-летних учащихся в чтении, математике и естественных науках
+c) оценка освоения математики и естественных наук учащимися 4-х и 8-х классов
+d) изучение среды преподавания и условий труда педагогов
+e) академический оценочный тест США
+A) 1-b, 2-a, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-e
+C) 1-c, 2-b, 3-a, 4-d
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+Учитель составил технологическую карту урока, подготовил мультимедийные материалы и оригинальные раздаточные материалы по теме, разработал критерии оценивания заданий. Какая способность педагога проявилась согласно классификации У. Толипова?
+A) конструктивная способность
+B) коммуникативная способность
+C) организаторская способность
+D) перцептивно-педагогическая способность
+JAVOB: A
+
+Как называется эвристический (продуктивно-творческий) процесс нахождения решения задачи на основе поисковых направлений в ситуации, когда доводов для логического вывода недостаточно?
+A) педагогическая эмпатия
+B) педагогическая рефлексия
+C) педагогическая интуиция
+D) педагогическая перцепция
+JAVOB: C
+
+Установите соответствие между педагогами и их произведениями.
+1. Я. А. Коменский
+2. Ж.-Ж. Руссо
+3. А. Дистервег
+4. Абдулла Авлони
+a) «Великая дидактика»
+b) «Эмиль, или О воспитании»
+c) «Руководство к образованию немецких учителей»
+d) «Тюркский гулистан, или Нравственность»
+e) «Лингард и Гертруда»
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-b, 3-e, 4-d
+C) 1-a, 2-e, 3-c, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: A
+
+На уроке истории учащиеся расположили в одной таблице рядом события, произошедшие в один период в разных странах, и сравнили их. Каким средством воспользовались учащиеся?
+A) кластер
+B) синхронистическая таблица
+C) «Т-схема»
+D) хронологическая таблица
+JAVOB: B
+
+Что, согласно пособию «Основы оценивания и мониторинга в образовании», означает «чрезмерное оценивание» (over-assessment)?
+A) необоснованное завышение оценок учащимся
+B) оценивание одной работы несколькими учителями
+C) проведение чрезмерно большого количества суммативного оценивания в образовательном процессе
+D) использование формативного оценивания на каждом уроке
+JAVOB: C
+
+Администрация школы с целью выявления текущего состояния качества образования и принятия необходимых мер для развития изучила деятельность учителей и учащихся, образовательную среду, а также уровень сотрудничества учителей с родителями. Какой это вид мониторинга?
+A) международное оценивание
+B) внешний мониторинг
+C) внутренний мониторинг
+D) национальное оценочное исследование
+JAVOB: C
+</script>
+
+<script type="text/plain" class="set" data-title="Attestatsiya tarix 4-variant (rus tilida)" data-desc="50 savol, rus tilida, javoblar bilan: 1–35 tarix, 36–40 kasb standarti, 41–50 pedagogik mahorat" data-time="90" data-sections="Tarix:35,Kasbiy standart:5,Pedagogik mahorat:10">
+Расположите события истории Древнего Востока в хронологической последовательности.
+1) падение Ниневии и ликвидация Ассирийского государства;
+2) смерть Александра Македонского в Вавилоне;
+3) создание законов Хаммурапи;
+4) взятие Вавилона Киром II;
+5) походы Тутмоса III в Переднюю Азию;
+6) реформа Дария I о разделении государства на сатрапии.
+A) 3, 5, 1, 4, 6, 2
+B) 3, 1, 5, 4, 6, 2
+C) 5, 3, 1, 4, 6, 2
+D) 3, 5, 4, 1, 6, 2
+JAVOB: A
+
+Установите соответствие между терминами Древней Греции и их толкованием.
+1. полис
+2. остракизм
+3. экклесия
+4. илоты
+a) город-государство
+b) изгнание опасного гражданина путём голосования черепками
+c) народное собрание в Афинах
+d) зависимые земледельцы, принадлежавшие государству в Спарте
+e) простое свободное население Рима — плебеи
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-c, 2-b, 3-a, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: A
+
+Установите соответствие между деятелями Древнего Рима и их деятельностью.
+1. Тиберий Гракх
+2. Гай Юлий Цезарь
+3. Октавиан Август
+4. Константин
+a) народный трибун, выдвинувший закон о земельной реформе
+b) завоевал Галлию, был провозглашён пожизненным диктатором
+c) принял титул «принцепс», основал систему принципата
+d) был издан Миланский эдикт, столица перенесена в Константинополь
+e) разделил империю на Западную и Восточную части, завещав их сыновьям
+A) 1-a, 2-c, 3-b, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: C
+
+Установите соответствие между мыслителями Древнего Востока и связанными с ними учениями или произведениями.
+1. Конфуций
+2. Лао-цзы
+3. Сиддхартха Гаутама
+4. Сыма Цянь
+a) «Лунь юй» («Беседы и суждения»)
+b) «Дао дэ цзин»
+c) учение о «четырёх благородных истинах»
+d) «Исторические записки» («Шицзи»)
+e) «Артхашастра»
+A) 1-a, 2-b, 3-e, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-d, 3-c, 4-b
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+Сколько ВЕРНЫХ сведений о зороастризме и «Авесте» приведено ниже?
+1) «Авеста» является священной книгой зороастрийцев;
+2) до нас дошла приблизительно четверть «Авесты»;
+3) в зороастризме священным считался огонь;
+4) согласно преданию, «Авеста» была написана золотом на двенадцати тысячах бычьих шкур;
+5) богом добра в зороастризме считался Ахура Мазда;
+6) при Ашоке зороастризм был провозглашён государственной религией Индии.
+A) четыре
+B) пять
+C) три
+D) шесть
+JAVOB: B
+
+Определите сведения, пропущенные на месте точек. В войне с эфталитами сасанидский шах 1. ............... попал в плен. В это дело вмешался византийский император 2. ............... , просивший освободить его за большой выкуп. В 567 году эфталиты потерпели поражение от тюрков близ 3. ............... .
+A) 1 — Пероз, 2 — Юстиниан, 3 — Самарканда
+B) 1 — Хосров Ануширван, 2 — Зенон, 3 — Бухары
+C) 1 — Пероз, 2 — Зенон, 3 — Бухары
+D) 1 — Кавад, 2 — Зенон, 3 — Бухары
+JAVOB: C
+
+Расположите события раннего Средневековья в хронологической последовательности.
+1) образование Тюркского каганата;
+2) поражение эфталитов от тюрков близ Бухары;
+3) восшествие Пероза на сасанидский престол;
+4) отправка эфталитами посольства к правителю династии Лян;
+5) разделение Тюркского каганата на Западный и Восточный;
+6) Таласская битва.
+A) 4, 3, 1, 2, 5, 6
+B) 3, 4, 1, 2, 5, 6
+C) 3, 4, 2, 1, 5, 6
+D) 3, 1, 4, 2, 5, 6
+JAVOB: B
+
+Установите соответствие между титулами и должностями, встречающимися в источниках о Тюркском каганате, и их значением.
+1. тутук
+2. апатаркан
+3. сангун
+4. чабыш
+a) военный наместник
+b) главнокомандующий
+c) военачальник, генерал
+d) военный чиновник
+e) наследник каганского престола
+A) 1-a, 2-b, 3-c, 4-e
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: B
+
+Сколько ВЕРНЫХ сведений о восстании под руководством Муканны приведено ниже?
+1) ставкой восставших была крепость Сом в Кешском оазисе;
+2) движение называлось движением «одетых в белое»;
+3) восстание особенно разгорелось в Согде;
+4) последний бухар-худат Бунят поддержал восстание;
+5) восстание было подавлено Аббасидским халифатом;
+6) Муканна был убийцей Абу Муслима;
+7) восстание подавил Исмаил Самани.
+A) пять
+B) четыре
+C) шесть
+D) три
+JAVOB: A
+
+Определите верные сведения о ткацкой мастерской «Байт ат-тираз», описанной в «Истории Бухары» Наршахи.
+1) мастерская находилась между крепостной стеной (хисаром) и шахристаном, близ соборной мечети;
+2) в ней для халифа ткали паласы, занавеси, наволочки и одежду;
+3) на одну занавесь уходил весь харадж Бухары;
+4) ежегодно из Багдада приезжал особый чиновник и увозил изделия в счёт хараджа Бухары;
+5) ушедшие в Хорасан мастера сумели ткать ещё более качественную ткань;
+6) во времена Наршахи мастерская работала в полную силу;
+7) изделия мастерской вывозили в города Шама, Египта и Рума.
+A) 1, 3, 4, 6, 7
+B) 2, 3, 4, 5, 6
+C) 1, 2, 5, 6, 7
+D) 1, 2, 3, 4, 7
+JAVOB: D
+
+Расположите правителей-Саманидов в хронологической последовательности их правления.
+1) Исмаил ибн Ахмад; 2) Наср II ибн Ахмад; 3) Ахмад ибн Исмаил; 4) Нух I ибн Наср; 5) Наср I ибн Ахмад; 6) Абд аль-Малик II.
+A) 5, 1, 2, 3, 4, 6
+B) 1, 5, 3, 2, 4, 6
+C) 5, 3, 1, 2, 4, 6
+D) 5, 1, 3, 2, 4, 6
+JAVOB: D
+
+Определите учёных, работавших в хорезмской «Академии Мамуна».
+1) Абу Райхан Беруни;
+2) Абу Али ибн Сина;
+3) Абу Сахль Масихи;
+4) Абу Наср ибн Ирак;
+5) Мухаммад ибн Муса аль-Хорезми;
+6) Махмуд Кашгари;
+7) Абу-ль-Хайр Хаммар.
+A) 1, 3, 4, 5, 6
+B) 1, 2, 5, 6, 7
+C) 1, 2, 3, 4, 7
+D) 2, 3, 4, 6, 7
+JAVOB: C
+
+Проанализируйте приведённые сведения и определите ответ, соответствующий диаграмме Эйлера–Венна.
+a) столицей была Бухара;
+b) государство разделилось на Западный и Восточный каганаты;
+c) правитель в 900 году разбил Амра ибн Лейса близ Балха;
+d) на территории этого государства была создана поэма «Кутадгу билиг»;
+e) ислам был государственной религией; f) управляло территорией Мавераннахра.
+A) I – c; II – b, d; III – a, e, f
+B) I – a, c, e; II – b, d; III – f
+C) I – a, d; II – b, c; III – e, f
+D) I – a, c; II – b, d; III – e, f
+JAVOB: D
+
+Определите верные сведения о Катванской битве (1141) и её последствиях.
+1) войско во главе с султаном Санджаром потерпело поражение;
+2) Мавераннахр оказался в зависимости от каракитаев;
+3) в битве победил гурхан каракитаев Елюй Даши;
+4) хорезмшах Атсыз, воспользовавшись ситуацией, совершил поход в Хорасан;
+5) государство Сельджукидов полностью прекратило существование;
+6) хорезмшах Атсыз погиб в этой битве, сражаясь на стороне Санджара.
+A) 1, 2, 3, 4
+B) 1, 2, 5, 6
+C) 1, 3, 5, 6
+D) 2, 3, 4, 6
+JAVOB: A
+
+Установите соответствие между личностями монгольского периода и их деятельностью.
+1. Махмуд Ялавач
+2. Масуд-бек
+3. Кебек-хан
+4. Тармаширин
+a) монгольский наместник, управлявший Мавераннахром, его ставка находилась в Ходженте
+b) сын Махмуда Ялавача, провёл денежную реформу в 1271 году
+c) провёл денежную и административную реформы, построил дворец близ Несефа
+d) хан, принявший ислам и имя Алаеддин
+e) основатель улуса Чагатая
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: C
+
+Расположите события деятельности Амира Темура в хронологической последовательности.
+1) разрушение Ургенча;
+2) «Битва в грязи» («Лой жанги»);
+3) взятие Дамаска;
+4) курултай в Балхе;
+5) первое взятие Багдада;
+6) битва на реке Кондурча.
+A) 2, 4, 1, 5, 6, 3
+B) 2, 4, 1, 6, 5, 3
+C) 2, 4, 6, 1, 5, 3
+D) 4, 2, 1, 6, 5, 3
+JAVOB: B
+
+Установите соответствие между правителями-Темуридами и сведениями о них.
+1. Шахрух Мирза
+2. Мирзо Улугбек
+3. Султан Абу Саид
+4. Султан Хусейн Байкара
+a) перенёс столицу в Герат
+b) около 40 лет управлял Мавераннахром, построил обсерваторию
+c) в 1469 году попал в плен к Узун Хасану и был убит
+d) правил в Герате в 1469–1506 годах
+e) в 1449 году выступил против отца и велел его убить
+A) 1-a, 2-b, 3-e, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-e, 3-c, 4-d
+JAVOB: C
+
+Проанализируйте все сведения и определите ответ с правильным сочетанием верных и неверных суждений. № Сведения 1 В 1428 году Абулхайр был провозглашён ханом государства кочевых узбеков. 2 Мухаммад Шейбани-хан в 1507 году захватил Герат. 3 В Гиждуванской битве 1512 года Убайдулла-хан разгромил войско Наджми Сани. 4 При Абдулла-хане II столица была перенесена из Бухары в Самарканд. 5 При Имамкули-хане государство Аштарханидов усилилось. 6 Убайдулла-хан II был убит в 1711 году в результате заговора.
+A) 1-верно, 2-верно; 3-неверно, 4-неверно; 5-неверно, 6-верно
+B) 1-верно, 2-неверно; 3-верно, 4-неверно; 5-верно, 6-верно
+C) 1-верно, 2-верно; 3-верно, 4-неверно; 5-верно, 6-верно
+D) 1-верно, 2-верно; 3-верно, 4-верно; 5-верно, 6-верно
+JAVOB: C
+
+Установите соответствие между историками и их произведениями.
+1. Абулгази-хан
+2. Мунис и Агахи
+3. Мирзо Алим Ташкенди
+4. Мухаммад Хакимхан-тура
+a) «Шаджара-йи тюрк» и «Шаджара-йи тараками»
+b) «Фирдавс ул-икбал»
+c) «Ансаб ус-салатин ва таварих ул-хавакин»
+d) «Мунтахаб ат-таварих»
+e) «Тарих-и Муким-хани»
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-a, 2-e, 3-c, 4-d
+JAVOB: C
+
+Расположите правителей Бухарского эмирата (династия мангытов) в хронологической последовательности их прихода к власти.
+1) эмир Хайдар; 2) Мухаммад Рахим; 3) эмир Музаффар; 4) Шахмурад; 5) эмир Алим-хан; 6) эмир Насрулла.
+A) 2, 4, 1, 6, 3, 5
+B) 4, 2, 1, 6, 3, 5
+C) 2, 1, 4, 6, 3, 5
+D) 2, 4, 6, 1, 3, 5
+JAVOB: A
+
+Определите сведения, пропущенные на месте точек. Образованное в 1867 году Туркестанское генерал-губернаторство первоначально состояло из
+1. ............... и 2. ............... областей, а его центром был город 3. ............... .
+A) 1 — Сырдарьинской, 2 — Семиреченской, 3 — Ташкент
+B) 1 — Самаркандской, 2 — Семиреченской, 3 — Ташкент
+C) 1 — Сырдарьинской, 2 — Ферганской, 3 — Ташкент
+D) 1 — Сырдарьинской, 2 — Семиреченской, 3 — Верный
+JAVOB: A
+
+Установите соответствие между народными восстаниями и сведениями о них.
+1. Джизакское восстание 1916 года
+2. Андижанское восстание 1898 года
+3. «Холерный бунт» 1892 года в Ташкенте
+4. Восстание Пулат-хана 1873–1876 годов
+a) против указа о мобилизации местного населения на тыловые работы
+b) поднято под руководством Дукчи-ишана
+c) против насилия при проведении мер по борьбе с эпидемией холеры
+d) в Кокандском ханстве против Худояр-хана и влияния России
+e) в Хивинском ханстве против повышения поземельного налога
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-c, 2-b, 3-a, 4-d
+C) 1-a, 2-b, 3-c, 4-e
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+Расположите периодические издания Туркестана в хронологической последовательности начала их выхода.
+1) «Тараккий»; 2) «Ойина»; 3) «Садои Туркистон»; 4) «Туркестанская туземная газета»; 5) «Наджот».
+A) 1, 4, 2, 3, 5
+B) 4, 1, 2, 3, 5
+C) 4, 1, 3, 2, 5
+D) 4, 2, 1, 3, 5
+JAVOB: B
+
+Определите верное сведение о правительстве Туркестанской автономии.
+A) правительство сначала возглавлял Мустафа Чокай, затем Мухамеджан Тынышпаев
+B) правительство сначала возглавлял Мухамеджан Тынышпаев, затем Убайдуллаходжа Асадуллаходжаев
+C) правительство сначала возглавлял Мухамеджан Тынышпаев, затем Мустафа Чокай
+D) правительство сначала возглавлял Мунаввар-кари, затем Мустафа Чокай
+JAVOB: C
+
+Сколько НЕВЕРНЫХ сведений о советском периоде приведено ниже?
+1) в 1925–1929 годах была проведена земельно-водная реформа;
+2) в 1927 году началось движение «худжум»;
+3) в 1930 году столица Узбекской ССР была перенесена из Самарканда в Ташкент;
+4) в 1939 году Большой Ферганский канал был построен за 45 дней;
+5) Ташкентское землетрясение произошло в 1956 году;
+6) в 1977 году был пущен Ташкентский метрополитен;
+7) в 1983 году столица Узбекской ССР была вновь перенесена в Самарканд.
+A) одно
+B) три
+C) четыре
+D) два
+JAVOB: D
+
+Расположите события накануне и в первые годы независимости в хронологической последовательности.
+1) принятие Декларации о независимости;
+2) введение в Узбекистане поста Президента;
+3) провозглашение государственной независимости;
+4) всенародный референдум и выборы Президента;
+5) принятие Конституции Республики Узбекистан;
+6) введение в обращение сума-купона.
+A) 2, 1, 3, 4, 5, 6
+B) 2, 1, 3, 5, 4, 6
+C) 2, 3, 1, 4, 5, 6
+D) 1, 2, 3, 4, 5, 6
+JAVOB: A
+
+Расположите события Нового Узбекистана в хронологической последовательности.
+1) утверждение стратегии «Узбекистан — 2030»;
+2) принятие Стратегии действий;
+3) всенародный референдум по Конституции;
+4) принятие Стратегии развития Нового Узбекистана;
+5) досрочные выборы Президента.
+A) 4, 2, 3, 5, 1
+B) 2, 4, 3, 5, 1
+C) 2, 3, 4, 5, 1
+D) 2, 4, 3, 1, 5
+JAVOB: B
+
+Установите соответствие между международными организациями, членом которых является Узбекистан, и годами вступления.
+1. Содружество Независимых Государств
+2. Организация Объединённых Наций
+3. Шанхайская организация сотрудничества
+4. Совет сотрудничества тюркоязычных государств
+a) 1991 год
+b) 1992 год
+c) 2001 год
+d) 2019 год
+e) 1996 год
+A) 1-a, 2-e, 3-c, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-b, 2-a, 3-c, 4-d
+D) 1-a, 2-b, 3-d, 4-c
+JAVOB: B
+
+Сколько ВЕРНЫХ сведений о Византийской империи приведено ниже?
+1) при Юстиниане I был построен храм Святой Софии;
+2) при Юстиниане был составлен «Свод гражданского права»;
+3) в 1054 году христианская церковь разделилась на католическую и православную;
+4) в VIII–IX веках существовало движение иконоборчества;
+5) в 1453 году Византия была уничтожена Османами;
+6) столицей Византии был город Равенна;
+7) восстание «Ника» произошло при Юстиниане.
+A) шесть
+B) семь
+C) пять
+D) четыре
+JAVOB: A
+
+Расположите битвы средневековой Европы в хронологической последовательности.
+1) Грюнвальдская битва; 2) битва при Гастингсе; 3) освобождение Орлеана; 4) битва при Креси; 5) битва при Бувине; 6) битва при Азенкуре.
+A) 2, 5, 4, 6, 1, 3
+B) 2, 4, 5, 1, 6, 3
+C) 5, 2, 4, 1, 6, 3
+D) 2, 5, 4, 1, 6, 3
+JAVOB: D
+
+Установите соответствие между представителями эпохи Возрождения и их произведениями.
+1. Данте Алигьери
+2. Франческо Петрарка
+3. Джованни Боккаччо
+4. Эразм Роттердамский
+a) «Божественная комедия»
+b) сонеты, посвящённые Лауре («Канцоньере»)
+c) «Декамерон»
+d) «Похвала глупости»
+e) «Утопия»
+A) 1-a, 2-b, 3-c, 4-e
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-b, 2-a, 3-c, 4-d
+JAVOB: B
+
+Расположите события истории Османской империи и Турции в хронологической последовательности.
+1) провозглашение Турецкой Республики;
+2) начало реформ Танзимата;
+3) младотурецкая революция;
+4) ликвидация янычарского войска султаном Махмудом II;
+5) принятие конституции Мидхат-паши;
+6) упразднение халифата.
+A) 4, 2, 5, 3, 6, 1
+B) 4, 2, 3, 5, 1, 6
+C) 4, 2, 5, 3, 1, 6
+D) 2, 4, 5, 3, 1, 6
+JAVOB: C
+
+Установите соответствие между международными соглашениями и их содержанием.
+1. Версальский мирный договор
+2. Вашингтонская конференция
+3. Локарнская конференция
+4. Мюнхенское соглашение
+a) Эльзас и Лотарингия были возвращены Франции
+b) договоры «четырёх держав» и «девяти держав» по проблемам Дальнего Востока и Тихого океана
+c) была гарантирована неприкосновенность западных границ Германии
+d) Судетская область Чехословакии была передана Германии
+e) Германия вышла из Лиги Наций
+A) 1-a, 2-b, 3-c, 4-e
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-d, 2-b, 3-c, 4-a
+D) 1-a, 2-c, 3-b, 4-d
+JAVOB: B
+
+Установите соответствие между руководителями азиатских государств и их деятельностью.
+1. Джавахарлал Неру
+2. Мухаммад Али Джинна
+3. Сукарно
+4. Хо Ши Мин
+a) первый премьер-министр независимой Индии
+b) основатель государства Пакистан
+c) первый президент Индонезии
+d) в 1945 году провозгласил Демократическую Республику Вьетнам
+e) основатель государства Бангладеш
+A) 1-a, 2-b, 3-c, 4-d
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-e, 3-c, 4-d
+D) 1-a, 2-b, 3-d, 4-c
+JAVOB: A
+
+Расположите события, связанные с окончанием «холодной войны», в хронологической последовательности.
+1) падение Берлинской стены;
+2) объединение Германии;
+3) роспуск Организации Варшавского договора;
+4) Беловежские соглашения и распад СССР;
+5) подписание Маастрихтского договора;
+6) завершение вывода советских войск из Афганистана.
+A) 6, 1, 2, 4, 3, 5
+B) 1, 6, 2, 3, 4, 5
+C) 6, 1, 3, 2, 4, 5
+D) 6, 1, 2, 3, 4, 5
+JAVOB: D
+
+Учитель проконсультировался по поводу трудностей ученика в обучении с коллегами, преподающими в этом классе, а затем с психологом. К какой трудовой функции согласно профессиональному стандарту относятся эти действия?
+A) B/02.6 — Сотрудничество с коллегами и родителями
+B) A/05.6 — Создание и обеспечение безопасной развивающей образовательной среды
+C) A/03.6 — Оценивание усвоения и предоставление обратной связи
+D) A/04.6 — Организация воспитательной деятельности
+JAVOB: C
+
+Учитель научил учащихся безопасной работе в мире современных средств массовой информации, объяснил последовательность действий в чрезвычайных ситуациях. К какой трудовой функции согласно профессиональному стандарту это относится?
+A) A/04.6 — Организация воспитательной деятельности
+B) A/05.6 — Создание и обеспечение безопасной развивающей образовательной среды
+C) A/02.6 — Обеспечение эффективности обучения
+D) B/01.6 — Саморазвитие и профессиональный рост
+JAVOB: B
+
+Определите трудовые действия функции A/05.6 «Создание и обеспечение безопасной развивающей образовательной среды» согласно профессиональному стандарту.
+1) создание равных возможностей каждому ученику независимо от пола, национальности, родного языка, религии и семейного положения;
+2) разъяснение учащимся сущности различных угроз, последовательности действий в чрезвычайных ситуациях;
+3) помощь в организации деятельности органов ученического самоуправления;
+4) использование различных методов и средств для диагностики результатов обучения;
+5) индивидуализированная работа с учащимися на основе их особых образовательных потребностей;
+6) надлежащее разрешение конфликтных ситуаций.
+A) 1, 2, 5, 6
+B) 2, 3, 4, 5
+C) 1, 3, 4, 6
+D) 1, 2, 3, 6
+JAVOB: A
+
+Учитель организовал для учащихся экскурсию и краеведческую экспедицию и применил через них методы воспитания в духе патриотизма. Необходимым умением какой трудовой функции согласно профессиональному стандарту это является?
+A) B/02.6 — Сотрудничество с коллегами и родителями
+B) A/05.6 — Создание и обеспечение безопасной развивающей образовательной среды
+C) A/04.6 — Организация воспитательной деятельности
+D) A/01.6 — Планирование учебного процесса
+JAVOB: C
+
+Установите соответствие между кодами классификатора ХАЛИКК-2017 в профессиональном стандарте и наименованиями должностей.
+1. 2310
+2. 2330
+3. 3310
+a) Учитель
+b) Учитель старших классов общеобразовательных школ
+c) Учитель начальных (младших) классов
+d) Воспитатель дошкольной образовательной организации
+A) 1-b, 2-a, 3-c
+B) 1-a, 2-b, 3-d
+C) 1-a, 2-c, 3-b
+D) 1-a, 2-b, 3-c
+JAVOB: D
+
+Установите соответствие между видами тестов и их определениями.
+1. Адаптивный тест
+2. Бинарный тест
+3. Градуальный тест
+4. Гетерогенный тест
+a) после верного ответа автоматически предлагается более трудное, после неверного — более лёгкое задание
+b) состоит из вариантов ответа, подтверждающих верность или неверность суждения
+c) уровневый тест, в котором из ответов выбирается наиболее верный
+d) охватывает несколько предметных областей
+e) состоит из заданий только по одной предметной области
+A) 1-c, 2-b, 3-a, 4-d
+B) 1-a, 2-b, 3-c, 4-d
+C) 1-a, 2-c, 3-b, 4-d
+D) 1-a, 2-b, 3-c, 4-e
+JAVOB: B
+
+Учитель поручил учащимся изучить историю своей махалли и подготовить проект, применимый в реальной жизненной ситуации (выставку и маршрут экскурсии), и на этой основе оценил их. Какой это вид оценивания?
+A) ипсативное оценивание
+B) нормативное оценивание
+C) традиционное оценивание
+D) аутентичное оценивание
+JAVOB: D
+
+Установите соответствие между понятиями оценивания и их определениями.
+1. Апробация
+2. Бенчмаркинг
+3. Прогностическая валидность
+4. Предварительная экспертиза
+a) опытно-экспериментальная работа для определения качества тестовых заданий
+b) сопоставление качества образования в международном, местном разрезе и по образовательным организациям, выявление лучших практик
+c) способность по результатам теста предсказать овладение умениями и способностями
+d) теоретическое изучение автором соответствия теста закономерностям и внесение изменений
+e) рассмотрение возражений лиц, несогласных с результатами экзамена
+A) 1-a, 2-b, 3-d, 4-c
+B) 1-b, 2-a, 3-c, 4-d
+C) 1-a, 2-b, 3-c, 4-d
+D) 1-e, 2-b, 3-c, 4-d
+JAVOB: C
+
+Что понимается под «дистракторами» в тестовом задании?
+A) отвлекающие варианты, близкие к правильному ответу теста
+B) открытые задания, требующие записать ответ
+C) время, отведённое на выполнение тестовых заданий
+D) психометрические характеристики теста
+JAVOB: A
+
+К какой сфере таксономии Блума относятся умения, связанные с чувствами, отношениями, интересами, ценностями и мотивацией учащихся?
+A) аффективная сфера
+B) метакогнитивная сфера
+C) когнитивная сфера
+D) психомоторная сфера
+JAVOB: A
+
+Как, согласно пособию «Основы оценивания и мониторинга в образовании», проводится диагностическое оценивание?
+A) на каждом уроке в форме указаний для улучшения результата
+B) в конце четверти в форме официальной контрольной работы
+C) только в выпускных классах в форме ступенчатого государственного экзамена
+D) в начале и в конце учебного года в форме неформальной диагностики знаний и умений ученика
+JAVOB: D
+
+Учитель легко вступает в общение с учащимися и родителями, правильно выражает своё мнение в беседе, успешно его отстаивает и искренне принимается собеседниками. Какая способность педагога проявляется?
+A) коммуникативная способность
+B) академическая способность
+C) перцептивная способность
+D) конструктивная способность
+JAVOB: A
+
+Установите соответствие между возрастной периодизацией Я. А. Коменского и типами школ.
+1. от рождения до 6 лет
+2. 6–12 лет
+3. 12–18 лет
+4. 18–24 года
+a) материнская школа
+b) народная школа (школа родного языка)
+c) гимназия (латинская школа)
+d) университет (академия)
+e) пансофическая школа
+A) 1-b, 2-a, 3-c, 4-d
+B) 1-a, 2-c, 3-b, 4-d
+C) 1-a, 2-b, 3-e, 4-d
+D) 1-a, 2-b, 3-c, 4-d
+JAVOB: D
+
+Определите произведения Я. А. Коменского.
+1) «Открытая дверь языков и всех наук»;
+2) «Великая дидактика»;
+3) «Материнская школа»;
+4) «Эмиль, или О воспитании»;
+5) «Пансофическая школа»;
+6) «Лингард и Гертруда».
+A) 1, 2, 4, 6
+B) 1, 2, 3, 5
+C) 1, 3, 5, 6
+D) 2, 3, 4, 5
+JAVOB: B
+
+В начале урока учащиеся записали в первую колонку таблицы, что они знают по теме, во вторую — что хотят узнать, а в конце урока в третью колонку — что нового узнали. Каким графическим органайзером воспользовался учитель?
+A) диаграмма Венна
+B) кластер
+C) таблица «Инсерт»
+D) таблица ЗХУ (Знаю – Хочу узнать – Узнал)
+JAVOB: D
+</script>
+
 <script type="text/plain" class="set" data-title="Attestatsiya — namuna to'plam" data-desc="Namuna savollar (o'zingizniki bilan almashtiring), 6 ta savol" data-time="6">
 Amir Temur qaysi yilda tug'ilgan?
 A) 1336-yil
@@ -503,7 +2937,7 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
   // ---- o'qish ----
   var sets=[], warns=[];
   document.querySelectorAll('script.set').forEach(function(sc){
-    var set={title:sc.dataset.title||'To\'plam',desc:sc.dataset.desc||'',time:+sc.dataset.time||0,qs:[]};
+    var set={title:sc.dataset.title||'To\'plam',desc:sc.dataset.desc||'',time:+sc.dataset.time||0,qs:[],secs:(sc.dataset.sections||'').split(',').map(function(x){var p=x.split(':');return p.length==2?{name:p[0].trim(),n:+p[1]}:null;}).filter(Boolean)};
     sc.textContent.trim().split(/\n\s*\n/).forEach(function(block,bi){
       var q={text:[],opts:[],ans:-1,izoh:'',img:[],tbl:null}, m, inT=false;
       block.split('\n').forEach(function(l){l=l.trim();if(!l)return;
@@ -537,34 +2971,38 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
     localStorage.setItem('tm_stats',JSON.stringify(st));}catch(e){}}
 
   // ---- holat ----
-  var S=null, Q=[], picked=[], cur=0, mode='', tmr=null, left=0, finished=false, shown=[];
+  var S=null, Q=[], picked=[], cur=0, mode='', tmr=null, left=0, finished=false, shown=[], flags=[], paused=false;
   function screen(id){['sList','sMode','sQuiz','sRes'].forEach(function(x){document.getElementById(x).classList.toggle('hidden',x!==id);});window.scrollTo(0,0);}
   function pick(i){S=sets[i];document.getElementById('mTitle').textContent=S.title;document.getElementById('mDesc').textContent=S.qs.length+' savol · imtihon vaqti: '+S.time+' daqiqa';screen('sMode');}
   document.getElementById('mBack').onclick=function(){screen('sList');};
   document.getElementById('modeP').onclick=function(){begin('P');};
   document.getElementById('modeE').onclick=function(){begin('E');};
+  function secOf(i){var c=0,sc=S.secs&&S.secs.length?S.secs:[{name:S.title,n:1e9}];for(var k=0;k<sc.length;k++){if(i<c+sc[k].n)return {name:sc[k].name,start:c,k:k};c+=sc[k].n;}return {name:sc[sc.length-1].name,start:0,k:0};}
   function begin(m){
-    mode=m;finished=false;cur=0;
-    // savollar va variantlar aralashtiriladi
-    Q=shuffle(S.qs).map(function(q){
-      var idx=shuffle(q.opts.map(function(_,i){return i;}));
+    mode=m;finished=false;cur=0;paused=false;
+    var fixed=(m==='E');
+    var base=fixed?S.qs:shuffle(S.qs);
+    Q=base.map(function(q){
+      var idx=fixed?q.opts.map(function(_,i){return i;}):shuffle(q.opts.map(function(_,i){return i;}));
       return {text:q.text,img:q.img,tbl:q.tbl,izoh:q.izoh,opts:idx.map(function(i){return q.opts[i];}),ans:idx.indexOf(q.ans)};
     });
-    picked=Q.map(function(){return -1;});shown=Q.map(function(){return false;});
-    screen('sQuiz');
-    clearInterval(tmr);
+    picked=Q.map(function(){return -1;});shown=Q.map(function(){return false;});flags=Q.map(function(){return false;});
+    screen('sQuiz');document.getElementById('lang').innerHTML='<option>'+(/rus tilida/i.test(S.title)?'Русский':"O'zbekcha")+'</option>';
+    clearInterval(tmr);document.getElementById('veil').classList.remove('on');
     var tmEl=document.getElementById('tm');
-    if(m==='E'){left=S.time*60;drawT();tmr=setInterval(function(){left--;drawT();if(left<=0){clearInterval(tmr);finish();}},1000);}
+    document.getElementById('pauseB').style.display=(m==='E')?'':'none';
+    document.getElementById('tmlab').style.display=(m==='E')?'':'none';
+    if(m==='E'){left=S.time*60;drawT();tmr=setInterval(function(){if(paused)return;left--;drawT();if(left<=0){clearInterval(tmr);finish();}},1000);}
     else tmEl.textContent='';
     render();
   }
-  function drawT(){var t=document.getElementById('tm');var mm=Math.floor(left/60),ss=left%60;t.textContent=mm+':'+String(ss).padStart(2,'0');t.className='tm'+(left<=60?' low':'');}
+  function drawT(){var t=document.getElementById('tm');var h=Math.floor(left/3600),mm=Math.floor(left%3600/60),ss=left%60,p=function(n){return String(n).padStart(2,'0');};t.textContent='🕒 '+p(h)+':'+p(mm)+':'+p(ss);t.className='tm'+(left<=300?' low':'');}
   function render(){
     var q=Q[cur];
-    document.getElementById('qcount').textContent=(cur+1)+' / '+Q.length;
-    document.getElementById('fill').style.width=(picked.filter(function(x){return x>=0;}).length/Q.length*100)+'%';
+    document.getElementById('secName').textContent=secOf(cur).name;
+    var ob=document.getElementById('objb');ob.classList.toggle('on',!!flags[cur]);ob.textContent=flags[cur]?'ⓘ E\'tiroz belgilandi':'ⓘ E\'tiroz';
     document.getElementById('media').innerHTML=q.img.map(function(s){return '<img src="'+esc(s)+'" alt="" style="max-width:100%;border-radius:14px;margin-bottom:14px">';}).join('')+(q.tbl?'<table class="qtbl">'+q.tbl.rows.map(function(r,ri){var tg=(q.tbl.head&&ri===0)?'th':'td';return '<tr>'+r.map(function(c){return '<'+tg+'>'+esc(c)+'</'+tg+'>';}).join('')+'</tr>';}).join('')+'</table>':'');
-    var qt=document.getElementById('qtext');qt.className='qtext'+(q.text.length>170?' sm':'');qt.innerHTML=esc(q.text).split('\n').join('<br>');
+    var qt=document.getElementById('qtext');qt.className='qtext'+(q.text.length>170?' sm':'');qt.innerHTML='<b style="margin-right:6px">'+(cur+1)+'.</b>'+esc(q.text).split('\n').join('<br>');
     var o=document.getElementById('opts');o.innerHTML='';
     q.opts.forEach(function(t,i){
       var b=document.createElement('button');b.className='opt';
@@ -572,27 +3010,33 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
       if(mode==='P'&&shown[cur]){cls=i===q.ans?' ok':(i===picked[cur]?' no':'');}
       else if(picked[cur]===i)cls=' sel';
       b.className+=cls;b.disabled=(mode==='P'&&shown[cur]);
-      b.innerHTML='<span class="k">'+'ABCD'[i]+'</span><span>'+esc(t)+'</span>';
+      b.innerHTML='<span class="k"></span><span>'+esc(t)+'</span>';
       b.onclick=function(){choose(i);};o.appendChild(b);
     });
     document.getElementById('exp').innerHTML=(mode==='P'&&shown[cur]&&q.izoh)?'<div class="ans">Izoh: '+esc(q.izoh)+'</div>':'';
-    var bt=document.getElementById('qbtns');bt.innerHTML='';
-    if(mode==='E'){
-      var p=document.createElement('button');p.className='btn ghost';p.textContent='← Oldingi';p.disabled=cur===0;p.onclick=function(){go(-1);};bt.appendChild(p);
-      var n=document.createElement('button');n.className='btn ghost';n.textContent='Keyingi →';n.disabled=cur===Q.length-1;n.onclick=function(){go(1);};bt.appendChild(n);
-      var f=document.createElement('button');f.className='btn good';f.textContent='Tugatish';f.onclick=function(){
-        var un=picked.filter(function(x){return x<0;}).length;
-        if(un&&!confirm(un+' ta savolga javob berilmagan. Baribir tugatilsinmi?'))return;finish();};bt.appendChild(f);
-    } else if(shown[cur]){
-      var nx=document.createElement('button');nx.className='btn';nx.textContent=cur===Q.length-1?'Natijani ko\'rish':'Keyingi →';nx.onclick=function(){if(cur===Q.length-1)finish();else go(1);};bt.appendChild(nx);
-    }
+    var pv=document.getElementById('prevB'),nx=document.getElementById('nextB');
+    pv.disabled=(mode!=='E')||cur===0;
+    nx.disabled=(mode==='E')?cur===Q.length-1:!shown[cur];
+    nx.textContent=(mode==='P'&&cur===Q.length-1)?'Natijani ko\'rish':'Keyingi ›';
     var nv=document.getElementById('nav');nv.innerHTML='';
-    Q.forEach(function(_,i){var b=document.createElement('button');b.textContent=i+1;
-      b.className=(i===cur?'cur ':'')+(picked[i]>=0?'done':'');
-      b.onclick=function(){if(mode==='E'){cur=i;render();}};nv.appendChild(b);});
-    nv.style.display=mode==='E'?'flex':'none';
+    var secs=S.secs&&S.secs.length?S.secs:[{name:S.title,n:Q.length}],c=0;
+    secs.forEach(function(sc){
+      var lab=document.createElement('div');lab.className='glab';lab.textContent=sc.name;nv.appendChild(lab);
+      var g=document.createElement('div');g.className='pnav';
+      for(var i=c;i<Math.min(c+sc.n,Q.length);i++)(function(i){var b=document.createElement('button');b.textContent=i+1;
+        b.className=(i===cur?'cur ':'')+(picked[i]>=0?'done ':'')+(flags[i]?'flag':'');
+        b.onclick=function(){if(mode==='E'){cur=i;render();}};g.appendChild(b);})(i);
+      nv.appendChild(g);c+=sc.n;
+    });
     document.getElementById('hint').style.display='block';
   }
+  document.getElementById('objb').onclick=function(){flags[cur]=!flags[cur];render();};
+  document.getElementById('prevB').onclick=function(){go(-1);};
+  document.getElementById('nextB').onclick=function(){if(mode==='P'&&cur===Q.length-1)finish();else go(1);};
+  document.getElementById('pauseB').onclick=function(){if(mode!=='E'||finished)return;paused=true;document.getElementById('veil').classList.add('on');};
+  document.getElementById('resume').onclick=function(){paused=false;document.getElementById('veil').classList.remove('on');};
+  document.getElementById('endB').onclick=function(){var un=picked.filter(function(x){return x<0;}).length;
+    if(un&&!confirm(un+' ta savolga javob berilmagan. Baribir yakunlansinmi?'))return;finish();};
   function go(d){var n=cur+d;if(n>=0&&n<Q.length){cur=n;render();}}
   function choose(i){
     if(finished)return;
@@ -604,19 +3048,20 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
     if(finished)return;finished=true;clearInterval(tmr);
     var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++;if(mode==='E'&&picked[i]>=0)rec(picked[i]===q.ans);});
     var pct=Math.round(ok/Q.length*100);
-    document.getElementById('rScore').textContent=ok+' / '+Q.length;
+    document.getElementById('rScore').textContent=ok+' / '+Q.length;var rc=document.getElementById('rCert'),lv=window.certLevel?certLevel(ok,Q.length):null;rc.style.display=lv?'':'none';if(lv)rc.textContent='🏅 Sertifikat ('+lv+')';
     document.getElementById('rPct').textContent=pct+'%';
     document.getElementById('rMsg').textContent=pct>=86?'Ajoyib natija! Attestatsiyaga tayyorsiz.':pct>=60?'Yaxshi, lekin xatolar ustida ishlang.':'Mavzularni takrorlab, yana urinib ko\'ring.';
     var rv=document.getElementById('review');rv.innerHTML='';
     Q.forEach(function(q,i){
       var good=picked[i]===q.ans;
       var d=document.createElement('div');d.className='rv '+(good?'good':'bad');
-      d.innerHTML='<b>'+(i+1)+'. '+esc(q.text)+'</b><p>Sizning javobingiz: '+(picked[i]>=0?'ABCD'[picked[i]]+') '+esc(q.opts[picked[i]]):'javob berilmagan')+'</p>'+
+      d.innerHTML='<b>'+(i+1)+'. '+esc(q.text)+'</b>'+(flags[i]?'<p style="color:#e5484d">ⓘ E\'tiroz belgilangan</p>':'')+'<p>Sizning javobingiz: '+(picked[i]>=0?'ABCD'[picked[i]]+') '+esc(q.opts[picked[i]]):'javob berilmagan')+'</p>'+
         (good?'':'<p>To\'g\'ri javob: <b>'+'ABCD'[q.ans]+') '+esc(q.opts[q.ans])+'</b></p>')+(q.izoh?'<p>Izoh: '+esc(q.izoh)+'</p>':'');
       rv.appendChild(d);
     });
     screen('sRes');
   }
+  document.getElementById('rCert').onclick=function(){var n=(prompt('Ism va familiyangiz:')||'').trim();if(n.length<3)return;var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++});makeCert({name:n,test:S.title,score:ok,total:Q.length})};
   document.getElementById('rAgain').onclick=function(){screen('sMode');};
   document.getElementById('rList').onclick=function(){screen('sList');};
   document.addEventListener('keydown',function(e){

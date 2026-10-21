@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Svoyak: ChQBT — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .wrap{max-width:1300px;}
+  .board{display:grid;gap:10px;margin-bottom:20px;}
+  .th{word-break:break-word;background:var(--blue);color:#fff;font-weight:800;font-size:19px;padding:16px 10px;border-radius:16px;text-align:center;display:flex;align-items:center;justify-content:center;min-height:70px;}
+  .cell{border:none;border-radius:16px;background:#fff;border:1.5px solid var(--line);font-family:var(--font);font-size:34px;font-weight:800;color:var(--blue);padding:22px 6px;cursor:pointer;}
+  .cell:hover{background:#eaf2ff;border-color:var(--blue);}
+  .cell.used{background:#eef1f5;color:#c3ccd8;cursor:default;border-color:transparent;}
+  .board.dense{gap:6px;} .board.dense .th{font-size:13px;padding:8px 2px;min-height:64px;word-break:normal;overflow-wrap:break-word;hyphens:auto;} .board.dense .cell{font-size:26px;padding:16px 2px;border-radius:12px;}
+  .cell.none{visibility:hidden;}
+  .ov{position:fixed;inset:0;background:rgba(16,34,61,.72);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20;}
+  .modal{background:#fff;border-radius:28px;max-width:960px;width:100%;max-height:94vh;overflow:auto;padding:32px 38px;}
+  .who{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+  .who .p{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:14px;padding:6px 8px 6px 12px;font-weight:700;}
+  .who button{border:none;border-radius:10px;width:36px;height:36px;font-size:18px;font-weight:800;cursor:pointer;color:#fff;}
+  .who .y{background:var(--green);} .who .n{background:var(--red);}
+  .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+  .tools button.sm{font-family:var(--font);font-weight:700;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 14px;cursor:pointer;}
+  @media (max-width:700px){.board.dense{overflow-x:auto;grid-template-columns:repeat(10,86px)!important;}.cell{font-size:22px;padding:16px 2px;}.th{font-size:14px;min-height:56px;padding:8px 4px;}.modal{padding:22px;}}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="zk-darslik.html" aria-label="Orqaga">←</a><span class="brand">SVOYAK · ChQBT</span></div>
+
+<div class="tools"><select id="setSel" aria-label="Darslik to'plami" style="font-family:var(--font);font-weight:800;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;background:#fff"></select>
+  <button class="sm" id="addP">+ O'yinchi</button>
+  <button class="sm" id="delP">− O'yinchi</button>
+  <button class="sm" id="reset">Boshidan boshlash</button>
+  <span style="color:var(--ink-soft);font-weight:600">Ismlarni bosib o'zgartirish mumkin</span>
+</div>
+<div class="score" id="score"></div>
+<div class="board" id="board"></div>
+</div>
+
+<div class="ov hidden" id="ov"><div class="modal">
+  <div class="qmeta" id="qm"></div>
+  <div class="timer" id="tm">30</div>
+  <p class="qtext" id="qt" style="margin-top:14px"></p>
+  <div id="ab"></div>
+  <div class="who" id="who"></div>
+  <div class="btnrow"><button class="btn" id="showA">Javobni ko'rsatish</button><button class="btn ghost" id="closeQ">Yopish (hech kim topmadi)</button></div>
+</div></div>
+
+<!--
+  MAKTAB DARSLIGI bo'yicha svoyak: mavzular darslik boblari bo'yicha tuziladi (namuna savollar).
+  YANGI MAVZU QO'SHISH: pastdagi blokka shu shaklda yozing.
+  MAVZU: mavzu nomi
+  10: savol matni          (ball: 10, 20, 30, 40, 50 ...)
+  JAVOB: javob
+  QABUL: boshqa qabul qilinadigan yozilishlar (ixtiyoriy)
+  IZOH: izoh (ixtiyoriy)
+  MANBA: manba (ixtiyoriy)
+-->
+<script type="text/plain" class="set" data-title="10-sinf ChQBT (manba asosida)">
+MAVZU: Qurolli Kuchlar tuzilishi
+10: Mamlakatimizda nechta harbiy okrug tashkil etilgan?
+JAVOB: To'rtta
+QABUL: 4 ta
+MANBA: 10-sinf ChQBT — Matn
+20: Toshkent, Sharqiy va Shimoliy-g'arbiy harbiy okruglar bilan birga, to'rtinchi okrug qanday ataladi?
+JAVOB: Janubiy-g'arbiy maxsus harbiy okrug
+QABUL: Janubiy-g'arbiy
+MANBA: 10-sinf ChQBT — Matn
+30: «Armiya» so'zi qaysi so'zdan olingan va qanday ma'noni bildiradi?
+JAVOB: Fransuzcha-lotincha «armee»; qurollantirish
+QABUL: Armee
+MANBA: 10-sinf ChQBT — Matn
+40: Harbiy qism shaxsiy tarkibi joylashtiriladigan bino italyancha «caserma» so'zidan olingan. Uni ayting.
+JAVOB: Kazarma
+MANBA: 10-sinf ChQBT — Matn
+50: Harbiy saf mashqlari, ko'riklar va paradlar o'tkaziladigan maydon qanday ataladi?
+JAVOB: Plats
+MANBA: 10-sinf ChQBT — Matn
+MAVZU: Amir Temur tuzuklari
+10: Amir Temur tuzuklarining ikkinchi qismida qaysi masalalarga alohida e'tibor berilgan?
+JAVOB: Sipohiylarni ushlab turish va boshqarish
+MANBA: 10-sinf ChQBT — Matn
+20: Tuzuklar 1628-yilda qaysi mamlakatda chop etilgan?
+JAVOB: Hindistonda
+QABUL: Hindiston
+MANBA: 10-sinf ChQBT — Matn
+30: Tuzuklar 1783-yilda qaysi mamlakatda chop etilgan?
+JAVOB: Angliyada
+QABUL: Angliya
+MANBA: 10-sinf ChQBT — Matn
+40: Tuzuklar 1868-yilda qaysi mamlakatda chop etilgan?
+JAVOB: Eronda
+QABUL: Eron
+MANBA: 10-sinf ChQBT — Matn
+50: Tuzuklar 1894-yilda qaysi mamlakatda chop etilgan?
+JAVOB: Rossiyada
+QABUL: Rossiya
+MANBA: 10-sinf ChQBT — Matn
+MAVZU: Harbiy unvonlar va pogonlar
+10: Oddiy askar va serjantlar pogonida kichik serjant va serjantdan keyingi daraja qaysi?
+JAVOB: Katta serjant
+MANBA: 10-sinf ChQBT — 1-rasm
+20: Kichik ofitserlar pogonida leytenant va katta leytenantdan keyingi daraja qaysi?
+JAVOB: Kapitan
+MANBA: 10-sinf ChQBT — 2-rasm
+30: Katta ofitserlar pogonida mayor va podpolkovnikdan keyingi daraja qaysi?
+JAVOB: Polkovnik
+MANBA: 10-sinf ChQBT — 3-rasm
+40: Generallar pogonida general-mayor, general-leytenant va general-polkovnikdan keyingi daraja qaysi?
+JAVOB: Armiya generali
+MANBA: 10-sinf ChQBT — 4-rasm
+50: Harbiy kiyim pogonlarining rangi qaysi holatga qarab o'zgartirilishi mumkin?
+JAVOB: Harbiy vazifani bajarayotgan paytga qarab
+MANBA: 10-sinf ChQBT — 2-rasm izohi
+MAVZU: Harbiy texnika
+10: Ka-52 «Alligator» jangovar vertolyoti ekipaji necha kishidan iborat?
+JAVOB: 2 kishi
+QABUL: 2
+MANBA: 10-sinf ChQBT — 27-rasm
+20: Ka-52 «Alligator» vertolyotining og'irligi necha kilogramm?
+JAVOB: 7700 kg
+QABUL: 7700
+IZOH: Dvigatel quvvati — 2225 ot kuchi.
+MANBA: 10-sinf ChQBT — 27-rasm
+30: L-39 samolyotining eng baland uchish balandligi necha metr?
+JAVOB: 9000 metr
+QABUL: 9000
+IZOH: Eng yuqori tezligi — 900 km/s.
+MANBA: 10-sinf ChQBT — 28-rasm
+40: SU-24 qanday turdagi samolyot?
+JAVOB: Front bombardimonchi
+MANBA: 10-sinf ChQBT — 29-rasm
+50: SU-24 samolyotining eng yuqori tezligi qancha?
+JAVOB: 1700 km/s
+QABUL: 1700
+IZOH: Eng baland uchishi — 11 000 m.
+MANBA: 10-sinf ChQBT — 29-rasm
+MAVZU: Saf va uning elementlari
+10: Harbiy xizmatchilarning belgilangan oraliq masofani saqlagan holda bir chiziqqa yonma-yon saf tortishi qanday ataladi?
+JAVOB: Sherenga
+MANBA: 10-sinf ChQBT — 10-rasm
+20: Safning o'ng (chap) chekkasi qanday ataladi?
+JAVOB: Qanot
+IZOH: Saf burilganda qanotlar nomi o'zgarmaydi.
+MANBA: 10-sinf ChQBT — 10-rasm
+30: Safning harbiy xizmatchilar yuzlanib turgan tomoni qanday ataladi?
+JAVOB: Old
+MANBA: 10-sinf ChQBT — Matn
+40: Safda oldinma-keyin turgan harbiy xizmatchilar o'rtasidagi oraliq masofa qanday ataladi?
+JAVOB: Distansiya
+MANBA: 10-sinf ChQBT — Matn
+50: Qanotlar o'rtasidagi masofa safning nimasi deb ataladi?
+JAVOB: Safning eni
+QABUL: Eni
+MANBA: 10-sinf ChQBT — 10-rasm
+MAVZU: Yo'nalishni aniqlash
+10: Qutb yulduzini topish rasmida Katta Ayiq bilan birga qaysi turkum ko'rsatilgan?
+JAVOB: Kichik Ayiq
+MANBA: 10-sinf ChQBT — 84-rasm
+20: O'rmonlarda chumoli uyalari qaysi tomonga tikka tushgan bo'ladi?
+JAVOB: Janubga
+QABUL: Janub
+MANBA: 10-sinf ChQBT — 85-rasm
+30: Bahorda qor qaysi tomonda tezroq eriydi?
+JAVOB: Janub tomonda
+QABUL: Janubda
+IZOH: Shimolga nisbatan.
+MANBA: 10-sinf ChQBT — Matn
+40: Nasroniy ibodatxonalari va protestantlar xochi hamma vaqt qaysi tomonga qaratilgan bo'ladi?
+JAVOB: Sharqqa
+QABUL: Sharq
+MANBA: 10-sinf ChQBT — Matn
+50: Machit qubbalaridagi oylar qaysi tomonga yo'nalgan bo'ladi?
+JAVOB: Janubiy-g'arbga
+MANBA: 10-sinf ChQBT — Matn
+MAVZU: Qurol ixtirochilari
+10: Jahonda birinchi avtomat quroli qaysi rus qurolsozi tomonidan yaratilgan?
+JAVOB: V.G. Fyodorov
+QABUL: Fyodorov
+MANBA: 10-sinf ChQBT — Matn
+20: Ikkinchi jahon urushi davrida V.A. Degtyarov bilan birga avtomat qurollarning yangi turlarini ixtiro qilgan olim kim?
+JAVOB: G.S. Shpagin
+QABUL: Shpagin
+MANBA: 10-sinf ChQBT — Matn
+30: Ixchamligi va jangovar ko'rsatkichlari uchun Qurolli Kuchlarimizda keng qo'llanilayotgan avtomatni yaratgan ixtirochi kim?
+JAVOB: M. Kalashnikov
+QABUL: Kalashnikov
+MANBA: 10-sinf ChQBT — Matn
+40: Portlovchi moddaning zaryadi harbiy atamada qanday ataladi?
+JAVOB: Fugas
+MANBA: 10-sinf ChQBT — Matn
+50: Otish qurolining qulflovchi mexanizmi — «qulf» ma'nosidagi atama qaysi?
+JAVOB: Zatvor
+MANBA: 10-sinf ChQBT — Matn
+MAVZU: Olimpiada medallari
+10: 1976-yilgi Monreal Olimpiadasida kumush medalni qo'lga kiritgan bokschimiz kim?
+JAVOB: Rufat Risqiyev
+QABUL: Risqiyev
+MANBA: 10-sinf ChQBT — Matn
+20: 1980-yilgi Moskva Olimpiadasida kumush medal olgan taniqli qilichbozimiz kim?
+JAVOB: Sobir Ro'ziyev
+QABUL: Ro'ziyev
+MANBA: 10-sinf ChQBT — Matn
+30: 2000-yilda Sidneydagi Yozgi Olimpiadada boks bo'yicha oltin medal olgan vatandoshimiz kim?
+JAVOB: Muhammadqodir Abdullayev
+QABUL: Abdullayev
+MANBA: 10-sinf ChQBT — Matn
+40: Rufat Risqiyev Monreal Olimpiadasida qaysi sport turida kumush medalga sazovor bo'lgan?
+JAVOB: Boks
+MANBA: 10-sinf ChQBT — Matn
+50: Sobir Ro'ziyev qaysi sport turi vakili sifatida Moskva Olimpiadasida kumush olgan?
+JAVOB: Qilichbozlik
+MANBA: 10-sinf ChQBT — Matn
+MAVZU: Harbiy atamalar I
+10: BMP qisqartmasi qanday jangovar mashinani bildiradi?
+JAVOB: Piyodalar jangovar mashinasi
+MANBA: 10-sinf ChQBT — Matn
+20: BTR qanday mashina?
+JAVOB: Zirhlangan g'ildirakli jangovar mashina
+QABUL: Bronetransportyor
+MANBA: 10-sinf ChQBT — Matn
+30: O'ra, xandaq ma'nosini beruvchi harbiy atama qaysi?
+JAVOB: Okop
+MANBA: 10-sinf ChQBT — Matn
+40: Qattiq (shiddatli) hujum ma'nosidagi «hamla» atamasi harbiy tilda qanday ataladi?
+JAVOB: Ataka
+MANBA: 10-sinf ChQBT — Matn
+50: Granata yoki mina piltasi harbiy atamada qanday ataladi?
+JAVOB: Zapal
+MANBA: 10-sinf ChQBT — Matn
+MAVZU: Harbiy atamalar II
+10: Kema, samolyot, tank jamoasining shaxsiy tarkibi qanday ataladi?
+JAVOB: Ekipaj
+MANBA: 10-sinf ChQBT — Matn
+20: Tuynuk va o'raga tushish yo'lagi qanday ataladi?
+JAVOB: Apparel
+MANBA: 10-sinf ChQBT — Matn
+30: Kuchli ta'sir etuvchi naryad yoki granatadagi modda qanday ataladi?
+JAVOB: Kumulativ
+MANBA: 10-sinf ChQBT — Matn
+40: To'p, zambarak — qaysi turdagi qurol?
+JAVOB: Artilleriya quroli
+QABUL: Artilleriya
+MANBA: 10-sinf ChQBT — Matn
+50: Jang maydonida qo'shinlarning dushmanga zarba berish uchun qulay vaziyat olish maqsadidagi harakati nima deyiladi?
+JAVOB: Manyovr
+MANBA: 10-sinf ChQBT — Matn
+</script>
+
+
+
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  var themes=[], th=null, cq=null, m, balls=[];
+  var SETS=[].slice.call(document.querySelectorAll('script.set'));
+  function parse(text){
+    themes=[];th=null;cq=null;
+    text.split('\n').forEach(function(l){
+      l=l.trim(); if(!l)return;
+      if(m=l.match(/^MAVZU:\s*(.+)/i)){th={name:m[1],tur:'',qs:{}};themes.push(th);}
+      else if(th&&(m=l.match(/^TUR:\s*(.+)/i)))th.tur=m[1];
+      else if(th&&(m=l.match(/^(\d+):\s*(.+)/))){cq={ball:+m[1],q:m[2],a:'',acc:'',izoh:'',manba:'',used:false};th.qs[cq.ball]=cq;}
+      else if(cq&&(m=l.match(/^JAVOB:\s*(.+)/i)))cq.a=m[1];
+      else if(cq&&(m=l.match(/^QABUL:\s*(.+)/i)))cq.acc=m[1];
+      else if(cq&&(m=l.match(/^IZOH:\s*(.+)/i)))cq.izoh=m[1];
+      else if(cq&&(m=l.match(/^MANBA:\s*(.+)/i)))cq.manba=m[1];
+    });
+    balls=[]; themes.forEach(function(t){Object.keys(t.qs).forEach(function(b){b=+b;if(balls.indexOf(b)<0)balls.push(b);});});
+    balls.sort(function(a,b){return a-b;});
+  }
+  var setSel=document.getElementById('setSel');
+  setSel.innerHTML=SETS.map(function(x,i){return '<option value="'+i+'">'+esc(x.getAttribute('data-title'))+'</option>';}).join('');
+  if(!SETS.length){document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="card" style="padding:26px;text-align:center;font-weight:700">ChQBT fanidan savollar tez orada qo\'shiladi.<br><small style="font-weight:600;color:var(--ink-soft)">Savollar tayyor bo\'lishi bilan shu sahifada svoyak taxtasi paydo bo\'ladi.</small></div>');document.querySelector('.tools').style.display='none';}else parse(SETS[0].textContent);
+
+  var players=[{n:"1-o'yinchi",s:0},{n:"2-o'yinchi",s:0},{n:"3-o'yinchi",s:0}];
+  function drawScore(){
+    var box=document.getElementById('score'); box.innerHTML='';
+    players.forEach(function(p,i){
+      var d=document.createElement('div'); d.className='pl';
+      d.innerHTML='<input value="'+esc(p.n)+'" aria-label="Ism"><b>'+p.s+'</b>';
+      d.querySelector('input').oninput=function(){p.n=this.value;};
+      box.appendChild(d);
+    });
+  }
+  function drawBoard(){
+    var b=document.getElementById('board'); b.innerHTML=''; b.style.gridTemplateColumns='repeat('+themes.length+',minmax(0,1fr))';b.className='board'+(themes.length>6?' dense':'');
+    themes.forEach(function(t){var h=document.createElement('div');h.className='th';h.textContent=t.name;b.appendChild(h);});
+    balls.forEach(function(ball){
+      themes.forEach(function(t){
+        var q=t.qs[ball], c=document.createElement('button');
+        c.className='cell'+(!q?' none':(q.used?' used':'')); c.textContent=ball;
+        if(q&&!q.used)c.onclick=function(){openQ(t,q);};
+        b.appendChild(c);
+      });
+    });
+  }
+  var tmr=null,left=30;
+  function openQ(t,q){
+    cq=q; document.getElementById('ov').classList.remove('hidden');
+    document.getElementById('qm').textContent=t.name+' · '+q.ball+' ball'+(t.tur?' · '+t.tur:'');
+    document.getElementById('qt').textContent=q.q;
+    document.getElementById('ab').innerHTML='';
+    document.getElementById('showA').classList.remove('hidden');
+    var w=document.getElementById('who'); w.innerHTML='';
+    players.forEach(function(p){
+      var d=document.createElement('div'); d.className='p'; d.innerHTML='<span>'+esc(p.n)+'</span><button class="y" title="To\'g\'ri">✓</button><button class="n" title="Noto\'g\'ri">✗</button>';
+      d.querySelector('.y').onclick=function(){p.s+=q.ball;finish(true);};
+      d.querySelector('.n').onclick=function(){p.s-=q.ball;drawScore();};
+      w.appendChild(d);
+    });
+    clearInterval(tmr); left=30; drawT();
+    tmr=setInterval(function(){left--;drawT();if(left<=0){clearInterval(tmr);}},1000);
+  }
+  function drawT(){var t=document.getElementById('tm');t.textContent=left;t.className='timer'+(left<=8?' low':'');}
+  function showAns(){
+    var h='<div class="ans">Javob: '+esc(cq.a);
+    if(cq.acc)h+='<small>Qabul: '+esc(cq.acc)+'</small>';
+    if(cq.izoh)h+='<small>Izoh: '+esc(cq.izoh)+'</small>';
+    if(cq.manba)h+='<small>Manba: '+esc(cq.manba)+'</small>';
+    document.getElementById('ab').innerHTML=h+'</div>';
+    document.getElementById('showA').classList.add('hidden');
+  }
+  function finish(){cq.used=true;clearInterval(tmr);document.getElementById('ov').classList.add('hidden');drawScore();drawBoard();}
+  document.getElementById('showA').onclick=showAns;
+  document.getElementById('closeQ').onclick=function(){finish();};
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('ov').classList.contains('hidden'))return;
+    if(e.key==='Escape')finish(); else if(e.key===' '&&e.target.tagName!=='INPUT'){e.preventDefault();showAns();}
+  });
+  document.getElementById('addP').onclick=function(){if(players.length<6){players.push({n:(players.length+1)+"-o'yinchi",s:0});drawScore();}};
+  document.getElementById('delP').onclick=function(){if(players.length>2){players.pop();drawScore();}};
+  document.getElementById('reset').onclick=function(){if(!confirm("Hamma ball va ishlatilgan kataklar tozalansinmi?"))return;
+    players.forEach(function(p){p.s=0;});themes.forEach(function(t){Object.keys(t.qs).forEach(function(b){t.qs[b].used=false;});});drawScore();drawBoard();};
+  setSel.onchange=function(){parse(SETS[+setSel.value].textContent);drawBoard();};
+  if(SETS.length){drawScore(); drawBoard();}
+</script></body></html>

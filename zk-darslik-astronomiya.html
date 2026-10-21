@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Svoyak: Astronomiya — Beruniy ilmi maktabi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css">
+<style>
+  .wrap{max-width:1300px;}
+  .board{display:grid;gap:10px;margin-bottom:20px;}
+  .th{word-break:break-word;background:var(--blue);color:#fff;font-weight:800;font-size:19px;padding:16px 10px;border-radius:16px;text-align:center;display:flex;align-items:center;justify-content:center;min-height:70px;}
+  .cell{border:none;border-radius:16px;background:#fff;border:1.5px solid var(--line);font-family:var(--font);font-size:34px;font-weight:800;color:var(--blue);padding:22px 6px;cursor:pointer;}
+  .cell:hover{background:#eaf2ff;border-color:var(--blue);}
+  .cell.used{background:#eef1f5;color:#c3ccd8;cursor:default;border-color:transparent;}
+  .board.dense{gap:6px;} .board.dense .th{font-size:13px;padding:8px 2px;min-height:64px;word-break:normal;overflow-wrap:break-word;hyphens:auto;} .board.dense .cell{font-size:26px;padding:16px 2px;border-radius:12px;}
+  .cell.none{visibility:hidden;}
+  .ov{position:fixed;inset:0;background:rgba(16,34,61,.72);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20;}
+  .modal{background:#fff;border-radius:28px;max-width:960px;width:100%;max-height:94vh;overflow:auto;padding:32px 38px;}
+  .who{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+  .who .p{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:14px;padding:6px 8px 6px 12px;font-weight:700;}
+  .who button{border:none;border-radius:10px;width:36px;height:36px;font-size:18px;font-weight:800;cursor:pointer;color:#fff;}
+  .who .y{background:var(--green);} .who .n{background:var(--red);}
+  .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+  .tools button.sm{font-family:var(--font);font-weight:700;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:8px 14px;cursor:pointer;}
+  @media (max-width:700px){.board.dense{overflow-x:auto;grid-template-columns:repeat(10,86px)!important;}.cell{font-size:22px;padding:16px 2px;}.th{font-size:14px;min-height:56px;padding:8px 4px;}.modal{padding:22px;}}
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="zk-darslik.html" aria-label="Orqaga">←</a><span class="brand">SVOYAK · ASTRONOMIYA</span></div>
+
+<div class="tools"><select id="setSel" aria-label="Darslik to'plami" style="font-family:var(--font);font-weight:800;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;background:#fff"></select>
+  <button class="sm" id="addP">+ O'yinchi</button>
+  <button class="sm" id="delP">− O'yinchi</button>
+  <button class="sm" id="reset">Boshidan boshlash</button>
+  <span style="color:var(--ink-soft);font-weight:600">Ismlarni bosib o'zgartirish mumkin</span>
+</div>
+<div class="score" id="score"></div>
+<div class="board" id="board"></div>
+</div>
+
+<div class="ov hidden" id="ov"><div class="modal">
+  <div class="qmeta" id="qm"></div>
+  <div class="timer" id="tm">30</div>
+  <p class="qtext" id="qt" style="margin-top:14px"></p>
+  <div id="ab"></div>
+  <div class="who" id="who"></div>
+  <div class="btnrow"><button class="btn" id="showA">Javobni ko'rsatish</button><button class="btn ghost" id="closeQ">Yopish (hech kim topmadi)</button></div>
+</div></div>
+
+<!--
+  MAKTAB DARSLIGI bo'yicha svoyak: mavzular darslik boblari bo'yicha tuziladi (namuna savollar).
+  YANGI MAVZU QO'SHISH: pastdagi blokka shu shaklda yozing.
+  MAVZU: mavzu nomi
+  10: savol matni          (ball: 10, 20, 30, 40, 50 ...)
+  JAVOB: javob
+  QABUL: boshqa qabul qilinadigan yozilishlar (ixtiyoriy)
+  IZOH: izoh (ixtiyoriy)
+  MANBA: manba (ixtiyoriy)
+-->
+<script type="text/plain" class="set" data-title="Astronomiya — qo'llanma asosida">
+MAVZU: Astronomiya asoslari
+10: «Astronomiya» so'zidagi yunoncha «astron» va «nomos» qanday ma'noni anglatadi?
+JAVOB: Yulduz va qonun
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: Olam tuzilishining geliosentrik nazariyasini rivojlantirgan (1548–1600) mashhur italiyalik olim va faylasuf kim?
+JAVOB: Jordano Bruno
+QABUL: Bruno
+IZOH: Qo'zg'almas yulduzlar sferasi yo'qligini, yulduzlar Quyoshga o'xshashligini aytgan.
+MANBA: ASTRONOMIYA QO'LLANMA — 23-rasm
+30: Vatandoshimiz Abu Rayhon Beruniy qaysi yillar oralig'ida yashagan?
+JAVOB: 973–1048
+QABUL: 973 dan 1048 gacha
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+40: Quyosh massasi Yer massasidan necha marta katta?
+JAVOB: 330 000 marta
+QABUL: 330 ming
+MANBA: ASTRONOMIYA QO'LLANMA — 26-rasm
+50: Yoritgichlarning sutkalik harakatida osmon meridianini kesib o'tishi qanday ataladi?
+JAVOB: Kulminatsiya
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+MAVZU: Taqvim va Umar Xayyom
+10: Hijriy taqvimda Sha'bondan keyin keladigan oy qaysi?
+JAVOB: Ramadon
+IZOH: Muharram, Safar, Rabi ul-avval… Zulhijja tartibida.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: Hijriy taqvim bo'yicha yangi — 1440-oddiy yilning 1-muharrami 2018-yilning qaysi kuni kirgan?
+JAVOB: 13-sentabr
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+30: Umar Xayyom qaysi yillar oralig'ida yashagan?
+JAVOB: 1048–1131
+QABUL: 1048 dan 1131 gacha
+MANBA: ASTRONOMIYA QO'LLANMA — 19-rasm
+40: Saljuq sultoni Malikshohning Umar Xayyomni saroyga taklif etgan vaziri kim?
+JAVOB: Nizom ul-Mulk
+IZOH: 1070-yilda.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: Malikshoh qaysi yilgacha hukmronlik qilgan va rasadxona shu yilgacha ishlagan?
+JAVOB: 1092-yil
+QABUL: 1092
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+MAVZU: Teleskoplar va rasadxona
+10: Kosmik stansiyalarga o'rnatilgan, qisqa to'lqinli nurlanuvchi obyektlarni topishga imkon beradigan teleskoplar qanday ataladi?
+JAVOB: Rentgen va gamma teleskoplar
+QABUL: Rentgen
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: Shimoliy Kavkazdagi teleskop-reflektor ko'zgusining diametri necha metr?
+JAVOB: 6 metr
+QABUL: 6
+MANBA: ASTRONOMIYA QO'LLANMA — 37-rasm
+30: Shimoliy Kavkazdagi RATAN-600 antennasining diametri necha metr?
+JAVOB: 600 metr
+QABUL: 600
+IZOH: Yevropadagi eng yirik teleskop.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+40: Ulug'bek rasadxonasidagi eng yirik kuzatish asbobi qanday ataladi?
+JAVOB: Sekstant
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: 1908-yilda Ulug'bek rasadxonasining o'rnini aniqlagan arxeolog kim?
+JAVOB: V.L. Vyatkin
+QABUL: Vyatkin
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+MAVZU: Quyosh va Yer
+10: Quyosh sirtining donadorlik tuzilishi — granulatsiya so'zidagi «granula» nimani bildiradi?
+JAVOB: Mayda dona
+MANBA: ASTRONOMIYA QO'LLANMA — 47-rasm
+20: Quyoshdan ko'tarilgan siyrak korpuskular zarrachalar oqimi qanday ataladi?
+JAVOB: Quyosh shamoli
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+30: Quyoshning alanga «til»lari qanday ataladi?
+JAVOB: Protuberaneslar
+IZOH: Xromosferada kuzatiladi.
+MANBA: ASTRONOMIYA QO'LLANMA — 49-rasm
+40: Epidemik kasalliklarning boshlanishi va tugashi Quyosh aktivligi fazalariga mos kelishini aniqlagan olim kim?
+JAVOB: A.L. Chijevskiy
+QABUL: Chijevskiy
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: 1938–1939-yillarda Edington, Veyszekker va Byoteler yulduzlarning energiya manbayi bo'la oladigan qanday reaksiyalarning nazariy hisob-kitobini ishlab chiqdilar?
+JAVOB: Yadroviy reaksiyalar
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+MAVZU: Merkuriy va Venera
+10: Merkuriy sirtida tortishish kuchi Yernikidan necha marta kam?
+JAVOB: 2,6 marta
+QABUL: 2,6
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: Merkuriy Quyosh atrofida necha sutkada bir marta aylanib chiqadi?
+JAVOB: 87,97 sutka
+QABUL: 87,97
+IZOH: Jadvalga ko'ra.
+MANBA: ASTRONOMIYA QO'LLANMA — Jadval
+30: Merkuriyning Quyoshdan o'rtacha uzoqligi necha million kilometr?
+JAVOB: 57,91
+QABUL: 57,91 mln km
+MANBA: ASTRONOMIYA QO'LLANMA — Jadval
+40: Venera o'z o'qi atrofida necha sutkada bir marta aylanadi?
+JAVOB: 243,16 sutka
+QABUL: 243,16
+IZOH: Quyosh atrofidagi davridan uzoqroq.
+MANBA: ASTRONOMIYA QO'LLANMA — Jadval
+50: Merkuriyning orbital tezligi sekundiga necha kilometr?
+JAVOB: 48,0 km/s
+QABUL: 48
+IZOH: Eng tez planeta.
+MANBA: ASTRONOMIYA QO'LLANMA — Jadval
+MAVZU: Mars, Yupiter va Saturn
+10: Mars Quyosh atrofida necha sutkada bir marta aylanib chiqadi?
+JAVOB: 686,98 sutka
+QABUL: 686,98
+MANBA: ASTRONOMIYA QO'LLANMA — Jadval
+20: Yupiter halqasining kengligi necha kilometr?
+JAVOB: 8700 km
+QABUL: 8 ming 700
+IZOH: 57 ming km balandlikda, qalinligi 30 km dan katta emas.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+30: 1979-yil 1-sentabrda Saturndan 21 400 km naridan o'tgan Amerika avtomatik stansiyasi qanday ataladi?
+JAVOB: «Pioner-11»
+QABUL: Pioner-11
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+40: Saturnning eng yirik yo'ldoshi Titan atmosferasi asosan qaysi gazlardan iborat?
+JAVOB: Azot va metan
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: Quyosh sistemasida yo'ldoshlar ichida kattaligi bo'yicha Titandan oldin qaysi yo'ldosh turadi?
+JAVOB: Ganimed
+IZOH: Yupiterning yo'ldoshi.
+MANBA: ASTRONOMIYA QO'LLANMA — 73-rasm
+MAVZU: Uran, Neptun va ekzoplanetalar
+10: Uran Quyosh atrofida necha yilda bir marta to'la aylanib chiqadi?
+JAVOB: 84 yilda
+QABUL: 84
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: Neptunning eng yirik yo'ldoshi Tritonni 1846-yilda qaysi astronom topgan?
+JAVOB: Lassel
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+30: «Kepler» kosmik apparati qaysi yilning mart oyida orbitaga chiqarilgan?
+JAVOB: 2009-yil
+QABUL: 2009
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+40: 2018-yilning 1-apreligacha astronomlar topgan ekzoplanetalar soni nechta?
+JAVOB: 3767 ta
+QABUL: 3767
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: 2003-yilda Erida transneptun obyektini qaysi astronom ochgan?
+JAVOB: Mayk Braun
+QABUL: M. Braun
+IZOH: Kaliforniya texnologiya institutidan.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+MAVZU: Asteroid va kometalar
+10: 1992-yilda Koyper belbog'ida topilgan birinchi obyekt 1992QB1 qanday nom bilan ham ataladi?
+JAVOB: Albion
+IZOH: Diametri 280 km.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: Kometaning osmon jismlaridan ekanligini 1577-yilda kim aniqlagan?
+JAVOB: Tixo Brage
+QABUL: T. Brage
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+30: Edmund Galley kuzatilgan nechta kometani o'rganib, ularning orbita elementlarini aniqlagan?
+JAVOB: 24 ta
+QABUL: 24
+IZOH: Nyutonning shogirdi.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+40: 1986-yilda Galley kometasini kuzatgan «Jotto» (Buyuk Britaniya) va «Vega» (sobiq Ittifoq) bilan birga yana qaysi Yaponiya stansiyasi bor edi?
+JAVOB: «Planeta»
+QABUL: Planeta
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: Tungus meteoriti Podkamennaya Tunguska daryosi bo'yidagi qaysi qishloqdan yuz kilometr shimoli-g'arbga tushgan?
+JAVOB: Vanavara
+IZOH: 1908-yilda.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+MAVZU: Yulduzlar
+10: 1886-yilda Vega yulduzining yillik parallaksini o'lchagan, Pulkovo observatoriyasi asoschisi kim?
+JAVOB: V.Y. Struve
+QABUL: Struve
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: Qizil o'tagigant Antares qaysi yulduz turkumidagi eng ravshan yulduz?
+JAVOB: Aqrab
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+30: Ravshanligi o'zgaruvchan yulduzlar «sefeidlar» deyilishining sababi nima?
+JAVOB: Sefey turkumi δ yulduzining o'zgarishiga o'xshaydi
+QABUL: Sefey
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+40: 1572-yilda Kassiopeya yulduz turkumida portlagan o'tayangi yulduzni kim kuzatgan?
+JAVOB: Tixo Brage
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: 1604-yilda Ilon Eltuvchi yulduz turkumida portlagan o'tayangi yulduzni kim kuzatgan?
+JAVOB: Iogann Kepler
+QABUL: Kepler
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+MAVZU: Galaktikalar va kosmonavtika
+10: Savr yulduz turkumidagi Hulkar to'dasi Quyosh sistemasidan o'rtacha necha parsek masofada?
+JAVOB: 130 parsek
+QABUL: 130
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+20: 1963-yilda topilgan birinchi kvazar 3C273 qaysi yulduz turkumida joylashgan?
+JAVOB: Sunbula
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+30: 1922–1924-yillarda A.A. Fridman Koinot modelini qaysi olimning umumiy nisbiylik nazariyasi asosida hisoblagan?
+JAVOB: Albert Eynshteyn
+QABUL: Eynshteyn
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+40: Birinchi suyuq yoqilg'ili «GIRD-09» raketasi qaysi yilning 17-avgustida uchirilgan?
+JAVOB: 1933-yil
+QABUL: 1933
+IZOH: Naxabino qishlog'idan.
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+50: 1932-yilda Moskvada tuzilgan GIRDga kim tayinlangan?
+JAVOB: S.P. Korolyov
+QABUL: Korolyov
+MANBA: ASTRONOMIYA QO'LLANMA — Matn
+</script>
+
+<script type="text/plain" class="set" data-title="Astronomiya — «ZAKO Astronomiya» manbasi">
+MAVZU: Kuzatish asboblari
+10: Fotografiya ixtiro qilinguniga qadar yorituvchilar nurlanishini qayd qiluvchi yagona tabiiy qurilma nima bo'lgan?
+JAVOB: Kuzatuvchining ko'zi
+QABUL: Ko'z
+MANBA: Astronomiya — Rasm 2
+20: Teleskop obyektivi hosil qilgan tasvir qaysi linza orqali kuzatiladi?
+JAVOB: Okular
+IZOH: Osmon jismi tasviri okular deb ataladigan linza orqali ko'riladi.
+MANBA: Astronomiya — Rasm 3
+30: Hozirgi teleskoplarda obyektiv yasagan tasvir fotoplastinkadan tashqari qaysi qurilmalarda qayd qilinadi?
+JAVOB: Raqamli qayd qilgich qurilmalarda
+QABUL: PZS
+MANBA: Astronomiya — Rasm 3
+40: Koinotning «radioyuzi»ni mayda detallari bilan ko'rishga imkon beradigan teleskop turini ayting.
+JAVOB: Radioteleskop
+MANBA: Astronomiya — Rasm 6
+50: RATAN-600 qaysi mamlakat Fanlar akademiyasining Maxsus Astrofizika Observatoriyasiga tegishli?
+JAVOB: Rossiya
+MANBA: Astronomiya — Rasm 4
+MAVZU: Radioteleskoplar
+10: Dunyodagi eng quvvatli radioteleskop qaysi orolda o'rnatilgan?
+JAVOB: Puerto-Riko
+IZOH: AQSHga tegishli.
+MANBA: Astronomiya — Rasm 5, 7
+20: O'zbekistonda yirik radioteleskop Jizzax viloyatining qaysi tumanida qurilmoqda?
+JAVOB: Zomin
+MANBA: Astronomiya — Rasm 6
+30: Zomindagi radioteleskop metall ko'zgusining diametri necha metr?
+JAVOB: 70 metr
+QABUL: 70
+MANBA: Astronomiya — Rasm 6, 7
+40: Zomindagi radioteleskop qurilayotgan joy qanday nomlanadi?
+JAVOB: Supa
+IZOH: Zomin tog' etagida.
+MANBA: Astronomiya — Rasm 6
+50: RATAN-600 reflektor oynasining diametri taxminan necha metr?
+JAVOB: 600 metr
+QABUL: 600
+IZOH: Nomidagi raqam ham shuni bildiradi.
+MANBA: Astronomiya — Rasm 4
+MAVZU: Quyosh
+10: Qutb yog'dulari qaysi yoritgich aktivligidan vujudga keladi?
+JAVOB: Quyosh
+IZOH: Yer atmosferasining yuqori qatlamlarida aks sado tufayli.
+MANBA: Astronomiya — Matn
+20: Quyosh dog'ining magnit maydonida spektral chiziqning bo'laklarga bo'linishi qanday nomlanadi?
+JAVOB: Zeeman effekti
+QABUL: Zeeman
+MANBA: Astronomiya — Rasm 8
+30: Quyosh aktivligining avji qaysi virusli kasallik (miya shamollashi) avji bilan mos kelishi aniqlangan?
+JAVOB: Poliomiyelit
+IZOH: Bogacheva va Boyko Riga va O'zbekistonda o'rgangan.
+MANBA: Astronomiya — Rasm 10
+40: Olimlar Quyosh chaqnashining qaysi ikki turdagi kasalliklarga ta'sirini o'rgangan?
+JAVOB: Asab va yurak-tomir kasalliklariga
+MANBA: Astronomiya — Rasm 10
+50: Zeeman effekti Quyosh dog'ining qaysi qismida ayniqsa yaqqol kuzatiladi?
+JAVOB: Yadrosiga tegishli qismida
+QABUL: Yadro
+MANBA: Astronomiya — Rasm 8
+MAVZU: Merkuriy va Oy
+10: 1974-yilda Merkuriyning 500 ga yaqin rasmini olgan planetalararo stansiya nomini ayting.
+JAVOB: Mariner-10
+IZOH: 47 ming 981 km masofadan o'tgan.
+MANBA: Astronomiya — Rasm 11
+20: Merkuriy yuzasi qaysi osmon jismining yuziga juda o'xshash?
+JAVOB: Oy
+IZOH: Ikkalasi ham kraterlar bilan qoplangan.
+MANBA: Astronomiya — Rasm 11
+30: Oydagi eng yirik tog'lardan Alp va Apennin bilan birga yana qaysi tog'lar sanaladi?
+JAVOB: Kavkaz
+MANBA: Astronomiya — Rasm 16
+40: Oy tog'larining balandligi ba'zan necha kilometrgacha yetadi?
+JAVOB: 9 kilometr
+QABUL: 9
+MANBA: Astronomiya — Rasm 16
+50: 63-rasmda Ptolemey va Alfons bilan birga ko'rsatilgan Oy krateri qaysi?
+JAVOB: Arzaxel
+MANBA: Astronomiya — Rasm 17
+MAVZU: Venera
+10: Veneraning o'zbekcha nomini ayting.
+JAVOB: Zuhro
+MANBA: Astronomiya — Rasm 12
+20: Venera Quyosh atrofida necha kunda bir marta to'la aylanadi?
+JAVOB: 225 kunda
+QABUL: 225
+IZOH: Orbita tezligi sekundiga 35 km.
+MANBA: Astronomiya — Rasm 12
+30: Erta tongda Quyosh chiqishidan oldin ko'ringani uchun Veneraga qanday nom berilgan?
+JAVOB: Tong yulduzi
+MANBA: Astronomiya — Rasm 12
+40: 1761-yil 6-iyunda Veneraning Quyosh diskidan o'tishini kuzatib, uning qalin atmosferasini aniqlagan rus olimi kim?
+JAVOB: M.V. Lomonosov
+QABUL: Lomonosov
+MANBA: Astronomiya — Rasm 13
+50: 1991-yili Veneradagi kraterlardan biriga qaysi vatandosh shoiramizning nomi berilgan?
+JAVOB: Nodirabegim
+IZOH: XAI Bosh Assambleyasi 116 ta relyef elementiga ayollar nomini bergan.
+MANBA: Astronomiya — Rasm 15
+MAVZU: Mars
+10: Marsda 30° janubiy kenglikda joylashgan, 400 km ga cho'zilgan daryo o'zani qanday nomlanadi?
+JAVOB: Nirgal
+MANBA: Astronomiya — Rasm 20
+20: Marsdagi uzunligi 700 km gacha boradigan, kengligi ayrim joylarda 80 km ga yetadigan daryo o'zani nomini ayting.
+JAVOB: Maadim
+MANBA: Astronomiya — Rasm 20
+30: Marsning qaysi pasttekisligi 2000 km ga cho'zilgan va kraterlardan xoli?
+JAVOB: Ellada
+MANBA: Astronomiya — Rasm 19
+40: Argirdan shimoliy-g'arbda joylashgan, ulkan vulqonli tog'lar bor Mars pasttekisligini ayting.
+JAVOB: Tarsis
+MANBA: Astronomiya — Rasm 19
+50: «Viking-1» tasvirlaridagi tuman Marsda suv zaxiralari qanday holatda borligiga dalil bo'ladi?
+JAVOB: Muz holatda
+QABUL: Muz
+MANBA: Astronomiya — Rasm 21
+MAVZU: Mars yo'ldoshlari
+10: Marsning yo'ldoshi Fobos so'zi qanday ma'noni bildiradi?
+JAVOB: Qo'rqinch
+MANBA: Astronomiya — Rasm 22
+20: Marsning ikkinchi yo'ldoshi Deymos so'zi qanday ma'noni bildiradi?
+JAVOB: Dahshat
+MANBA: Astronomiya — Rasm 22
+30: Fobos Mars atrofida bir marta necha soatda aylanib chiqadi?
+JAVOB: 7 soat 3 minutda
+QABUL: 7 soat
+MANBA: Astronomiya — Rasm 22
+40: Deymos Mars sirtidan o'rtacha necha kilometr narida joylashgan?
+JAVOB: 20 000 km
+QABUL: 20 ming
+IZOH: Aylanish davri 30 soat 18 minut.
+MANBA: Astronomiya — Rasm 22
+50: Fobosning ikki o'zaro perpendikulyar o'lchamlari necha kilometr?
+JAVOB: 18 va 22 km
+QABUL: 18 va 22
+IZOH: Deymosniki — 10 va 16 km.
+MANBA: Astronomiya — Rasm 21, 22
+MAVZU: Yupiter va Uran
+10: Yupiterdagi Katta Qizil Dog' qaysi yilda topilgan?
+JAVOB: 1878-yil
+QABUL: 1878
+IZOH: Uzunligi 30 ming, eni 13 ming km.
+MANBA: Astronomiya — Rasm 23
+20: Yevropa, Io, Kallisto bilan birga Galiley yo'ldoshlaridan yana qaysi biri sanaladi?
+JAVOB: Ganimed
+MANBA: Astronomiya — Rasm 24
+30: Uran planetasini 1781-yili tasodifan kim topgan?
+JAVOB: V. Gershel
+QABUL: Gershel
+IZOH: Aslida musiqachi bo'lgan.
+MANBA: Astronomiya — Rasm 25
+40: Uranning topilgan yo'ldoshlari soni nechta bo'lgan (matnga ko'ra)?
+JAVOB: 21 ta
+QABUL: Yigirma bitta
+MANBA: Astronomiya — Rasm 26
+50: Uranning Titaniya va Oberon yo'ldoshlari qaysi komediya qahramonlari nomi bilan atalgan?
+JAVOB: Shekspirning «Yozgi tundagi tush» komediyasi
+QABUL: Yozgi tundagi tush
+MANBA: Astronomiya — Rasm 26
+MAVZU: Neptun
+10: Neptun nomi qaysi xudo nomi bilan atalgan?
+JAVOB: Dengiz va okeanlar xudosi
+QABUL: Neptun
+MANBA: Astronomiya — Rasm 27
+20: Neptun qaysi yilning 23-sentabrida topilgan?
+JAVOB: 1846-yil
+QABUL: 1846
+MANBA: Astronomiya — Rasm 27
+30: Neptunni topgan Galle qaysi observatoriyada ishlagan?
+JAVOB: Berlin observatoriyasida
+QABUL: Berlin
+MANBA: Astronomiya — Rasm 27
+40: Neptunning eng yirik yo'ldoshi qaysi?
+JAVOB: Triton
+MANBA: Astronomiya — Rasm 27
+50: Fransuz matematigi Leverye bilan bir vaqtda planeta o'rnini hisoblagan yosh ingliz astronomi kim?
+JAVOB: J. Adams
+QABUL: Adams
+MANBA: Astronomiya — Rasm 27
+MAVZU: Ekzoplaneta va Kepler
+10: Birinchi ekzoplaneta qaysi yilda ochilgan?
+JAVOB: 1995-yil
+QABUL: 1995
+MANBA: Astronomiya — Rasm 28
+20: Birinchi ekzoplanetani qaysi shahar (mamlakat) observatoriyasi astronomlari topgan?
+JAVOB: Jeneva (Shveysariya)
+QABUL: Jeneva
+IZOH: M. Mayor va D. Kvelos.
+MANBA: Astronomiya — Rasm 28
+30: Yupiternikiga yaqin massali yo'ldosh ta'sirida «tebranayotgani» topilgan yulduz qaysi?
+JAVOB: 51 Pegas
+IZOH: Davri 4,23 sutka.
+MANBA: Astronomiya — Rasm 28
+40: 1596-yilda «Kosmografiya sirlari» asarini bosib chiqargan astronom kim?
+JAVOB: Iogann Kepler
+QABUL: Kepler
+IZOH: Mars va Yupiter orasida yana planeta bo'lishi kerak degan.
+MANBA: Astronomiya — Rasm 29
+50: 1772-yilda planetalar katta yarim o'qlari munosabatini aniqlagan vittenberglik astronom kim?
+JAVOB: Iogann Titsius
+QABUL: Titsius
+MANBA: Astronomiya — Rasm 29
+</script>
+
+<script type="text/plain" class="set" data-title="Astronomiya — 11-sinf qo'llanma va suratlar">
+MAVZU: Olam tuzilishi tarixi
+10: Yerning shar shaklida ekanligini mil. avv. IV asrda isbotlagan yunon faylasufi kim?
+JAVOB: Aristotel
+IZOH: Uning tasavvuri bo'yicha Koinot markazida qattiq Yer shari turgan.
+MANBA: Astronomiya 11-sinf qo'llanma — 1-rasm
+20: Milodning II asrida Olam tuzilishining geosentrik sistemasini bayon etgan astronomni ayting.
+JAVOB: Ptolemey
+QABUL: Klavdiy Ptolemey
+IZOH: Asari — «Megale sintaksis» («Buyuk tuzilish»).
+MANBA: Astronomiya 11-sinf qo'llanma — 22-rasm
+30: Yulduzlarning koordinatalarini o'zida aks ettirgan birinchi yulduzlar katalogini tuzgan mashhur yunon olimi kim?
+JAVOB: Gipparx
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: Mil. avv. III asrda Yer meridiani 1° li yoyining uzunligini, keyin planetamiz radiusini o'lchagan aleksandriyalik olim kim?
+JAVOB: Eratosfen
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+50: Planetalar o'rinlarini aniq belgilagan va Kepler shogird bo'lgan daniyalik olim kim?
+JAVOB: Tixo Brage
+QABUL: Brage
+IZOH: 1546–1601; kuzatuv ma'lumotlari Keplerga qolgan.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Kalendarlar
+10: Yilning uzunligi 365,25 kun bo'lgan kalendarni mil. avv. I asrda joriy qilgan rimlik sarkarda kim?
+JAVOB: Yuliy Sezar
+IZOH: Taqvim yulian kalendari deb ataladi.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: 1582-yilda yangi quyosh kalendari uchun yil uzunligining 365,242 kun qiymatini asos qilib olgan rim papasi kim?
+JAVOB: Grigoriy XIII
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+30: Quyosh kalendari miloddan avvalgi 3000-yillarda qaysi qadimgi davlatda paydo bo'lgan?
+JAVOB: Misr
+QABUL: Qadimgi Misr
+IZOH: Yil 360 kun, 12 oy 30 kundan deb olingan.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: Birinchi oy kalendari va yetti kunlik hafta miloddan avvalgi 2500-yillarda qaysi qadimgi davlatda paydo bo'lgan?
+JAVOB: Bobil
+QABUL: Qadimgi Bobil
+IZOH: Yetti kun — yetti osmon jismi soniga teng.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+50: Hijriy taqvim milodiy hisobda qaysi yilning 16-iyuliga to'g'ri keladi?
+JAVOB: 622-yil
+QABUL: 622
+IZOH: Makkadan Madinaga ko'chgan yil boshidan.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Oy
+10: Oyning Yer atrofida aylanish davri — siderik (yulduz) davri necha sutka?
+JAVOB: 27,32 sutka
+QABUL: 27,32
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: Oy fazasidan ikki marta ketma-ket o'tish orasidagi vaqt — sinodik davr necha sutka?
+JAVOB: 29,53 sutka
+QABUL: 29,53
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+30: Quyosh botgach g'arbda ingichka o'roq shaklida birinchi ko'ringan Oyga xalq tilida qanday nom beriladi?
+JAVOB: Yangioy
+QABUL: Hilol
+IZOH: Oy boshidan keyin ikkinchi kuni ko'rinadi.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: 1969-yil iyulida Oyga ilk bor qadam qo'ygan ikki astronavtdan birini ayting.
+JAVOB: Armstrong
+QABUL: Oldrin
+IZOH: Kema — «Apollon-11».
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+50: Oydagi eng yirik tog'lardan Apennin va Kavkaz bilan birga qaysi tog' sanaladi?
+JAVOB: Alp
+IZOH: Balandligi ba'zan 9 km gacha.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Vaqt va osmon
+10: Dunyo vaqti hisobi qaysi shaharning nomi bilan atalgan meridiandan boshlanadi?
+JAVOB: Grinvich
+IZOH: T_λ = T₀ + λ.
+MANBA: Astronomiya 11-sinf qo'llanma — 15-rasm
+20: Yer shari vaqt hisobi uchun nechta poyasga bo'lingan?
+JAVOB: 24 ta
+QABUL: 24
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+30: Zodiak sohada joylashgan yulduz turkumlari soni nechta?
+JAVOB: 12 ta
+QABUL: 12
+IZOH: Hut, Hamal, Savr, Javzo…
+MANBA: Astronomiya 11-sinf qo'llanma — 6-rasm
+40: Yerning o'z o'qi atrofida aylanishini ko'rsatadigan mayatnik kimning nomi bilan ataladi?
+JAVOB: Fuko
+QABUL: Fuko mayatnigi
+MANBA: Astronomiya 11-sinf qo'llanma — 3-rasm
+50: Ekliptikaning osmon ekvatoriga og'ishi necha gradus-minutga teng?
+JAVOB: 23°26′
+QABUL: 23 daraja 26 minut
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Sharq astronomlari
+10: XI asrda qaysi shaharda yashab ijod etgan Umar Xayyom saljuq sultoni saroyiga taklif etilgan?
+JAVOB: Nishopur
+IZOH: Xurosonda.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: 1076-yilda Umar Xayyom va shogirdlari uchun rasadxona qaysi shaharda qurilgan?
+JAVOB: Isfaxon
+IZOH: Hozirgi Eronda.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+30: Isfaxon rasadxonasida tuzilgan astronomik risola qanday nom bilan mashhur?
+JAVOB: Malikshoh ziji
+QABUL: Malikshoh
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: Malikshohning taxallusi bilan ataladigan, Eronda ishlatiladigan kalendar qanday ataladi?
+JAVOB: Jaloliy
+QABUL: Jaloliy kalendari
+IZOH: Umar Xayyom kalendariga asoslangan.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+50: Ulug'bek Ko'hak tepaligi ustida qurishni boshlagan kuzatish asbobining radiusi necha metr?
+JAVOB: 40,2 metr
+QABUL: 40,2
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Teleskoplar
+10: Obyektivi botiq sferik ko'zgudan iborat teleskop turi qanday ataladi?
+JAVOB: Reflektor
+IZOH: Linzali — refraktor.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: Birinchi refraktorni qaysi italyan olimi 1610-yilda ishga tushirgan?
+JAVOB: Galiley
+QABUL: G. Galiley
+MANBA: Astronomiya 11-sinf qo'llanma — 36-rasm
+30: Dunyodagi eng yirik refraktor obyektivining diametri necha metr va u qaysi mamlakatda qurilgan?
+JAVOB: 1 metr; AQSH
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: Qashqadaryo viloyati Qamashi tumanidagi Maydanak observatoriyasida o'rnatilgan reflektorning diametri qancha?
+JAVOB: 1,5 metr
+QABUL: 1,5 m
+IZOH: Taxminan 3000 m balandlikda.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+50: O'zbekistondagi eng yirik refraktor teleskopning (qo'shaloq astrograf) obyektiv diametri necha santimetr?
+JAVOB: 40 santimetr
+QABUL: 40 sm
+IZOH: Kitob yaqinida joylashgan.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Quyosh
+10: Quyoshni tashkil etgan gaz oddiy gazlardan farq qilib, qanday nomlanadi?
+JAVOB: Plazma
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: Ko'zga ko'rinadigan nurlarni chiqaruvchi Quyosh atmosferasining ostki qatlami qanday ataladi?
+JAVOB: Fotosfera
+MANBA: Astronomiya 11-sinf qo'llanma — 46-rasm
+30: Quyosh dog'lari soni o'zgarishining o'rtacha davrini 11,1 yilga teng deb topgan shveysariyalik olim kim?
+JAVOB: Rudolf Volf
+QABUL: Volf
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: Fotosferadan yuqoridagi, balandligi 14 000 km gacha boradigan Quyosh atmosferasi qatlami qanday ataladi?
+JAVOB: Xromosfera
+IZOH: «Xromos» — rang.
+MANBA: Astronomiya 11-sinf qo'llanma — 49-rasm
+50: Quyoshning aniqlangan yoshi salkam necha milliard yil?
+JAVOB: 4,8 milliard
+QABUL: 4,8
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Planetalar
+10: Quyoshga eng yaqin planeta Merkuriyni qadimda arablar qanday atashgan?
+JAVOB: Utorud
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: Veneraning diametri necha kilometr?
+JAVOB: 12 104 km
+QABUL: 12 ming 104
+IZOH: Kattaligi salkam Yernikicha.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+30: 1610-yilda Galiley Veneraning fazalarini ko'rib, uni qanday jism ekanligini isbotladi?
+JAVOB: Oy kabi shar shaklidagi jism
+QABUL: Shar shaklida
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: Yupiterning to'rtta eng yirik yo'ldoshini 1610-yilda kim topgan?
+JAVOB: Galiley
+QABUL: G. Galiley
+IZOH: Yevropa, Io, Kallisto, Ganimed.
+MANBA: Astronomiya 11-sinf qo'llanma — 73-rasm
+50: Yupiter atmosferasi vodorod, geliy, metan va qaysi gazdan tashkil topgan?
+JAVOB: Ammiak
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Kichik jismlar
+10: 1801-yil boshida Savr yulduz turkumidan Sererani topgan italiyalik astronom kim?
+JAVOB: Piatssi
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: Mayda planetalarga berilgan «asteroid» so'zi yunonchadan qanday tarjima qilinadi?
+JAVOB: Yulduzsimon
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+30: Plutonni 1930-yilda kim topgan?
+JAVOB: K. Tombo
+QABUL: Tombo
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+40: «Kometa» yunoncha so'z bo'lib, qanday ma'noni anglatadi?
+JAVOB: Sochli
+IZOH: 1759-yil 12-martda Galley kometasi perigeliydan o'tgan.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+50: Kitob xalqaro kenglik stansiyasida ishlagan astronom G. Neuymin 1351-sonli asteroidga qanday nom bergan?
+JAVOB: O'zbekistoniya
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+MAVZU: Yulduzlar va galaktikalar
+10: Persey yulduz turkumining β yulduzi bo'lgan Algul nomi nimani anglatadi?
+JAVOB: Devning ko'zi
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+20: Arabcha «Pahlavonning o'ng yelkasi» ma'nosini beradigan, qizil o'tagigant yulduzni ayting.
+JAVOB: Betelgeyze
+IZOH: Orion turkumida.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+30: 1054-yilda Xitoy astronomlari kuzatgan o'tayangi yulduz Qisqichbaqasimon tumanlik qaysi yulduz turkumida?
+JAVOB: Savr
+MANBA: Astronomiya 11-sinf qo'llanma — 99-rasm
+40: 1925-yilda galaktikalarni nechta sinfga bo'lishni taklif etgan E. Xabbl?
+JAVOB: Uchta
+QABUL: 3 ta
+IZOH: Elliptik, spiral va noto'g'ri.
+MANBA: Astronomiya 11-sinf qo'llanma — Matn
+50: Andromeda yulduz turkumidagi Andromeda tumanligining katalogdagi belgisini ayting.
+JAVOB: M-31
+MANBA: Astronomiya 11-sinf qo'llanma — 109-rasm
+</script>
+
+
+<script>
+  function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  var themes=[], th=null, cq=null, m, balls=[];
+  var SETS=[].slice.call(document.querySelectorAll('script.set'));
+  function parse(text){
+    themes=[];th=null;cq=null;
+    text.split('\n').forEach(function(l){
+      l=l.trim(); if(!l)return;
+      if(m=l.match(/^MAVZU:\s*(.+)/i)){th={name:m[1],tur:'',qs:{}};themes.push(th);}
+      else if(th&&(m=l.match(/^TUR:\s*(.+)/i)))th.tur=m[1];
+      else if(th&&(m=l.match(/^(\d+):\s*(.+)/))){cq={ball:+m[1],q:m[2],a:'',acc:'',izoh:'',manba:'',used:false};th.qs[cq.ball]=cq;}
+      else if(cq&&(m=l.match(/^JAVOB:\s*(.+)/i)))cq.a=m[1];
+      else if(cq&&(m=l.match(/^QABUL:\s*(.+)/i)))cq.acc=m[1];
+      else if(cq&&(m=l.match(/^IZOH:\s*(.+)/i)))cq.izoh=m[1];
+      else if(cq&&(m=l.match(/^MANBA:\s*(.+)/i)))cq.manba=m[1];
+    });
+    balls=[]; themes.forEach(function(t){Object.keys(t.qs).forEach(function(b){b=+b;if(balls.indexOf(b)<0)balls.push(b);});});
+    balls.sort(function(a,b){return a-b;});
+  }
+  var setSel=document.getElementById('setSel');
+  setSel.innerHTML=SETS.map(function(x,i){return '<option value="'+i+'">'+esc(x.getAttribute('data-title'))+'</option>';}).join('');
+  if(!SETS.length){document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="card" style="padding:26px;text-align:center;font-weight:700">Astronomiya fanidan savollar tez orada qo\'shiladi.<br><small style="font-weight:600;color:var(--ink-soft)">Savollar tayyor bo\'lishi bilan shu sahifada svoyak taxtasi paydo bo\'ladi.</small></div>');document.querySelector('.tools').style.display='none';}else parse(SETS[0].textContent);
+
+  var players=[{n:"1-o'yinchi",s:0},{n:"2-o'yinchi",s:0},{n:"3-o'yinchi",s:0}];
+  function drawScore(){
+    var box=document.getElementById('score'); box.innerHTML='';
+    players.forEach(function(p,i){
+      var d=document.createElement('div'); d.className='pl';
+      d.innerHTML='<input value="'+esc(p.n)+'" aria-label="Ism"><b>'+p.s+'</b>';
+      d.querySelector('input').oninput=function(){p.n=this.value;};
+      box.appendChild(d);
+    });
+  }
+  function drawBoard(){
+    var b=document.getElementById('board'); b.innerHTML=''; b.style.gridTemplateColumns='repeat('+themes.length+',minmax(0,1fr))';b.className='board'+(themes.length>6?' dense':'');
+    themes.forEach(function(t){var h=document.createElement('div');h.className='th';h.textContent=t.name;b.appendChild(h);});
+    balls.forEach(function(ball){
+      themes.forEach(function(t){
+        var q=t.qs[ball], c=document.createElement('button');
+        c.className='cell'+(!q?' none':(q.used?' used':'')); c.textContent=ball;
+        if(q&&!q.used)c.onclick=function(){openQ(t,q);};
+        b.appendChild(c);
+      });
+    });
+  }
+  var tmr=null,left=30;
+  function openQ(t,q){
+    cq=q; document.getElementById('ov').classList.remove('hidden');
+    document.getElementById('qm').textContent=t.name+' · '+q.ball+' ball'+(t.tur?' · '+t.tur:'');
+    document.getElementById('qt').textContent=q.q;
+    document.getElementById('ab').innerHTML='';
+    document.getElementById('showA').classList.remove('hidden');
+    var w=document.getElementById('who'); w.innerHTML='';
+    players.forEach(function(p){
+      var d=document.createElement('div'); d.className='p'; d.innerHTML='<span>'+esc(p.n)+'</span><button class="y" title="To\'g\'ri">✓</button><button class="n" title="Noto\'g\'ri">✗</button>';
+      d.querySelector('.y').onclick=function(){p.s+=q.ball;finish(true);};
+      d.querySelector('.n').onclick=function(){p.s-=q.ball;drawScore();};
+      w.appendChild(d);
+    });
+    clearInterval(tmr); left=30; drawT();
+    tmr=setInterval(function(){left--;drawT();if(left<=0){clearInterval(tmr);}},1000);
+  }
+  function drawT(){var t=document.getElementById('tm');t.textContent=left;t.className='timer'+(left<=8?' low':'');}
+  function showAns(){
+    var h='<div class="ans">Javob: '+esc(cq.a);
+    if(cq.acc)h+='<small>Qabul: '+esc(cq.acc)+'</small>';
+    if(cq.izoh)h+='<small>Izoh: '+esc(cq.izoh)+'</small>';
+    if(cq.manba)h+='<small>Manba: '+esc(cq.manba)+'</small>';
+    document.getElementById('ab').innerHTML=h+'</div>';
+    document.getElementById('showA').classList.add('hidden');
+  }
+  function finish(){cq.used=true;clearInterval(tmr);document.getElementById('ov').classList.add('hidden');drawScore();drawBoard();}
+  document.getElementById('showA').onclick=showAns;
+  document.getElementById('closeQ').onclick=function(){finish();};
+  document.addEventListener('keydown',function(e){
+    if(document.getElementById('ov').classList.contains('hidden'))return;
+    if(e.key==='Escape')finish(); else if(e.key===' '&&e.target.tagName!=='INPUT'){e.preventDefault();showAns();}
+  });
+  document.getElementById('addP').onclick=function(){if(players.length<6){players.push({n:(players.length+1)+"-o'yinchi",s:0});drawScore();}};
+  document.getElementById('delP').onclick=function(){if(players.length>2){players.pop();drawScore();}};
+  document.getElementById('reset').onclick=function(){if(!confirm("Hamma ball va ishlatilgan kataklar tozalansinmi?"))return;
+    players.forEach(function(p){p.s=0;});themes.forEach(function(t){Object.keys(t.qs).forEach(function(b){t.qs[b].used=false;});});drawScore();drawBoard();};
+  setSel.onchange=function(){parse(SETS[+setSel.value].textContent);drawBoard();};
+  if(SETS.length){drawScore(); drawBoard();}
+</script></body></html>

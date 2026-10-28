@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="uz"><head><script src="kirish.js"></script><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qo'qon xonligi mansablari</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><script src="pwa.js" defer></script>
+<script src="xlsx.mini.min.js" defer></script><script src="sert-kartasi.js" defer></script>
+<style>
+body{font-family:Nunito,system-ui,sans-serif;background:#eef3fb;margin:0;color:#1d2a44}
+.wrap{max-width:720px;margin:0 auto;padding:16px}
+h1{font-size:21px;margin:8px 0}.sub{color:#5a6b8c;font-size:14px;margin:0 0 14px}
+.q{background:#fff;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 1px 4px #0001}
+.num{font-weight:800;color:#1a6ee8}.man{font-size:12px;color:#6b7a99;font-style:italic;margin-top:6px}
+.stem{white-space:pre-line;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;padding:10px;margin:6px 0;border:2px solid #d5deee;border-radius:10px;background:#fff;font:inherit;color:inherit;cursor:pointer}
+.opt.sel{border-color:#1a6ee8;background:#e8f0ff}.opt.good{border-color:#1f9d55;background:#e3f6e8}.opt.bad{border-color:#d33;background:#fde8e8}
+input.ans{width:100%;box-sizing:border-box;padding:10px;border:2px solid #d5deee;border-radius:10px;font:inherit;margin-top:8px}
+.tag{display:inline-block;font-size:11px;background:#e8f0ff;color:#1a6ee8;border-radius:6px;padding:2px 7px;margin-left:6px}
+.sec{font-weight:800;margin:18px 0 0;color:#1a6ee8}
+button.go{background:#1a6ee8;color:#fff;border:0;border-radius:12px;padding:13px 22px;font:inherit;font-weight:800;width:100%;font-size:16px;margin:10px 0;cursor:pointer}
+button.alt{background:#fff;color:#1a6ee8;border:2px solid #1a6ee8}
+.res{margin-top:8px;font-size:14px;padding:8px 10px;border-radius:8px}
+.ok{background:#e3f6e8;color:#14683a}.no{background:#fde8e8;color:#9b1c1c}
+#timer{position:sticky;top:0;z-index:5;background:#1a6ee8;color:#fff;text-align:center;font-weight:800;font-size:18px;border-radius:0 0 12px 12px;padding:8px;margin:0 0 8px}#timer.low{background:#d33}
+#score{font-size:18px;font-weight:800;text-align:center}
+</style></head><body><div class="wrap">
+<p><a href="milliy-sertifikat.html" style="color:#1a6ee8;font-weight:800;text-decoration:none">← Milliy sertifikat</a></p>
+<h1>QO'QON XONLIGI MANSABLARI</h1>
+<p class="sub">15 ta yopiq savol (A–D) va 5 ta yozma savol (javobni klaviaturada yozing) — jami 20 ball. Test vaqti: 30 daqiqa. Sertifikat natijaga qarab beriladi: 18–20 to'g'ri — A+, 16–17 — A, 14–15 — B+, 11–13 — B, 9–10 — C+, 7–8 — C.</p>
+<div class="q" id="login"><b>Boshlashdan oldin ism va familiyangizni kiriting</b>
+<input class="ans" id="fn" placeholder="Ism" autocomplete="given-name"><input class="ans" id="ln" placeholder="Familiya" autocomplete="family-name">
+<div class="res no" id="lerr" style="display:none">Ism va familiyani yozing.</div>
+<button class="go" id="start">Testni boshlash</button></div>
+<div id="timer" style="display:none"></div>
+<div id="who" style="display:none;font-weight:800;margin:6px 0"></div>
+<div id="main" style="display:none"><div id="app"></div>
+<button class="go" id="fin">Javoblarni tekshirish</button>
+<button class="go alt" id="shw">To'g'ri javoblarni ko'rsatish</button><div id="score"></div>
+<div id="xl" style="display:none"><button class="go" id="xme">📥 Natijamni Excelga yuklash</button><button class="go" id="cert" style="background:#c9a24a">🏅 Sertifikatni yuklash (PDF, A4 vertikal)</button><button class="go alt" id="xall">📥 Shu qurilmadagi barcha natijalar (Excel)</button><p class="sub" id="xinfo"></p></div></div>
+</div>
+<script>
+var Q=[{"t": "t", "n": 1, "text": "Qo'qon xonligida bosh vazir va qo'shin bosh qo'mondoni vazifasini bajargan amaldorni aniqlang.", "opts": ["Devonbegi", "Qo'shbegi", "Mingboshi", "Yovar"], "ans": 2, "man": "oson"}, {"t": "t", "n": 2, "text": "Qo'qon xonligida devonxona va xazina hisob-kitobini yuritgan amaldorlar berilgan qatorni toping.", "opts": ["devonbegi va mirza", "qo'rboshi va topchiboshi", "yovar va ponsadboshi", "valiy va qal'abon"], "ans": 0, "man": "oson"}, {"t": "t", "n": 3, "text": "Qo'qon xonligida mehtar qanday vazifani bajargan?", "opts": ["bosh vazir bo'lgan", "devonbegining o'rinbosari sifatida moliya ishlariga mas'ul bo'lgan", "qal'a boshlig'i bo'lgan", "xon dasturxoniga taom tortgan"], "ans": 1, "man": "o'rta"}, {"t": "t", "n": 4, "text": "Qo'shin qismlari va ularning joylashuvini moslang.\n1) Ilg'or 2) Maymana 3) Maysara\na) o'ng qanot b) oldingi qism c) chap qanot", "opts": ["1-a, 2-b, 3-c", "1-c, 2-a, 3-b", "1-b, 2-c, 3-a", "1-b, 2-a, 3-c"], "ans": 3, "man": "o'rta"}, {"t": "t", "n": 5, "text": "O'z tug'iga ega bo'lgan harbiy bo'linma boshlig'i qanday atalgan?", "opts": ["To'qsoba", "Ponsadboshi", "Qo'rboshi", "Mirza"], "ans": 0, "man": "oson"}, {"t": "t", "n": 6, "text": "To'pchilar bo'linmasi boshlig'ini aniqlang.", "opts": ["Dasturxonchi", "Yovar", "Mehtar", "Topchiboshi"], "ans": 3, "man": "oson"}, {"t": "t", "n": 7, "text": "Qo'qon xonligida beklik hokimlari va qal'a boshliqlari egallagan mansablar qatorini toping.", "opts": ["mingboshi, devonbegi, mirza", "qo'shbegi, valiy, qal'abon", "yovar, ponsadboshi, to'qsoba", "ilg'or, maymana, maysara"], "ans": 1, "man": "oson"}, {"t": "t", "n": 8, "text": "TO'G'RI ma'lumotlarni aniqlang.\n1) Dasturxonchi xon dasturxoniga taom tortuvchi ishonchli mansabdor bo'lgan.\n2) Mingboshi faqat fuqarolik ishlari bilan shug'ullangan.\n3) Yovar maxsus bo'linma qo'mondoni bo'lgan.\n4) Mehtar devonbegidan yuqori mavqeda turgan.", "opts": ["2, 4", "1, 2", "1, 3", "3, 4"], "ans": 2, "man": "o'rta"}, {"t": "t", "n": 9, "text": "NOTO'G'RI ma'lumotni toping.", "opts": ["Xos soqchilari jangda askarlarni ruhlantirgan.", "Mirza devonxona va xazina hisob-kitobini yuritishda qatnashgan.", "Ponsadboshi harbiy qism qo'mondoni bo'lgan.", "Maysara qo'shinning oldingi qismi bo'lgan."], "ans": 3, "man": "o'rta"}, {"t": "t", "n": 10, "text": "Mansablarni guruhlang.\nI – boshqaruv va moliya; II – harbiy soha\na) devonbegi b) to'qsoba c) mehtar d) topchiboshi e) mirza", "opts": ["I – a, c, e; II – b, d", "I – a, b; II – c, d, e", "I – c, d; II – a, b, e", "I – a, e; II – b, c, d"], "ans": 0, "man": "o'rta"}, {"t": "t", "n": 11, "text": "Vaziyat: Jang oldidan qo'shin saflandi. O'ng qanotga joylashtirilgan qism qanday atalgan?", "opts": ["Ilg'or", "Maysara", "Maymana", "Xos soqchilari"], "ans": 2, "man": "o'rta"}, {"t": "t", "n": 12, "text": "Vaziyat: Xon dasturxoniga taom tortish faqat eng ishonchli shaxsga topshirilgan. Bu mansabni aniqlang.", "opts": ["Mirza", "Dasturxonchi", "Qo'rboshi", "Valiy"], "ans": 1, "man": "o'rta"}, {"t": "t", "n": 13, "text": "Fikrlarni baholang.\nI. Mingboshi qo'lida ham fuqarolik, ham harbiy boshqaruv jamlangan.\nII. Qo'shin oldingi, o'ng va chap qismlarga bo'lingan.\nIII. Dasturxonchi qo'shin bosh qo'mondoni bo'lgan.\nIV. Topchiboshi to'pchilar bo'linmasiga boshchilik qilgan.", "opts": ["I, II, IV to'g'ri; III noto'g'ri", "faqat III to'g'ri", "I va III to'g'ri; II va IV noto'g'ri", "II va III to'g'ri; I va IV noto'g'ri"], "ans": 0, "man": "qiyin"}, {"t": "t", "n": 14, "text": "Mingboshi lavozimida bosh vazirlik va bosh qo'mondonlikning birlashgani nimadan dalolat beradi?", "opts": ["Xonlikda muntazam qo'shin bo'lmaganidan", "Fuqarolik va harbiy hokimiyat bir shaxs qo'lida jamlanib, mingboshining mavqei juda kuchli bo'lganidan", "Davlatni diniy ulamolar boshqarganidan", "Moliya ishlari faqat harbiylarga topshirilganidan"], "ans": 1, "man": "qiyin"}, {"t": "t", "n": 15, "text": "Qaysi juftlikda ikkala mansab ham harbiy sohaga taalluqli?", "opts": ["devonbegi – mirza", "dasturxonchi – mehtar", "yovar – to'qsoba", "mehtar – mirza"], "ans": 2, "man": "qiyin"}, {"t": "y", "n": 16, "text": "Nuqtalar o'rniga to'g'ri javobni yozing.", "parts": [{"lab": "", "q": "Qo'qon xonligida bosh vazir va qo'shin bosh qo'mondoni ________ deb atalgan.", "forms": ["mingboshi"]}], "man": "oson"}, {"t": "y", "n": 17, "text": "Nuqtalar o'rniga to'g'ri javobni yozing.", "parts": [{"lab": "", "q": "Qo'shinning chap qanot qismi ________ deb atalgan.", "forms": ["maysara"]}], "man": "oson"}, {"t": "y", "n": 18, "text": "Nuqtalar o'rniga to'g'ri javobni yozing.", "parts": [{"lab": "", "q": "Jangda askarlarni ruhlantirgan soqchilar ________ deb atalgan.", "forms": ["xos soqchilari", "xos soqchi"]}], "man": "o'rta"}, {"t": "y", "n": 19, "text": "Nuqtalar o'rniga to'g'ri javobni yozing.", "parts": [{"lab": "", "q": "O'z tug'iga ega harbiy bo'linma boshlig'i ________ deb atalgan.", "forms": ["to'qsoba", "toqsoba"]}], "man": "o'rta"}, {"t": "y", "n": 20, "text": "Nuqtalar o'rniga to'g'ri javobni yozing.", "parts": [{"lab": "", "q": "Qo'shinning oldingi qismi ________ deb atalgan.", "forms": ["ilg'or", "ilgor"]}], "man": "o'rta"}];
+var CY={'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'j','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'x','ц':'ts','ч':'ch','ш':'sh','щ':'sh','ъ':'','ы':'i','ь':'','э':'e','ю':'yu','я':'ya','ў':"o'",'қ':'q','ғ':"g'",'ҳ':'h'};
+function norm(s){s=s.toLowerCase().replace(/[‘’ʻʼ`´]/g,"'").replace(/[Ѐ-ӿ]/g,function(c){return CY[c]!=null?CY[c]:c});
+ return s.replace(/[.,;:!?"“”()]/g,' ').replace(/\s+/g,' ').trim()}
+function lev(a,b){var m=[],i,j;for(i=0;i<=a.length;i++)m[i]=[i];for(j=0;j<=b.length;j++)m[0][j]=j;
+ for(i=1;i<=a.length;i++)for(j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]==b[j-1]?0:1));return m[a.length][b.length]}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+var app=document.getElementById('app'),picked={},NAME='',res={};
+Q.forEach(function(q,i){
+ if(i==0){app.insertAdjacentHTML('beforeend','<div class="sec">I. Yopiq savollar (1–15)</div>')}
+ if(i==15){app.insertAdjacentHTML('beforeend','<div class="sec">II. Yozma savollar (16–20) — javobni o\'zingiz yozing</div>')}
+ var d=document.createElement('div');d.className='q';
+ var t=esc(q.text).replace(/&lt;&lt;/g,'<u>').replace(/&gt;&gt;/g,'</u>');
+ var h='<div class="stem"><span class="num">'+q.n+'.</span> '+t+(q.t=='y'?'<span class="tag">yozma</span>':'')+'</div>';
+ if(q.t=='t')q.opts.forEach(function(o,k){h+='<button class="opt" data-i="'+i+'" data-k="'+k+'">'+'ABCD'[k]+') '+esc(o)+'</button>'});
+ else q.parts.forEach(function(pt,k){h+='<div style="margin-top:10px">'+(pt.lab?'<b>'+pt.lab+')</b> ':'')+esc(pt.q)+'</div><input class="ans" data-i="'+i+'" data-p="'+k+'" placeholder="Javobni yozing…" autocomplete="off">'});
+ h+='<div class="res" style="display:none" id="r'+i+'"></div>'+(q.man?'<div class="man">('+esc(q.man)+')</div>':'');
+ d.innerHTML=h;app.appendChild(d)});
+app.addEventListener('click',function(e){var b=e.target.closest('.opt');if(!b||b.disabled)return;var i=b.dataset.i;picked[i]=+b.dataset.k;
+ app.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(x){x.classList.toggle('sel',x===b)})});
+function show(i,cls,msg){var r=document.getElementById('r'+i);r.style.display='block';r.className='res '+cls;r.innerHTML=msg}
+function given(i){var q=Q[i];if(q.t=='t')return picked[i]!=null?'ABCD'[picked[i]]:'';var out=[];q.parts.forEach(function(p,k){var el=app.querySelector('input[data-i="'+i+'"][data-p="'+k+'"]');out.push(el?el.value.trim():'')});return out.join(' | ')}
+function partOk(i,k){var q=Q[i],el=app.querySelector('input[data-i="'+i+'"][data-p="'+k+'"]');var v=norm(el?el.value:'');if(!v)return false;
+ return q.parts[k].forms.some(function(f){f=norm(f);return v==f||(f.length>=6&&lev(v,f)<=1)})}
+function isOk(i){var q=Q[i];if(q.t=='t')return picked[i]===q.ans?1:0;var c=0;q.parts.forEach(function(p,k){if(partOk(i,k))c++});return c}
+function wt(q){return q.t=='t'?1:q.parts.length}
+var TOTAL=Q.reduce(function(a,q){return a+wt(q)},0);
+function mark(i,ok){res[i]=ok}
+function upd(){var s=0,c=0,y=0;Q.forEach(function(q,i){var r=res[i]||0;s+=r;if(i<15)c+=r;else y+=r});document.getElementById('score').textContent=NAME+' — Natija: '+s+' / '+TOTAL+' (yopiq: '+c+'/15, yozma: '+y+'/5)'}
+document.getElementById('fin').onclick=function(){
+ Q.forEach(function(q,i){var ok=isOk(i);mark(i,ok);
+  if(q.t=='t'){app.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(b){var k=+b.dataset.k;b.classList.remove('sel','good','bad');if(k==q.ans)b.classList.add('good');else if(k===picked[i])b.classList.add('bad')});
+   show(i,ok?'ok':'no',ok?'✅ To\'g\'ri':(picked[i]==null?'❌ Javob belgilanmagan. ':'❌ Noto\'g\'ri. ')+'To\'g\'ri javob: '+'ABCD'[q.ans]+') '+esc(q.opts[q.ans]))}
+  else{var m=q.parts.map(function(p,k){var o=partOk(i,k);return (o?'✅ ':'❌ ')+(p.lab?p.lab+') ':'')+(o?'to\'g\'ri':'to\'g\'ri javob: <b>'+esc(p.forms[0])+'</b>')}).join('<br>');show(i,ok==q.parts.length?'ok':'no',m+'<br>Ball: '+ok+' / '+q.parts.length)}});
+ upd();collect();if(tmr){stopT();document.getElementById('timer').textContent='✅ Tekshirildi · sarflangan vaqt: '+fmt(LIMIT-tleft)}};
+document.getElementById('shw').onclick=function(){Q.forEach(function(q,i){
+ if(q.t=='t'){app.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(b){b.classList.toggle('good',+b.dataset.k==q.ans)});show(i,'ok','✅ To\'g\'ri javob: <b>'+'ABCD'[q.ans]+') '+esc(q.opts[q.ans])+'</b>')}
+ else show(i,'ok',q.parts.map(function(p){return '✅ '+(p.lab?p.lab+') ':'')+'<b>'+esc(p.forms[0])+'</b>'}).join('<br>'))})};
+document.getElementById('start').onclick=function(){var f=document.getElementById('fn').value.trim(),l=document.getElementById('ln').value.trim();
+ if(f.length<2||l.length<2){document.getElementById('lerr').style.display='block';return}
+ NAME=f+' '+l;document.getElementById('login').style.display='none';document.getElementById('main').style.display='block';
+ var w=document.getElementById('who');w.style.display='block';w.textContent='👤 '+NAME;window.scrollTo(0,0);startTimer()};
+var LAST=null,KEY='sert_results_qoqon';
+function loadAll(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function saveAll(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true}catch(e){return false}}
+function collect(){var ans=[],sc=0;Q.forEach(function(q,i){var r=res[i]||0;sc+=r;var w=wt(q);ans.push({g:given(i),ok:r==w?'To\'g\'ri':(r==0?'Noto\'g\'ri':r+'/'+w)})});
+ var d=new Date(),p=function(x){return(x<10?'0':'')+x};
+ LAST={vaqt:d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()),ism:NAME,ball:sc,jami:TOTAL,ans:ans};
+ var all=loadAll();all.push(LAST);var ok=saveAll(all);document.getElementById('xl').style.display='block';var cb=document.getElementById('cert'),lv=window.certLevel?certLevel(sc,TOTAL):null;cb.style.display=lv?'block':'none';cb.textContent=lv?'🏅 Sertifikatni yuklash ('+lv+' daraja, PDF, A4 vertikal)':'';
+ document.getElementById('xinfo').textContent=ok?'Natija shu qurilmaga saqlandi (jami '+all.length+' ta urinish).':'Natijani qurilmaga saqlab bo\'lmadi; "Natijamni Excelga yuklash" ni bosing.'}
+function rowsFor(list){var head=['Vaqt','Ism-familiya','Ball','Jami'];for(var i=0;i<Q.length;i++)head.push((i+1)+'-javob','Holat');
+ var rows=[head];list.forEach(function(r){var row=[r.vaqt,r.ism,r.ball,r.jami];r.ans.forEach(function(a){row.push(a.g,a.ok)});rows.push(row)});return rows}
+function download(list,fname){var rows=rowsFor(list);
+ if(window.XLSX){var ws=XLSX.utils.aoa_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Natijalar');XLSX.writeFile(wb,fname+'.xlsx');return}
+ var csv='﻿'+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"'}).join(';')}).join('\r\n');
+ var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=fname+'.csv';document.body.appendChild(a);a.click();a.remove()}
+document.getElementById('cert').onclick=function(){if(LAST)makeCert({name:NAME,test:"Qo'qon xonligi mansablari",score:LAST.ball,total:LAST.jami})};
+document.getElementById('xme').onclick=function(){if(LAST)download([LAST],'natija_'+NAME.replace(/\s+/g,'_'))};
+document.getElementById('xall').onclick=function(){var a=loadAll();if(a.length)download(a,'barcha_natijalar')};
+
+var LIMIT=30*60,tleft=LIMIT,tmr=null;
+function fmt(t){var h=Math.floor(t/3600),m=Math.floor(t%3600/60),x=t%60,p=function(n){return(n<10?'0':'')+n};return p(h)+':'+p(m)+':'+p(x)}
+function drawT(){var el=document.getElementById('timer');el.textContent='⏱ Qolgan vaqt: '+fmt(tleft);el.classList.toggle('low',tleft<=300)}
+function startTimer(){var el=document.getElementById('timer');el.style.display='block';drawT();var end=Date.now()+LIMIT*1000;
+ tmr=setInterval(function(){tleft=Math.max(0,Math.round((end-Date.now())/1000));drawT();if(tleft<=0){stopT();document.getElementById('fin').click();lockAll();el.textContent='⏰ Vaqt tugadi — javoblar avtomatik tekshirildi'}},1000)}
+function stopT(){if(tmr){clearInterval(tmr);tmr=null}}
+function lockAll(){app.querySelectorAll('.opt,input.ans').forEach(function(x){x.disabled=true})}
+</script></body></html>

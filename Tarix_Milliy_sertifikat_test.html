@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarix – Milliy sertifikat (o'ta qiyin variant)</title>
+<style>
+  :root{
+    --blue:#2f8fdb; --blue-d:#1f6fb3; --navy:#1e3d78; --navy2:#2a5298;
+    --bg:#eef1f5; --card:#fff; --line:#dfe3e8; --text:#1f2937; --muted:#6b7280;
+    --green:#16a34a; --green-bg:#e8f7ee; --red:#dc2626; --red-bg:#fdecec; --gold:#f5c542;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+  .topbar{background:linear-gradient(90deg,var(--navy),var(--navy2));color:#fff;text-align:center;padding:12px 16px;font-weight:600;font-size:17px;display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap}
+  .topbar a{background:rgba(255,255,255,.14);color:var(--gold);text-decoration:none;padding:6px 14px;border-radius:6px;font-weight:700}
+  .topbar a:hover{background:rgba(255,255,255,.25)}
+  main{flex:1;width:100%;max-width:1520px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start}
+  .card{background:var(--card);border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.05);position:relative;overflow:hidden}
+  .qcard{padding:28px 36px;min-height:640px;display:flex;flex-direction:column}
+  .qcard::before{content:"";position:absolute;inset:0;background:url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5Ojf/2wBDAQoKCg0MDRoPDxo3JR8lNzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzf/wAARCAIjAhwDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3EUUCigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFAooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKQ1G8yjpyaAJaazqvUiqzSs3fA9qZmgCw047DNJ5/sKgooAm89vQUnnN7VFRQBL5ze1OE57ioKKALQmU+1OV1boRVPNAoAvUVWjkKnkkiplkU96AH0UlLQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAAooFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFNZgoyaR5AvHeqzsWbJoAdJIW46CozRRQAUUUUAFFFFABRRRQAUUUUAFFFFABShsUlFAEscpU4PSrNUqkSUhuTxQBZopAQRkUtABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAAKKBRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFRSybRgdaJZccL1quTnrQAE5OTSUUUAFFApaACiiigBKKKKACiiigAooooAKKKKACiiigAoooNAEsUu0YNWAQRkVT71JFJtOD0oAs0UgORxS0AFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQACigUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFRTPtGB1NOkcIuarMSxyaAEpKKWgBKKWigAooooAKKKKACkpaKAEopaTFABRSgUpGKAG0UvWjFACClp2MCm4oAAMmlIp6jAoxzQMjIxRTyM0ygRJDJtOD0NWapVYgYsvPagCWiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooABRQKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKQnAyaWoJ352j8aAI3be2e3am0UUAFGaACaUDHSgBOnWgml2mgIaAEzRTgnvS4A6cmgBlFPxmjaBQAzFKBS4pQM0ANAJ6U8LTgKDQOw0imkZNOPNOAoAbjApoGTT29qAuBSAaRmlA55p2KKACkApaKBiEUhXIp1FAiEjmnxvsPsetDL3plMRcByMilqCB+Np/Cp6ACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFAooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigBCcAmqZOSTVic4THrVegApwWkUc1JQMQUoopaQBRiiigYEZpNvpTqKAEAxSYzTqKBCbaXFLRQAlJinUUDGgYpaWigQgFLRRQMSilpDQAUlLRQAlFFFACGo2HNS01hmgTIwcHiraNuUGqhqa3bqKYieiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFAooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigCvcH5gPSohUk/+s/CoxQA9RxTqQUtIYUtJS0DCiiloAKKKWgAooooAKSlpKAFopKKAFooooAKKKKAEooooAKKKKAENFFFABSUtJQIYwpYThxmlYcVGODmmIu0Ug6UtABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAAKKBRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAFSU5kNItLJ/rG+tC0AOFLSClpDAUtIKWgYtFJS0AFFFFABS0UUCCkpaKAEopaSgAoopaBiUtFFAhKKWkoGFFFFACUUUUAFJS0lAgNRGpajPWmItJ9wfSnU2P7i06gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFAooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigCpL/rDQtLL/AKw0i0AOFLSUtIoBS0lFAC0lJRQIdRSUUAOzRmmUtADqKbmloAdRSZooAWikooAWkozSE0ALRmm5ozQAtJmkzRQAuaKSloAKKKKACoz1qSoz1piLUf3B9KdTU+6PpTqACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAAUUCigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAK04/eU1akuByDUa0AOpaSlpFBRRRQIBS0UUAGKMUtGaAExSYpc0ZoASilpKBi5ozSUtABRRRQAGkoooAKMUtLQITbRilooAbRS0lABRRRQAVEetS1Hj5vxpiLa9B9KWkFLQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQACigUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRSMQBk0ARXHQVCOtSSvu+lRjrQA8UtJS0igpaSloAKTJpaaRQIM+lN5JxmngUxl5pgAzjOaeBxkUwDnipBwMUCG0tL17UnSkMWgUlKKBi000tIaACiijHrQAUwlsE9hUlRkYpiDLDGaXJHWkAzTyKBCBqWkxSgUhhRS0UDEpn8VPprDmgRZByM0tQBm9alRtwpiHUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQACigUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABUUx5AqWoZfvUDQymgc06ikAUtJS0DFpaaKdQAUmKWigQmKMUtFACYopcUUAJSGlNJQMKWkpaACkNLSGgApaSloAKKWigQnFFLRQAlFLRQMQ0UUUAJRRRQIQ1JD1IplOi+9QPoTUUUUyQooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAAUUCigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKgk+9U9QyfeoGhtJS0hpDClpKWgQClpKWgYopaQUtAgooooAKSiigBKSlPFJQMKWkpaACkpaQ0AFApM04UAKKKKKAFopKKBC0lLSUAJRRRQMSiiigQVLEOKiqZfuigGOooopiCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooABRQKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAqKUd6lprjK0AQ0GiikUJS0lAoELS0lAoGOopKWgApaSloEFITiimtQAdaKKQsBxQMWnCmilzQApptKTSGgAo6UZFFADgc0U0cU4UAFFFFABSGlpKACkpaSgAooooEFTjpUCjkVYpgwooooEFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQACigUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQBAwwxpKfIOc0ykMSig0UALRRRQAtFFFAxaWkpaBCGkpaSgYlNwM0+kxQAg4pc0YpcUAJmkIzTsUEUAMxg8U4UYpaAClFJS0ALSUUtAhKSlpKBiGig0UCCiiigBycsKmqKLqalpiCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAAUUCigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAGsNwqLoeanpCAeooAgxnmkqfHBAFQUhiiikFLQAClFFAoGLRRSUAFFFLQAlFFLQAUUUUAFFFFAhKKWigYlLSUtABRSUtACGiiigBKKKKBBSgH0pY/vVNTAag2inUUUCCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAAUUCigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAqBxhjU9RSj5qAGUUUUihaKKKAFpKKKACiik5oAXNGabg0uKADdRmijFAC5pC1GKMUAG6lzTcUYoAdRSYpaACiiigAooooASig0UCHxdalqKLqalpiCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFAooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKjlHGakpGGVoAgoooFIYtFFFAwooooAKKSloAKKKKACiiigAooxRQAUUUUAFFFFABRRRQAUUUUAIaKKKBEkfTNSU1RhQKdTEFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAAKKBRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAQuMNTaldcj3qKgaAUtJS0hhSUUtACUtFFABRRRQAUUUUAFFFFABmiiigAooooAKKSigBaKKSgQUqjLCkqSMcZpgSUUUUCCiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFAooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACoZBg8d6lYgDJ7VE3Kg0AMpaSikMWiiigAooooGFLSUtABS0lFAC0lFFABSUtFABSUUUAFLSUUCCijNJQA5BuNTDiolHBNSRtuXNMQ6iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooABRQKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiopZNowOtADJnyQo6d6kxxiq8Yy4qyKAImGDSVKy5FR0hiUUUUAFLSUUALRSUtAC0UmaKAFopKM0AGaKSigBaSiigAoooxQAU4DNIBUqjAoAMVFG2yQg9CalNV5h8/1piLdFQwyZ+VuvapqACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFAooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiikoAWimswXqahkmzwn50APllC8DrVckk5NFFADovv1YFV4/virAoAUUjLnnvRS0AQ4oxUrrnkdajpDEpMU6igY2loxRigAoxRijFACUUuKMUAJRS4oxQISloxRQMKUUU9FxyaBCquOT1pTS02mIDUE33h9KnNQTff/CgBlTRS/wt+dQ0UAXKWqscpXg8ip1lVu+PrQA+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAAUUCigAooooAKKKKACiiigAooooAKKKKACiikJA6nFAC0lRPMB90ZqJpGbqaAJ2lVe+fpUTTMenFR0UABJPWiiigAooooAAcEGrQqrVhDlQaAHUtJSigBaY69xTxRQBDRT3XuKbSGFFFFABRiiloATFGKWkoAKSlooASiinKueT0oAEXPJqSiimISkpaSgANV5DlzU5OBmq3U5oAKKKKACiiigByyMvQ/hUqTA/e4qCigC4DkcUtU1Yr0NTJP/eoAmopAwboc0tABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRSFgOpFMaZR05oAkoquZiegxTGdj1JoAsllHUimGZR0yar0UAStMT0GKjZix5NJRQAUUUUAFFFFABRRRQAUUUUAFTQngj0qGnxHD/WgCeiiigBaWkpaACmMvcVJSGgCKinMvcU2kMBS0lLQAUhpaSgAoopVXNAAq5qQDAoApaYhKQ0tJQAGkooNADJThD71BUkx5AqOgAooooAKKKKACiiigAooooAAcdKkWZh15qOigCwJlPXIp4dT0IqpRQBdoqoHYdCaeJmHXmgCxRUQmU9cinhlPQigB1FFFABRRRQAUUUUAJS1XM57AUwyOe9AFosB1NMMyj3qtmigCYz+gqMyMe9NooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoHBzRRQBZHIzS0yI5QU+gBaUU0U4UAApaSgkDrxQAU1lz9aa0yjpzTfPOfu0ALS03zQeq0nmL6Ggdx1FN8weho80DotILkir608VB55/u05ZwT8wxTETUUgYN0OaWgBKSlNIaAEoopHOFNAFdjliaSiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKM0UUAODsOhNPE5HUA1FRQBYEynrkU8Op6EVUooAu0VTDsOhNP8AOb2oAjooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigCWE8EVLUMP3iKmoAKUUlRzSbflXr3oAdJKF4HJquzsxyTSUUAFAoooAWigUUALSUtJQAGkoNFACqxU5BxU8cwPDcH1qvRQBcpKhhk52t+BqagApkp+Sn1FN2FAEVFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUlLSUALRRRQAUUUUAFFFFABRRRQAUUUUAFFFJQAtFFJQAtFFFABRRRQAUUUUAFFFFABRRRQA+L74qeqy8OKs0AIxwM1AVyc96lPzUm2gCLYfTNNNWRTJF3DjrQBDRRRQAoooFFAC0lLSGgBDRRRQAU4IT2p8Sdz1qXFAEGypkORz1FLik6HNADqhm+8KmqvL980ANooooAKKKKACiiigAooooAKKKKACiikoAWikpaACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigApKWigBKKWigBKWkpaACiiigAooooAKKKDQAUUUUAHcVYPPFV6sUAKopcUCloATFJinUGgCvKmDuHeo6tEAgg1WZSpINACClpKUUALSGikNABT4k3HJ6CmAZOKtKu1cUALilxQKKAEpCM06igBg4NQyffNTkVXb75+tACUGiigAooooAKKKKACiiigAoopKACiiloAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAFFFFAAasryB9KrGp4zlRQBIKWkFLQAlBoooAQUyVNwyOoqSigCnSinSrtb2NMFAC0lKaVF3NigCSFP4j+FTdqQcUtABRRRQAUUtBoAaaq9zVljwarCgAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACg0UGgBaSiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACpofu1Calg6UATiiiigApKWkoAWkNKKQ0ARzD5M+lVxVmQgIc1WFACmpYB1NRGpoCCtAEtHailoASiiloAKKKKAI5eFNVxU833TUAoAKKKDQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFBooNABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAAooFFABUkPU1HT4fvUAWRRSCloAKSlpKAAUGig0AQznov4mohSu25iaaKAFNPhOGx60w0A459KALdBpFOQDSmgApaSloAKKKDQBDP0qGpJz0qOgAoNFBoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACg0tIaACiiigAooooAKKKKACiiigAooooAKKDRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU6PhxTaVThhQBaHSlpopwoAKQ0tIaAAUyZsIffin1BOcvj0oAipRSUooADSU6m0ATwNkFfSpTVaJtrj3qyetABS0gpaACkNLTT0oAgmPzD6UynSffNNoAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKSloABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFBoAsqc08VFGeBUooAKQ0tIaAEzjJqoTkk+tTynCH3qCgApRSUooAU0006kNACVaVtyg+1VamgPykelAEwpaQUtABTWp1MegCu3LGkoooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoopKACloooAKKKKACiiigAooooAKKKKACg0UUAFFFFABRRRQAUUUUAFFFFABRRRQAd6KKKACg0UUATRfdFTCiigAppoooAhm6LUVFFABSiiigBTSGiigBO9SQ/eP0oooAsCloooAKjk6H6UUUAVxRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQACiiigAooooAKKKKACiiigAFFFFABSGiigD/2Q==") center 12%/min(440px,70%) no-repeat;opacity:.9;pointer-events:none}
+  .qcard>*{position:relative}
+  .qhead{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .qnum{color:#4b5563;font-size:18px}
+  .timer{background:var(--red-bg);color:var(--red);font-weight:700;font-size:22px;padding:7px 18px;border-radius:24px;font-variant-numeric:tabular-nums}
+  .timer.warn{animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.55}}
+  .section-tag{display:inline-block;margin-top:18px;background:#fff6d6;color:#8a6300;font-size:13px;font-weight:700;padding:3px 10px;border-radius:5px}
+  .qtext{font-size:21px;font-weight:600;margin:18px 0 12px;line-height:1.45}
+  .qbody{font-size:16.5px;line-height:1.65;margin-bottom:14px;color:#374151}
+  .qbody .gap{height:8px}
+  .opt{display:flex;align-items:flex-start;gap:14px;border:2px solid var(--line);border-radius:8px;padding:14px 18px;margin-bottom:13px;cursor:pointer;font-size:17px;line-height:1.45;background:rgba(255,255,255,.88);transition:.15s}
+  .opt:hover{border-color:#a9cdee;background:#f6fbff}
+  .opt input{margin-top:4px;width:18px;height:18px;accent-color:var(--blue);flex-shrink:0}
+  .opt.sel{border-color:var(--blue);background:#eaf4fd}
+  .wpart{margin:14px 0 6px;font-size:17px;line-height:1.5}
+  .wpart b{color:var(--navy)}
+  .winput{width:100%;font-size:17px;padding:12px 16px;border:2px solid var(--line);border-radius:8px;background:rgba(255,255,255,.92);outline:none}
+  .winput:focus{border-color:var(--blue)}
+  .qfoot{margin-top:auto;padding-top:20px;border-top:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap}
+  .btn{border:none;border-radius:7px;padding:13px 28px;font-size:18px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff;transition:.15s}
+  .btn:hover{background:var(--blue-d)}
+  .btn.ghost{background:#e5e7eb;color:#374151}
+  .btn.ghost:hover{background:#d1d5db}
+  .btn.finish{background:var(--green);margin-left:auto}
+  .btn.finish:hover{background:#12813b}
+  .btn:disabled{opacity:.45;cursor:default}
+  .side{padding:22px 24px}
+  .side h3{text-align:center;font-size:19px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:16px}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-height:640px;overflow-y:auto;padding-right:6px}
+  .grid button{aspect-ratio:1/0.98;border:1px solid var(--line);background:#fff;border-radius:7px;font-size:17px;font-weight:600;cursor:pointer;color:#111}
+  .grid button:hover{border-color:var(--blue)}
+  .grid button.done{background:#dbeafe;border-color:#93c5fd}
+  .grid button.cur{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .grid button.ok{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+  .grid button.bad{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+  .grid .lbl{grid-column:1/-1;font-size:13px;font-weight:700;color:var(--muted);margin-top:6px}
+  .legend{margin-top:14px;font-size:13px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+  footer{text-align:center;padding:16px;border-top:1px solid var(--line);background:#fff;color:#4b5563;font-size:16px}
+  footer b{color:#111}
+  footer a{color:var(--blue-d);font-weight:600;text-decoration:none}
+  /* start & result */
+  .center{grid-column:1/-1;max-width:760px;width:100%;margin:0 auto;padding:40px 44px;text-align:center}
+  .center h1{font-size:28px;color:var(--navy);margin-bottom:8px}
+  .center .sub{color:var(--muted);margin-bottom:26px;font-size:17px}
+  .info{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:26px}
+  .info div{background:#f3f6fb;border-radius:10px;padding:14px}
+  .info b{display:block;font-size:24px;color:var(--navy)}
+  .info span{font-size:14px;color:var(--muted)}
+  .center input{width:100%;font-size:18px;padding:13px 16px;border:2px solid var(--line);border-radius:8px;margin-bottom:18px;text-align:center}
+  .photo{width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center center;border:4px solid #e3ebf7;margin-bottom:14px}
+  .score{font-size:56px;font-weight:800;color:var(--navy);margin:10px 0 4px}
+  .rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}
+  .rgrid div{border-radius:10px;padding:14px;background:#f3f6fb}
+  .rgrid b{display:block;font-size:22px}
+  .review{grid-column:1/-1;padding:28px 36px}
+  .review h2{font-size:21px;margin-bottom:16px;color:var(--navy)}
+  .ritem{border:1px solid var(--line);border-left:5px solid var(--line);border-radius:8px;padding:14px 18px;margin-bottom:12px;font-size:15.5px;line-height:1.55}
+  .ritem.ok{border-left-color:var(--green)}
+  .ritem.bad{border-left-color:var(--red)}
+  .ritem .t{font-weight:600;margin-bottom:6px}
+  .ritem .u{color:var(--red)}
+  .ritem.ok .u{color:var(--green)}
+  .ritem .c{color:var(--green);font-weight:600}
+  .hidden{display:none!important}
+  @media(max-width:980px){
+    main{grid-template-columns:1fr;margin:14px auto}
+    .qcard{padding:20px 18px;min-height:auto}
+    .qtext{font-size:18.5px}.opt{font-size:16px;padding:12px 14px}
+    .grid{grid-template-columns:repeat(7,1fr);max-height:none}
+    .btn{padding:12px 20px;font-size:16px}
+    .center{padding:28px 20px}.info,.rgrid{grid-template-columns:1fr}
+    .review{padding:20px 16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">Kanalimizga a'zo bo'ling: <a href="https://t.me/Yoldashaliisakov" target="_blank">@Yoldashaliisakov</a></div>
+
+<main id="app">
+  <!-- START -->
+  <section id="start" class="card center">
+    <img class="photo" src="data:image/jpeg;base64,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" alt="">
+    <h1>TARIX – MILLIY SERTIFIKAT</h1>
+    <div class="sub">O'ta qiyin variant</div>
+    <div class="info">
+      <div><b>35</b><span>ta test</span></div>
+      <div><b>7</b><span>ta yozma topshiriq (a, b)</span></div>
+      <div><b>90</b><span>daqiqa</span></div>
+    </div>
+    <input id="fio" placeholder="Ism-familiyangizni kiriting" autocomplete="name">
+    <button class="btn" onclick="startTest()">Testni boshlash</button>
+  </section>
+
+  <!-- TEST -->
+  <section id="qcard" class="card qcard hidden">
+    <div class="qhead">
+      <div class="qnum" id="qnum"></div>
+      <div class="timer" id="timer">90:00</div>
+    </div>
+    <div id="qwrap"></div>
+    <div class="qfoot">
+      <button class="btn ghost" id="prev" onclick="go(cur-1)">Oldingi</button>
+      <button class="btn" id="next" onclick="go(cur+1)">Keyingi</button>
+      <button class="btn finish" onclick="askFinish()">Yakunlash</button>
+    </div>
+  </section>
+  <aside id="side" class="card side hidden">
+    <h3>Savollar</h3>
+    <div class="grid" id="grid"></div>
+    <div class="legend" id="legend">
+      <span><i style="background:var(--blue)"></i>Joriy</span>
+      <span><i style="background:#dbeafe;border:1px solid #93c5fd"></i>Javob berilgan</span>
+      <span><i style="background:#fff;border:1px solid var(--line)"></i>Javobsiz</span>
+    </div>
+  </aside>
+
+  <!-- RESULT -->
+  <section id="result" class="card center hidden"></section>
+  <section id="review" class="card review hidden"></section>
+</main>
+
+<footer>Test tuzuvchi: <b>Yo'ldashali</b> · <a href="https://t.me/Yoldashaliisakov" target="_blank">t.me/Yoldashaliisakov</a></footer>
+
+<script>
+const TESTS = [{"q": "Mil. avv. 329–327-yillarda Sug'dda Iskandar Zulqarnaynga qarshi qo'zg'olonga boshchilik qilgan sarkarda kim?", "o": ["Oksiart", "Spitamen", "Bess", "Satibarzan"], "a": 1}, {"q": "Iskandar Zulqarnayn bilan bog'liq janglar va ularning xususiyatlari o'zaro to'g'ri moslashtirilgan javobni toping.", "b": ["I. Granik jangi (mil. av. 334-y.)", "II. Iss jangi (mil. av. 333-y.)", "III. Gavgamela jangi (mil. av. 331-y.)", "IV. Gidasp jangi (mil. av. 326-y.)", "", "1. Kichik Osiyodagi birinchi yirik jang", "2. Ahamoniylar qo'shinining so'nggi hal qiluvchi mag'lubiyati", "3. Doro III ning onasi, xotini va qizlari asirga tushgan jang", "4. Hind podshosi Por bilan bo'lgan jang"], "o": ["I-3, II-4, III-2, IV-1", "I-1, II-2, III-3, IV-4", "I-1, II-4, III-2, IV-3", "I-1, II-3, III-2, IV-4"], "a": 3}, {"q": "Nuqtalar o'rniga mosini qo'ying.", "b": ["1699-yilda imzolangan ... sulhiga ko'ra Usmoniylar imperiyasi deyarli butun Vengriya, Transilvaniya va Xorvatiyaning katta qismini Avstriyaga topshirdi."], "o": ["Utrext", "Kuchuk-Kaynarji", "Vestfal", "Karlovits"], "a": 3}, {"q": "Quyidagi berilgan ma'lumotlardan eng avval sodir bo'lganini aniqlang va uning natijasi to'g'ri berilgan javobni toping.", "b": ["1) Eronda konstitutsion inqilob (1905–1911);", "2) Fransiya-Prussiya urushi (1870–1871);", "3) Ikkinchi ingliz-afg'on urushi (1878–1880);", "4) Ingliz-Bur urushi (1899–1902)."], "o": ["Ikkinchi ingliz-afg'on urushi – Afg'oniston Britaniyaning mustamlakasiga aylantirildi", "Ingliz-Bur urushi – Bur respublikalari mustaqilligini saqlab qoldi", "Eronda konstitutsion inqilob – shoh hokimiyati bekor qilindi", "Fransiya-Prussiya urushi – Fransiya Elzas va Lotaringiyaning bir qismidan mahrum bo'ldi"], "a": 3}, {"q": "Atamani aniqlang.", "b": ["Italiyada XIV–XV asrlarda shahar-davlatlarga haq evaziga xizmat qilgan yollanma harbiy otryad boshlig'i."], "o": ["Konkistador", "Dofin", "Vassal", "Kondotyer"], "a": 3}, {"q": "Atamani aniqlang.", "b": ["Millatlar Ligasi tomonidan g'olib davlatlarga mag'lub davlatlarning mustamlakalarini vaqtincha boshqarish huquqining berilishi."], "o": ["Anneksiya", "Mandat", "Protektorat", "Kapitulyatsiya"], "a": 1}, {"q": "Tarixiy shaxsni aniqlang.", "b": ["Portugaliyalik dengizchi. 1519–1522-yillardagi dunyo bo'ylab birinchi sayohat ekspeditsiyasini boshqargan, Atlantikadan Tinch okeaniga o'tgan. 1521-yilda Filippinda halok bo'lgan."], "o": ["Xristofor Kolumb", "Vasko da Gama", "Pedru Kabral", "Fernan Magellan"], "a": 3}, {"q": "Tarixiy davlatni aniqlang.", "b": ["1501-yilda Tabriz shahrida Shoh Ismoil I tomonidan tashkil etilgan. Shialikning o'n ikki imomiy yo'nalishi rasmiy din deb e'lon qilingan. Shayboniylar va Usmoniylar bilan uzoq urushlar olib borgan."], "o": ["Safaviylar davlati", "Usmoniylar imperiyasi", "Boburiylar davlati", "Ilxoniylar davlati"], "a": 0}, {"q": "Tarixiy shaxsni aniqlang.", "b": ["1875-yilda Samarqandda tug'ilgan. «Padarkush» dramasi (1911) muallifi, «Samarqand» gazetasi va «Oyina» jurnali (1913) noshiri. 1919-yilda Qarshida o'ldirilgan."], "o": ["Munavvarqori Abdurashidxonov", "Abdulla Avloniy", "Abdurauf Fitrat", "Mahmudxo'ja Behbudiy"], "a": 3}, {"q": "Tarixiy davlatni aniqlang.", "b": ["Poytaxti Xiva shahri bo'lgan. Qo'ng'irotlar sulolasi hukmronlik qilgan. Asosiy hududi Amudaryoning quyi oqimi – Xorazm vohasi. 1873-yilda Gandimiyon shartnomasi imzolangan."], "o": ["Qo'qon xonligi", "Xiva xonligi", "Buxoro amirligi", "Xorazm Xalq Sovet Respublikasi"], "a": 1}, {"q": "Xronologik ketma-ketlikda joylashtiring.", "b": ["1) Zirabuloq balandligidagi jang;", "2) Jizzax egallandi;", "3) Chimkent egallandi;", "4) Turkiston viloyati tashkil etildi."], "o": ["3, 2, 4, 1", "4, 3, 2, 1", "3, 4, 2, 1", "3, 4, 1, 2"], "a": 2}, {"q": "Shaxs, voqea va uning natijasi to'g'ri berilgan javobni aniqlang.", "o": ["Aleksandr II – 1861-yil 19-fevral manifesti – krepostnoylik huquqi bekor qilindi", "Aleksandr III – 1861-yil 19-fevral manifesti – krepostnoylik huquqi bekor qilindi", "Nikolay I – Qrim urushi (1853–1856) – Rossiya g'alaba qozondi", "Pyotr I – Poltava jangi (1709) – Rossiya Shvetsiyaga yutqazdi"], "a": 0}, {"q": "Quyidagi ma'lumotlardan to'g'ri-noto'g'ri hukmni aniqlang.", "b": ["1) 1865-yil 6-avgustda «Turkiston viloyatini boshqarish to'g'risida Muvaqqat Nizom» qabul qilingan;", "2) Toshkent 1865-yil iyunda M. G. Chernyayev boshchiligidagi qo'shin tomonidan egallangan;", "3) 1868-yilda Buxoro amirligi Rossiyaga vassal bo'lib qolgan, Zarafshon okrugi tuzilgan;", "4) Xiva xonligi 1868-yilda Rossiya protektoratiga aylangan."], "o": ["1, 2, 4 – to'g'ri; 3 – noto'g'ri", "1, 2, 3 – to'g'ri; 4 – noto'g'ri", "2, 3, 4 – to'g'ri; 1 – noto'g'ri", "1, 3, 4 – to'g'ri; 2 – noto'g'ri"], "a": 1}, {"q": "Germaniya Federativ Respublikasi (GFR) NATOga qaysi yili a'zo bo'lgan?", "o": ["1955-yil", "1949-yil", "1952-yil", "1982-yil"], "a": 0}, {"q": "«2022–2026-yillarga mo'ljallangan Yangi O'zbekistonning Taraqqiyot strategiyasi»ning «Milliy manfaatlardan kelib chiqqan holda umumbashariy muammolarga yondashish» yo'nalishi nechanchi?", "o": ["IV", "V", "VI", "VII"], "a": 2}, {"q": "O'zbekiston Respublikasi Davlat gerbi qachon qabul qilingan?", "o": ["1991-yil 18-noyabr", "1992-yil 10-dekabr", "1992-yil 2-iyul", "1992-yil 8-dekabr"], "a": 2}, {"q": "Faqat Qadimgi Rim mualliflari va ularning asarlari to'g'ri keltirilgan javobni toping.", "o": ["Tit Liviy – «Rim tarixi»; Kvint Kursiy Ruf – «Aleksandr tarixi»; Tatsit – «Annallar»", "Arrian – «Aleksandr anabasisi»; Tit Liviy – «Rim tarixi»; Tatsit – «Annallar»", "Plutarx – «Qiyosiy hayotnomalar»; Tit Liviy – «Rim tarixi»; Tatsit – «Annallar»", "Strabon – «Geografiya»; Kvint Kursiy Ruf – «Aleksandr tarixi»; Tatsit – «Annallar»"], "a": 0}, {"q": "Voqea va uning natijasi to'g'ri berilgan javobni aniqlang.", "o": ["Buyuk geografik kashfiyotlar – savdo yo'llari Atlantika okeanidan O'rta Yer dengiziga ko'chdi", "Vasko da Gamaning 1498-yildagi sayohati – Yevropadan Hindistonga dengiz yo'li ochildi", "Ernan Kortes 1519–1521-yillarda Inka davlatini bosib oldi", "Fransisko Pisarro 1532-yilda Aztek davlatini bosib oldi"], "a": 1}, {"q": "Asr, O'zbekiston tarixidagi voqea va jahon tarixidagi voqea o'zaro to'g'ri berilgan javobni aniqlang.", "o": ["Zarafshon okrugi tuzilishi (1868) – Vestfal tinchligi (1648)", "Qoraxoniylar davlatining tashkil topishi (X asr) – Magna Karta (1215)", "Amir Temurning Anqara jangi (1402) – Konstans sobori (1414–1418)", "Kushon podsholigining tashkil topishi (I asr) – Bastiliyaning egallanishi (1789)"], "a": 2}, {"q": "NOMUVOFIQ berilgan javobni toping.", "o": ["Notr-Dam sobori – Fransiya", "Alhambra saroyi – Ispaniya", "Kyoln sobori – Fransiya", "Ayasofya – Turkiya"], "a": 2}, {"q": "Qadimgi Afinada Klisfen islohotidan keyin tashkil etilgan 500 kishilik kengash qanday nomlangan?", "o": ["Areopag", "Ekklesiya", "Gereya", "Bule"], "a": 3}, {"q": "Hirotdagi Musalla majmuasi qurilishiga boshchilik qilgan, Shohruh Mirzoning rafiqasi kim?", "o": ["Bibixonim", "Gavharshodbegim", "Saroymulkxonim", "Tarkon Xotun"], "a": 1}, {"q": "Alisher Navoiy Hirotda qurdirgan shifoxona qanday nomlangan?", "o": ["Shifoiya", "Ixlosiya", "Xalosiya", "Nizomiya"], "a": 0}, {"q": "Turkiston ASSR, BXSR va XXSRning birinchi hukumat rahbarlari to'g'ri keltirilgan javobni aniqlang.", "o": ["Turkiston ASSR – P. Kobozev; BXSR – Polvonniyoz Xojiyusupov; XXSR – Fayzulla Xo'jayev", "Turkiston ASSR – Fayzulla Xo'jayev; BXSR – P. Kobozev; XXSR – Polvonniyoz Xojiyusupov", "Turkiston ASSR – P. Kobozev; BXSR – Fayzulla Xo'jayev; XXSR – Polvonniyoz Xojiyusupov", "Turkiston ASSR – Polvonniyoz Xojiyusupov; BXSR – Fayzulla Xo'jayev; XXSR – P. Kobozev"], "a": 2}, {"q": "Abdulla Qodiriy qalamiga mansub, 1929-yilda yozilgan roman qaysi?", "o": ["«Kecha va kunduz»", "«Qutlug' qon»", "«Mehrobdan chayon»", "«Obid ketmon»"], "a": 2}, {"q": "1916–1922-yillarda prezident bo'lgan Ipolito Irigoyen hukumati 8 soatlik ish kuni to'g'risida qonun qabul qilinishiga erishgan, davlat neft sanoatini shakllantirgan. U qaysi davlat prezidenti edi?", "o": ["Argentina", "Braziliya", "Meksika", "Chili"], "a": 0}, {"q": "Mualliflar va ularning asarlari to'g'ri moslashtirilgan javobni aniqlang.", "b": ["I. Ibn Arabshoh", "II. Abdurazzoq Samarqandiy", "III. Xondamir", "IV. Hofiz Tanish Buxoriy", "", "1. «Matla' us-sa'dayn»", "2. «Abdullanoma»", "3. «Habib us-siyar»", "4. «Ajoib al-maqdur fi navoib Taymur»"], "o": ["I-4, II-1, III-3, IV-2", "I-4, II-2, III-1, IV-3", "I-2, II-4, III-3, IV-1", "I-3, II-1, III-4, IV-2"], "a": 0}, {"q": "Ixtirochilar va ularning ixtirolari o'zaro to'g'ri moslashtirilgan javobni aniqlang.", "b": ["I. Jeyms Xargrivs", "II. Edmund Kartrayt", "III. Richard Arkrayt", "IV. Samuel Kromton", "", "1. «myul-mashina» (myul-jenni)", "2. bir yo'la ko'p urchuq ishlaydigan «Jenni» mexanik yigiruv mashinasi", "3. mexanik to'quv dastgohi", "4. suv kuchi bilan ishlaydigan yigiruv mashinasi"], "o": ["I-4, II-2, III-3, IV-1", "I-1, II-3, III-4, IV-2", "I-4, II-3, III-2, IV-1", "I-2, II-3, III-4, IV-1"], "a": 3}, {"q": "1871-yilda Qohiradagi Xedive operasida birinchi marta sahnalashtirilgan «Aida» operasining muallifi kim?", "o": ["Jakomo Puchchini", "Juzeppe Verdi", "Jokkino Rossini", "Rixard Vagner"], "a": 1}, {"q": "Soliqlar va ularning izohi o'zaro to'g'ri moslashtirilgan javobni aniqlang.", "b": ["I. Xiroj", "II. Jizya", "III. Zakot", "IV. Ushr", "", "1. musulmon bo'lmaganlardan olinadigan jon solig'i", "2. yerdan olinadigan asosiy soliq", "3. mulk va savdo mollaridan olinadigan diniy soliq", "4. musulmonlar yerlari hosilining o'ndan bir qismi miqdorida olinadigan soliq"], "o": ["I-2, II-1, III-3, IV-4", "I-2, II-1, III-4, IV-3", "I-1, II-2, III-3, IV-4", "I-1, II-4, III-3, IV-2"], "a": 0}, {"q": "Ittifoq (kelishuv) va uning tuzilgan yili o'zaro to'g'ri moslashtirilgan javobni aniqlang.", "b": ["I. To'rtlar ittifoqi (Bolgariyaning qo'shilishi)", "II. Vestminster statuti", "III. Uchlar pakti (Berlin pakti)", "IV. Atlantik xartiya", "", "1. 1940-yil", "2. 1931-yil", "3. 1941-yil", "4. 1915-yil"], "o": ["I-1, II-2, III-3, IV-4", "I-4, II-2, III-1, IV-3", "I-4, II-3, III-1, IV-2", "I-4, II-2, III-3, IV-1"], "a": 1}, {"q": "1944-yilda Bretton-Vuds konferensiyasida qaysi xalqaro moliyaviy tashkilotlar tashkil etilgan?", "o": ["BMT va YUNESKO", "NATO va Marshall rejasi", "Xalqaro valuta fondi va Xalqaro tiklanish va taraqqiyot banki", "GATT va Xalqaro mehnat tashkiloti"], "a": 2}, {"q": "1938-yil 29–30-sentyabrdagi Myunxen kelishuvini imzolagan to'rt davlat rahbarlari qaysi javobda to'g'ri keltirilgan?", "o": ["Gitler, Mussolini, Chemberlen, Daladye", "Gitler, Mussolini, Cherchill, Daladye", "Gitler, Stalin, Chemberlen, Daladye", "Gitler, Mussolini, Chemberlen, Ruzvelt"], "a": 0}, {"q": "1940-yil 27-sentyabrda imzolangan Uchlar pakti qaysi davlatlar o'rtasida tuzilgan?", "o": ["Germaniya, Italiya, SSSR", "Germaniya, Yaponiya, Vengriya", "Germaniya, Italiya, Yaponiya", "Italiya, Yaponiya, Rumuniya"], "a": 2}, {"q": "Birinchi salb yurishi qaysi yili e'lon qilingan va qaysi shaharni egallash bilan yakunlangan?", "o": ["1096-yil – Antioxiya", "1095-yil – Quddus", "1095-yil – Konstantinopol", "1099-yil – Quddus"], "a": 1}];
+const WRITTEN = [[{"q": "1215-yilda Angliya qiroli Ioann Yersiz imzolagan, qirol hokimiyatini cheklagan hujjat qanday nomlangan?", "show": "Magna Karta (Buyuk erkinlik xartiyasi)", "ok": ["magna karta", "magna carta", "buyuk erkinlik xartiyasi", "buyuk erkinliklar xartiyasi", "erkinlik xartiyasi"]}, {"q": "Ioann Yersizning akasi, Uchinchi salb yurishi qatnashchisi bo'lgan ingliz qiroli kim?", "show": "Richard I (Sher Yurak)", "ok": ["richard i", "richard 1", "richard sher yurak", "sher yurak richard", "richard", "sher yurak", "richard i sher yurak"]}], [{"q": "1812-yilgi Vatan urushida Napoleon qo'shini bilan eng yirik jang qaysi qishloq yaqinida bo'lgan?", "show": "Borodino", "ok": ["borodino"]}, {"q": "Bu jangda rus qo'shiniga kim qo'mondonlik qilgan?", "show": "M. I. Kutuzov", "ok": ["kutuzov", "m i kutuzov", "mi kutuzov", "mixail kutuzov"]}], [{"q": "1945-yil 2-sentyabrda Vyetnam Demokratik Respublikasining mustaqilligini e'lon qilgan rahbar kim?", "show": "Xo Shi Min", "ok": ["xo shi min", "xoshimin", "ho shi min", "xo chi min", "ho chi minh"]}, {"q": "1954-yilgi Jeneva kelishuviga ko'ra Vyetnam qaysi parallel bo'yicha ikkiga bo'lingan?", "show": "17-parallel", "ok": ["17", "17 parallel", "17parallel"]}], [{"q": "Samarqandda Ulug'bek tomonidan 1417–1420-yillarda madrasa qurilgan mashhur maydon qanday nomlanadi?", "show": "Registon", "ok": ["registon", "registon maydoni"]}, {"q": "Ulug'bek rasadxonasi qaysi ariq yoqasidagi tepalikda qurilgan?", "show": "Obi-Rahmat", "ok": ["obi rahmat", "obirahmat", "obi rahmat arigi"]}], [{"q": "Gandimiyon shartnomasi qaysi yili imzolangan?", "show": "1873-yil", "ok": ["1873", "1873 yil", "1873 yilda"]}, {"q": "Shartnoma imzolangan paytda Xiva xoni kim edi?", "show": "Muhammad Rahimxon II (Feruz)", "ok": ["muhammad rahimxon ii", "muhammad rahimxon 2", "muhammad rahimxon", "feruz", "muhammad rahimxon ii feruz", "muhammad rahimxon feruz", "rahimxon feruz"]}], [{"q": "Millatlar Ligasi qaysi shaharda joylashgan edi va qaysi yili tashkil topgan?", "show": "Jeneva, 1920-yil", "ok": ["jeneva 1920", "jeneva 1920 yil", "1920 jeneva", "1920 yil jeneva", "jeneva shahrida 1920 yilda"]}, {"q": "Millatlar Ligasini tuzish tashabbusi bilan chiqqan, ammo AQSH unga a'zo bo'lmagan prezident kim?", "show": "Vudro Vilson", "ok": ["vudro vilson", "vilson", "vudro uilson", "uilson", "woodrow wilson", "wilson"]}], [{"q": "1504-yilda Zahiriddin Muhammad Bobur qaysi shaharni egallab, Kobul hukmdori bo'ldi?", "show": "Kobul", "ok": ["kobul"]}, {"q": "Bobur Hindistonda qaysi shaharni poytaxt qilgan?", "show": "Agra", "ok": ["agra"]}]];
+const TIME_MIN = 90;
+const L = ["A","B","C","D"];
+const N = TESTS.length + WRITTEN.length;
+let cur = 0, timeLeft = TIME_MIN*60, timerId = null, finished = false, name = "";
+const ans = Array(TESTS.length).fill(null);
+const wans = WRITTEN.map(()=>["",""]);
+
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm = s => String(s).toLowerCase()
+  .replace(/[ʻʼ’‘`'´"«»“”]/g,"")
+  .replace(/[.,;:!?()\-–—\/]/g," ")
+  .replace(/\s+/g," ").trim();
+
+function startTest(){
+  name = document.getElementById("fio").value.trim();
+  if(!name){ document.getElementById("fio").focus(); document.getElementById("fio").style.borderColor="var(--red)"; return; }
+  document.getElementById("start").classList.add("hidden");
+  document.getElementById("qcard").classList.remove("hidden");
+  document.getElementById("side").classList.remove("hidden");
+  buildGrid(); go(0); tick(); timerId = setInterval(tick,1000);
+}
+
+function tick(){
+  const m = Math.floor(timeLeft/60), s = timeLeft%60;
+  const t = document.getElementById("timer");
+  t.textContent = String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+  t.classList.toggle("warn", timeLeft<=300);
+  if(timeLeft<=0){ finish(); return; }
+  timeLeft--;
+}
+
+function buildGrid(){
+  const g = document.getElementById("grid"); g.innerHTML="";
+  for(let i=0;i<N;i++){
+    if(i===0) g.insertAdjacentHTML("beforeend",'<div class="lbl">Test topshiriqlari</div>');
+    if(i===TESTS.length) g.insertAdjacentHTML("beforeend",'<div class="lbl">Yozma ish</div>');
+    const b=document.createElement("button"); b.textContent=i+1; b.onclick=()=>go(i); b.id="g"+i; g.appendChild(b);
+  }
+}
+
+function isDone(i){
+  if(i<TESTS.length) return ans[i]!==null;
+  const w=wans[i-TESTS.length]; return w[0].trim()!=="" || w[1].trim()!=="";
+}
+
+function paintGrid(){
+  for(let i=0;i<N;i++){
+    const b=document.getElementById("g"+i); b.className="";
+    if(finished){ b.classList.add(scoreOf(i)===maxOf(i)?"ok":"bad"); if(i===cur) b.style.outline="3px solid var(--blue)"; else b.style.outline=""; continue; }
+    if(i===cur) b.classList.add("cur"); else if(isDone(i)) b.classList.add("done");
+  }
+}
+
+function go(i){
+  if(i<0||i>=N) return;
+  cur=i;
+  document.getElementById("qnum").textContent=(i+1)+"-savol / "+N;
+  const w=document.getElementById("qwrap");
+  if(i<TESTS.length){
+    const q=TESTS[i];
+    let h='<div class="qtext">'+(i+1)+". "+esc(q.q)+'</div>';
+    if(q.b) h+='<div class="qbody">'+q.b.map(l=>l===""?'<div class="gap"></div>':'<div>'+esc(l)+'</div>').join("")+'</div>';
+    q.o.forEach((o,k)=>{
+      h+='<label class="opt'+(ans[i]===k?" sel":"")+'"><input type="radio" name="o" '+(ans[i]===k?"checked":"")+' onchange="pick('+k+')"><span>'+L[k]+") "+esc(o)+'</span></label>';
+    });
+    w.innerHTML=h;
+  } else {
+    const k=i-TESTS.length, W=WRITTEN[k];
+    let h='<span class="section-tag">YOZMA ISH</span><div class="qtext">'+(i+1)+'-topshiriq</div>';
+    ["a","b"].forEach((p,j)=>{
+      h+='<div class="wpart"><b>'+p+')</b> '+esc(W[j].q)+'</div><input class="winput" value="'+esc(wans[k][j])+'" placeholder="Javobingizni yozing" oninput="wtype('+k+','+j+',this.value)">';
+    });
+    w.innerHTML=h;
+  }
+  document.getElementById("prev").disabled = i===0;
+  document.getElementById("next").disabled = i===N-1;
+  paintGrid();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function pick(k){ ans[cur]=k; go(cur); }
+function wtype(k,j,v){ wans[k][j]=v; paintGrid(); }
+
+function askFinish(){
+  const left = [...Array(N).keys()].filter(i=>!isDone(i)).length;
+  if(confirm(left? left+" ta savolga javob berilmagan. Testni yakunlaysizmi?" : "Testni yakunlaysizmi?")) finish();
+}
+
+function wOk(k,j){ const u=norm(wans[k][j]); return u!=="" && WRITTEN[k][j].ok.map(norm).includes(u); }
+function scoreOf(i){ if(i<TESTS.length) return ans[i]===TESTS[i].a?1:0; const k=i-TESTS.length; return (wOk(k,0)?1:0)+(wOk(k,1)?1:0); }
+function maxOf(i){ return i<TESTS.length?1:2; }
+
+function finish(){
+  if(finished) return; finished=true; clearInterval(timerId);
+  let t=0,w=0; for(let i=0;i<TESTS.length;i++) t+=scoreOf(i); for(let i=TESTS.length;i<N;i++) w+=scoreOf(i);
+  const total=TESTS.length+WRITTEN.length*2, got=t+w, pct=Math.round(got/total*100);
+  const used=TIME_MIN*60-Math.max(timeLeft,0);
+  document.getElementById("qcard").classList.add("hidden");
+  document.getElementById("legend").classList.add("hidden");
+  const r=document.getElementById("result"); r.classList.remove("hidden");
+  r.innerHTML='<h1>Natija</h1><div class="sub">'+esc(name)+'</div><div class="score">'+pct+'%</div><div class="sub">'+got+' / '+total+' ball</div>'+
+    '<div class="rgrid"><div><b style="color:var(--green)">'+t+' / '+TESTS.length+'</b>Test</div><div><b style="color:var(--navy)">'+w+' / '+WRITTEN.length*2+'</b>Yozma ish</div><div><b>'+Math.floor(used/60)+' daq '+(used%60)+' s</b>Sarflangan vaqt</div></div>'+
+    '<button class="btn" onclick="location.reload()">Qaytadan ishlash</button>';
+  let h='<h2>Javoblar tahlili</h2>';
+  TESTS.forEach((q,i)=>{
+    const ok=ans[i]===q.a;
+    h+='<div class="ritem '+(ok?"ok":"bad")+'" id="r'+i+'"><div class="t">'+(i+1)+'. '+esc(q.q)+'</div>'+
+       '<div class="u">Sizning javobingiz: '+(ans[i]===null?"— javob berilmagan":L[ans[i]]+") "+esc(q.o[ans[i]]))+'</div>'+
+       (ok?'':'<div class="c">To\'g\'ri javob: '+L[q.a]+') '+esc(q.o[q.a])+'</div>')+'</div>';
+  });
+  WRITTEN.forEach((W,k)=>{
+    const i=TESTS.length+k;
+    h+='<div class="ritem '+(scoreOf(i)===2?"ok":"bad")+'" id="r'+i+'"><div class="t">'+(i+1)+'-topshiriq (yozma)</div>';
+    ["a","b"].forEach((p,j)=>{
+      const ok=wOk(k,j);
+      h+='<div style="margin-top:6px"><b>'+p+')</b> '+esc(W[j].q)+'</div><div class="u" style="color:'+(ok?"var(--green)":"var(--red)")+'">Sizning javobingiz: '+(wans[k][j].trim()?esc(wans[k][j]):"— javob berilmagan")+'</div>'+
+         (ok?'':'<div class="c">To\'g\'ri javob: '+esc(W[j].show)+'</div>');
+    });
+    h+='</div>';
+  });
+  const rv=document.getElementById("review"); rv.innerHTML=h; rv.classList.remove("hidden");
+  // grid -> jump to review item
+  for(let i=0;i<N;i++){ const b=document.getElementById("g"+i); b.onclick=()=>document.getElementById("r"+i).scrollIntoView({behavior:"smooth",block:"center"}); }
+  cur=-1; paintGrid();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+window.addEventListener("beforeunload",e=>{ if(timerId && !finished){ e.preventDefault(); e.returnValue=""; } });
+document.getElementById("fio").addEventListener("keydown",e=>{ if(e.key==="Enter") startTest(); });
+</script>
+</body>
+</html>

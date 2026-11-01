@@ -27,6 +27,7 @@
      +'<input id="att-in" type="password" placeholder="Parol" autocomplete="current-password" style="width:100%;box-sizing:border-box;font:inherit;font-weight:700;font-size:18px;padding:13px 16px;border-radius:14px;border:1.5px solid #d5deea;outline:none">'
      +'<div id="att-er" style="color:#d33;font-weight:700;margin-top:10px;min-height:20px"></div>'
      +'<button id="att-bt" style="margin-top:6px;width:100%;font:inherit;font-weight:800;font-size:18px;padding:13px;border:none;border-radius:14px;background:#1a6ee8;color:#fff;cursor:pointer">Kirish</button>'
+     +'<button id="att-bk" type="button" style="margin-top:10px;width:100%;font:inherit;font-weight:800;font-size:17px;padding:12px;border:1.5px solid #d5deea;border-radius:14px;background:#fff;color:#10223d;cursor:pointer">← Orqaga qaytish</button>'
      +'<p style="margin:16px 0 0;font-size:13px;color:#8a97a8">Parolni olish uchun: t.me/yoldashaliisakov</p></div>';
     document.body.appendChild(ov);
     var inp=document.getElementById('att-in'),er=document.getElementById('att-er');
@@ -40,6 +41,7 @@
       });
     }
     document.getElementById('att-bt').onclick=go;
+    document.getElementById('att-bk').onclick=function(){if(document.referrer&&history.length>1&&document.referrer.indexOf(location.host)>-1){history.back()}else{location.href='index.html'}};
     inp.addEventListener('keydown',function(e){if(e.key==='Enter')go()});
     setTimeout(function(){inp.focus()},50);
   }

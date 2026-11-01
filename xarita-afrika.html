@@ -18,7 +18,7 @@ svg#m .c.dim{opacity:.22}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}.chips button{font-family:var(--font);font-weight:700;font-size:14px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;cursor:pointer;color:var(--ink)}.chips button.on{background:#10223d;color:#fff;border-color:#10223d}
 .leg{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}.leg button{font-family:var(--font);font-weight:700;font-size:13px;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:6px;color:var(--ink)}.leg i{width:14px;height:14px;border-radius:4px;display:inline-block}.leg button.on{border-color:#10223d;box-shadow:0 0 0 2px #10223d33}
 .info{margin:0 0 10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}.info div{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:800}.info small{display:block;font-size:12px;color:var(--ink-soft);font-weight:700}.info .w{grid-column:1/-1;font-weight:600;color:var(--ink-soft)}
-svg#m .c.ok{fill:#43b36a}svg#m .c.no{fill:#e5484d}svg#m .c.hl{fill:#ff8a1f}
+svg#m .c.miss{fill:#ffe066;stroke:#d97706;stroke-width:2.4}svg#m .c.ok{fill:#43b36a}svg#m .c.no{fill:#e5484d}svg#m .c.hl{fill:#ff8a1f}
 svg#m .hit{fill:transparent;stroke:none;cursor:pointer}
 svg#m .lab{font-family:Nunito,Arial,sans-serif;font-weight:800;fill:#10223d;paint-order:stroke;stroke:#fff;stroke-width:3px;pointer-events:none}
 .zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
@@ -36,7 +36,7 @@ svg#m .lab{font-family:Nunito,Arial,sans-serif;font-weight:800;fill:#10223d;pain
 <div class="top"><a class="back" href="xronologiya.html" aria-label="Orqaga">←</a><span class="brand">ISAKOV SCHOOL</span></div>
 <h1>Afrika xaritasi</h1>
 <p class="sub">Hozirgi davlat chegaralari · davlatni bosing: nomi, mustamlakachisi va mustaqillik yili chiqadi</p>
-<div class="tabs"><button id="t1" class="on">O'rganish</button><button id="t2">Xaritada toping</button><button id="t3">Qaysi davlat?</button><button id="t4">📝 Test (26 savol)</button></div>
+<div class="tabs"><button id="t1" class="on">O'rganish</button><button id="t2">Xaritada toping</button><button id="t3">Qaysi davlat?</button><button id="t5">🗺 Xarita bilan yechish</button><button id="t4">📝 Test (26 savol)</button></div>
 <div id="tst" class="hidden"><iframe id="tf" title="Afrika davlatlari testi" style="width:100%;height:85vh;min-height:620px;border:1.5px solid var(--line);border-radius:18px;background:#fff"></iframe></div>
 <div class="bar"><div class="msg" id="msg">Davlatni bosing</div><div id="score" style="font-weight:800;color:var(--ink-soft)"></div></div>
 <div id="info" class="info hidden"></div><div id="lay" class="chips"><button data-l="0" class="on">Oddiy xarita</button><button data-l="1">Mustamlakachilar</button><button data-l="2">Mag'rib davlatlari</button><button data-l="3">«Afrika yili» (1960)</button></div><div id="leg" class="leg hidden"></div>
@@ -89,8 +89,8 @@ var info=document.getElementById('info');var mode=1,msg=document.getElementById(
 var Q=[],qi=0,ok=0,locked=false,N=15;
 var pool=D.c.filter(function(c){return c.area>=5000});
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
-function setMode(m){mode=m;var ids=["lay","leg","info"],show=m!==4;[].forEach.call(document.querySelectorAll(".bar,.mapbox,#act"),function(x){x.classList.toggle("hidden",!show)});document.getElementById("tst").classList.toggle("hidden",show);document.getElementById("t4").className=m===4?"on":"";[1,2,3].forEach(function(i){if(m===4)document.getElementById("t"+i).className=""});if(m===4){var f=document.getElementById("tf");if(!f.getAttribute("src"))f.setAttribute("src","sertifikat-afrika.html?embed=1");ids.forEach(function(i){document.getElementById(i).classList.add("hidden")});opts.classList.add("hidden");res.classList.add("hidden");window.scrollTo(0,0);return}document.getElementById('lay').classList.toggle('hidden',m!==1);info.classList.add('hidden');[1,2,3].forEach(function(i){document.getElementById('t'+i).className=i===m?'on':''});document.getElementById('lay').classList.toggle('hidden',m!==1);reset();opts.classList.add('hidden');res.classList.add('hidden');act.innerHTML='';score.textContent='';
- if(m===1){msg.innerHTML='Davlatni bosing';legend()}else{document.getElementById('leg').classList.add('hidden');start()}}
+function setMode(m){mode=m;var ids=["lay","leg","info"],show=m!==4;[].forEach.call(document.querySelectorAll(".bar,.mapbox,#act"),function(x){x.classList.toggle("hidden",!show)});document.getElementById("tst").classList.toggle("hidden",show);document.getElementById("t4").className=m===4?"on":"";[1,2,3,5].forEach(function(i){if(m===4)document.getElementById("t"+i).className=""});if(m===4){var f=document.getElementById("tf");if(!f.getAttribute("src"))f.setAttribute("src","sertifikat-afrika.html?embed=1");ids.forEach(function(i){document.getElementById(i).classList.add("hidden")});opts.classList.add("hidden");res.classList.add("hidden");window.scrollTo(0,0);return}document.getElementById('lay').classList.toggle('hidden',m!==1);info.classList.add('hidden');[1,2,3,5].forEach(function(i){document.getElementById('t'+i).className=i===m?'on':''});document.getElementById('lay').classList.toggle('hidden',m!==1);reset();opts.classList.add('hidden');res.classList.add('hidden');act.innerHTML='';score.textContent='';
+ if(m===1){msg.innerHTML='Davlatni bosing';legend()}else if(m===5){document.getElementById('leg').classList.add('hidden');mstart()}else{document.getElementById('leg').classList.add('hidden');start()}}
 function start(){Q=shuffle(pool).slice(0,N);qi=0;ok=0;res.classList.add('hidden');ask()}
 function ask(){reset();locked=false;act.innerHTML='';var q=Q[qi];score.textContent=(qi+1)+' / '+Q.length+' · to\'g\'ri: '+ok;
  if(mode===2){msg.innerHTML='Xaritada <span style="color:var(--blue)">'+q.n+'</span> ni toping';opts.classList.add('hidden')}
@@ -112,7 +112,38 @@ function onPick(id){
   if(v){var h='<div><small>Mustamlakachi</small>'+POW[v.p].n+'</div><div><small>Mustamlaka davridagi nomi</small>'+v.n+'</div><div><small>Mustaqillik yili</small>'+v.y+'</div>';
    if(MAG.indexOf(id)>-1)h+='<div><small>Guruh</small>Mag\'rib davlati</div>';if(v.y==='1960')h+='<div><small>Qatlam</small>«Afrika yili» (1960)</div>';if(v.t)h+='<div class="w">'+v.t+'</div>';
    info.innerHTML=h;info.classList.remove('hidden')}}
- else if(mode===2){if(!Q.length||locked||qi>=Q.length)return;answer(id,null)}}
-[1,2,3,4].forEach(function(i){document.getElementById('t'+i).onclick=function(){setMode(i)}});
+ else if(mode===2){if(!Q.length||locked||qi>=Q.length)return;answer(id,null)}
+ else if(mode===5)mtoggle(id)}
+[1,2,3,4,5].forEach(function(i){document.getElementById('t'+i).onclick=function(){setMode(i)}});
+
+/* ===== Xarita bilan yechish (test savollariga moslangan) ===== */
+var YIL60=Object.keys(INFO).filter(function(k){return INFO[k].y==='1960'});
+var MQ=[
+ {n:2,t:"XX asr boshlarida Buyuk Britaniya mustamlakasi bo'lgan hududlarni xaritada belgilang.",a:['566','404','800','270'],iz:"Manba: E2, 518-bet. Madagaskar — Fransiya mustamlakasi; Efiopiya — mustaqil davlat."},
+ {n:3,t:"Fransiyaning Afrikadagi mustamlakalari bo'lgan hududlarni belgilang: Senegal, Mavritaniya, Chad, Fransiya Gvineyasi (hozirgi Gvineya).",a:['686','478','148','324'],iz:"Manba: E2, 518-bet. Angola — Portugaliya, Uganda — Buyuk Britaniya mustamlakasi."},
+ {n:4,t:"Hozirgi qaysi davlatlar hududi Germaniya mustamlakasi bo'lgan? Hammasini belgilang.",a:['834','646','108','120','768','516'],iz:"Manba: E2, 518-bet: Germaniya — hozirgi Tanzaniya, Ruanda, Burundi, Kamerun, Togo, Namibiya."},
+ {n:6,t:"Afrika mustamlakalarga bo'lib olingandan keyin o'z mustaqilligini saqlab qolgan ikki davlatni belgilang.",a:['231','430'],iz:"Manba: J9, 178-bet: Liberiya va Efiopiya."},
+ {n:8,t:"1935–1936-yillarda fashistik Italiya mustamlakasiga aylantirilgan hududlarni belgilang (Somalining bir qismi ham).",a:['231','232','706'],iz:"Manba: J10, 64-bet: Efiopiya, Eritreya va Somalining bir qismi."},
+ {n:16,t:"Mag'rib davlatlari qatoriga kiradigan mamlakatlarni belgilang.",a:['012','788','504','478'],iz:"Manba: J10, 168-bet: Jazoir, Tunis, Marokash va Mavritaniya."},
+ {n:19,t:"«Afrika yili» (1960-yil) — shu yili mustaqillikka erishgan 17 ta Afrika davlatini belgilang.",a:YIL60,iz:"Manba: J10, 170-bet: 1960-yil «Afrika yili», 17 ta yangi davlat."},
+ {n:20,t:"Fransiya mustamlakasi bo'lib, «Afrika yili»da mustaqillikka erishgan hududlarni belgilang: Niger, Madagaskar, Chad, Mavritaniya.",a:['562','450','148','478'],iz:"Liviya — Italiya mustamlakasi, JAR — Britaniya dominioni. Manba: E2, 518-bet; J10, 170-bet."}];
+var mi=0,msel={},mchk=false,mscore=0;
+function mpaint(){D.c.forEach(function(c){var e=els[c.id];e.style.removeProperty('fill');e.setAttribute('class',msel[c.id]&&!mchk?'c hl':'c')});lab.style.display='none'}
+function mstart(){mi=0;mscore=0;res.classList.add('hidden');mask()}
+function mask(){msel={};mchk=false;mpaint();var q=MQ[mi];score.textContent=(mi+1)+' / '+MQ.length+' · ball: '+mscore;
+ msg.innerHTML='<small style="margin:0 0 4px">'+q.n+'-savol (xaritada belgilang)</small>'+q.t;mact()}
+function mact(){act.innerHTML='';var b=document.createElement('button');b.className='pill';b.id='mchk';b.textContent='Tekshirish (belgilangan: '+Object.keys(msel).length+')';b.onclick=mcheck;act.appendChild(b);
+ var c=document.createElement('button');c.className='pill ghost';c.textContent='Tozalash';c.onclick=function(){msel={};mpaint();mact()};act.appendChild(c)}
+function mtoggle(id){if(mchk)return;if(msel[id])delete msel[id];else msel[id]=1;mpaint();var b=document.getElementById('mchk');if(b)b.textContent='Tekshirish (belgilangan: '+Object.keys(msel).length+')'}
+function mcheck(){if(mchk)return;mchk=true;var q=MQ[mi],A={};q.a.forEach(function(k){A[k]=1});var good=0,bad=0,miss=0;
+ D.c.forEach(function(c){var k=c.id,cl='c';if(A[k]&&msel[k]){cl+=' ok';good++}else if(msel[k]){cl+=' no';bad++}else if(A[k]){cl+=' miss';miss++}els[k].setAttribute('class',cl)});
+ var okq=bad===0&&miss===0;if(okq)mscore++;score.textContent=(mi+1)+' / '+MQ.length+' · ball: '+mscore;
+ var names=q.a.map(function(k){return C[k].n}).join(', ');
+ msg.innerHTML=(okq?'<span style="color:#2a9a55">To\'g\'ri!</span>':'<span style="color:#e5484d">'+(good+' / '+q.a.length+' ta topildi.')+'</span>')+'<small style="margin-top:6px;font-weight:700">To\'g\'ri javob: '+names+'.'+(bad?' Ortiqcha belgilangan (qizil): '+bad+' ta.':'')+(miss?' Topilmagan (sariq): '+miss+' ta.':'')+'</small><small style="margin-top:4px">'+q.iz+'</small>';
+ act.innerHTML='';var b=document.createElement('button');b.className='pill';b.textContent=mi+1<MQ.length?'Keyingi →':'Natija';b.onclick=function(){mi++;mi<MQ.length?mask():mfin()};act.appendChild(b)}
+function mfin(){var n=MQ.length,key='xarita_afrika_best_m',best=0;try{best=+localStorage.getItem(key)||0;if(mscore>best){best=mscore;localStorage.setItem(key,mscore)}}catch(e){}
+ mpaint();act.innerHTML='';msg.textContent='Xarita bilan yechish yakunlandi';score.textContent='';res.classList.remove('hidden');
+ res.innerHTML='<div class="big">'+mscore+' / '+n+'</div><div style="font-weight:800;font-size:20px">'+Math.round(mscore/n*100)+'% to\'g\'ri</div><div style="color:var(--ink-soft);font-weight:700;margin-top:6px">Eng yaxshi natija: '+best+' / '+n+'</div><div class="act" style="justify-content:center"><button class="pill" id="again2">Qayta boshlash</button><button class="pill ghost" id="learn2">O\'rganish rejimi</button><button class="pill ghost" id="totest">📝 Test (26 savol)</button></div>';
+ document.getElementById('again2').onclick=mstart;document.getElementById('learn2').onclick=function(){setMode(1)};document.getElementById('totest').onclick=function(){setMode(4)}}
 setVB();if(/[?&]test=1/.test(location.search))setMode(4);
 </script></body></html>

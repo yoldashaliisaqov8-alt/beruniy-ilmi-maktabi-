@@ -1,6 +1,6 @@
 {
-  "name": "Beruniy ilmi maktabi",
-  "short_name": "Beruniy",
+  "name": "Isakov school",
+  "short_name": "Isakov school",
   "description": "Tarix, huquq va tarbiya fanlaridan test, suhbat, svoyak va kartochkalar",
   "start_url": "index.html",
   "scope": "./",

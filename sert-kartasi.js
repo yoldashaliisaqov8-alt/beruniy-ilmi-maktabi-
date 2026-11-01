@@ -1,4 +1,4 @@
-/* Beruniy ilmi maktabi — o'z sertifikati (A4 vertikal, PDF). Rasmiy davlat hujjati EMAS. */
+/* Isakov school — o'z sertifikati (A4 vertikal, PDF). Rasmiy davlat hujjati EMAS. */
 (function(){
 function level(sc,tot){var x=Math.round(sc*45/tot);return x>=40?'A+':x>=35?'A':x>=30?'B+':x>=25?'B':x>=20?'C+':x>=15?'C':null}
 window.certLevel=level;
@@ -42,7 +42,7 @@ window.makeCert=function(o){
  c.strokeStyle='#1a3d7c';c.lineWidth=1.5;c.strokeRect(134,134,W-268,H-268);
  var X=W/2;
  logo(c,X,330,78);
- c.textAlign='center';c.textBaseline='alphabetic';c.fillStyle='#1a3d7c';c.font='bold 44px Georgia,serif';c.fillText('BERUNIY ILMI MAKTABI',X,480);
+ c.textAlign='center';c.textBaseline='alphabetic';c.fillStyle='#1a3d7c';c.font='bold 44px Georgia,serif';c.fillText('ISAKOV SCHOOL',X,480);
  c.fillStyle='#8a6d1f';c.font='italic 28px Georgia,serif';c.fillText('Tarix — kelajak ko\'zgusi',X,524);
  c.fillStyle='#1a3d7c';c.font='bold 100px Georgia,serif';c.fillText('SERTIFIKAT',X,680);
  c.strokeStyle='#c9a24a';c.lineWidth=3;c.beginPath();c.moveTo(X-200,720);c.lineTo(X+200,720);c.stroke();star(c,X,720,14,'#c9a24a',null);
@@ -56,7 +56,7 @@ window.makeCert=function(o){
  var no='BR-'+String(d.getFullYear()).slice(2)+p(d.getMonth()+1)+p(d.getDate())+'-'+Math.floor(1000+Math.random()*9000);
  c.textAlign='left';c.fillStyle='#333';c.font='bold 28px Georgia,serif';c.fillText('Sana: '+ds,200,1470);c.font='24px Georgia,serif';c.fillText('Raqam: '+no,200,1508);
  c.textAlign='right';c.font='bold 28px Georgia,serif';c.fillText('Yo\'ldashali',W-200,1470);c.strokeStyle='#333';c.lineWidth=2;c.beginPath();c.moveTo(W-480,1438);c.lineTo(W-200,1438);c.stroke();c.font='22px Georgia,serif';c.fillStyle='#666';c.fillText('Muallif, tarix o\'qituvchisi',W-200,1508);
- c.textAlign='center';c.fillStyle='#8a8a8a';c.font='italic 20px Georgia,serif';c.fillText('Beruniy ilmi maktabi demo-testi natijasi. Rasmiy davlat sertifikati emas.',X,1590);
+ c.textAlign='center';c.fillStyle='#8a8a8a';c.font='italic 20px Georgia,serif';c.fillText('Isakov school demo-testi natijasi. Rasmiy davlat sertifikati emas.',X,1590);
  var blob=pdf(cv.toDataURL('image/jpeg',0.92),cv.width,cv.height);
  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sertifikat_'+o.name.replace(/\s+/g,'_')+'.pdf';document.body.appendChild(a);a.click();a.remove();
  window._lastCertPNG=cv.toDataURL('image/png');return true;

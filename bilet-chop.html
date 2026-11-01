@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biletlarni chop etish — Beruniy ilmi maktabi</title>
+<html lang="uz"><head><script src="kirish.js"></script><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biletlarni chop etish — Isakov school</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="stil.css">
 <style>
@@ -22,7 +22,7 @@
     .c4 .tk{min-height:62mm;} .c6 .tk{min-height:40mm;font-size:11pt;padding:5mm;} .c8 .tk{min-height:30mm;font-size:10pt;padding:4mm;} .c2 .tk{min-height:110mm;font-size:14pt;}
     @page{size:A4;margin:10mm;}
   }
-</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
 <body><div class="wrap">
 <div class="noprint">
   <div class="top"><a class="back" href="biletlar.html" aria-label="Orqaga">←</a><span class="brand">BILETLARNI CHOP ETISH</span></div>
@@ -68,7 +68,7 @@
         var sh=document.createElement('div');sh.className='sheet c'+per+(i+per<s.S.length?' pg':'');
         s.S.slice(i,i+per).forEach(function(b){
           var d=document.createElement('div');d.className='tk';
-          d.innerHTML='<h4><span>Bilet № '+esc(b.n)+'</span><small>'+esc(b.g)+'</small></h4><ol>'+b.qs.map(function(q){return '<li>'+esc(q.q)+'</li>';}).join('')+'</ol><div class="sg">Beruniy ilmi maktabi</div>';
+          d.innerHTML='<h4><span>Bilet № '+esc(b.n)+'</span><small>'+esc(b.g)+'</small></h4><ol>'+b.qs.map(function(q){return '<li>'+esc(q.q)+'</li>';}).join('')+'</ol><div class="sg">Isakov school</div>';
           sh.appendChild(d);
         });
         out.appendChild(sh);

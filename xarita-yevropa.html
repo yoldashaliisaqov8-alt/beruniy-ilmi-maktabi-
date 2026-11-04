@@ -51,6 +51,7 @@ svg#m .lab{font-family:Nunito,Arial,sans-serif;font-weight:800;fill:#10223d;pain
 <div class="tabs"><button id="t1" class="on">O'rganish</button><button id="t2">Xaritada toping</button><button id="t3">Qaysi davlat?</button><button id="t4">🏛 Poytaxtni toping</button><button id="t5">🗺 Xarita bilan yechish</button><button id="t6">📅 Voqea qaysi davlatda?</button><button id="t7">👤 Shaxs qaysi davlatniki?</button><button id="t8">⚔️ Jang qaysi hududda?</button><button id="t9">📜 Shartnoma qachon?</button></div>
 <div class="bar"><div class="msg" id="msg">Davlatni bosing</div><div id="score" style="font-weight:800;color:var(--ink-soft)"></div></div>
 <div id="info" class="info hidden"></div>
+<div id="lsp" class="evp hidden"></div>
 <div id="lay" class="chips"><button data-l="0" class="on">Oddiy xarita</button><button data-l="1">Mintaqalar</button><button data-l="2">Davlat tuzilgan davr</button><button data-l="3">Birinchi jahon urushi (1914)</button><button data-l="4">📅 Voqealar (sanalar)</button><button data-l="5">⚔️ Janglar</button><button data-l="6">📜 Shartnomalar</button></div>
 <div id="per" class="chips hidden"></div><div id="leg" class="leg hidden"></div>
 <div class="mapbox"><svg id="m" viewBox="0 0 960 900" xmlns="http://www.w3.org/2000/svg"><g id="g"></g></svg>
@@ -66,6 +67,7 @@ svg#m .lab{font-family:Nunito,Arial,sans-serif;font-weight:800;fill:#10223d;pain
 <div class="act"><a class="pill ghost" href="xarita-afrika.html" style="text-decoration:none">🌍 Afrika xaritasi</a><a class="pill ghost" href="milliy-sertifikat.html" style="text-decoration:none">Milliy sertifikat</a></div>
 <p style="color:var(--ink-soft);font-weight:600;font-size:14px;margin-top:14px">Xaritani sudrab siljitish, + / − tugmalari bilan kattalashtirish mumkin. Kichik davlatlarni (Andorra, Monako, San-Marino, Vatikan, Lixtenshteyn, Malta) ko'rish uchun kattalashtiring. Xarita hozirgi chegaralarni ko'rsatadi; «Birinchi jahon urushi» qatlamida davlatlar hozirgi hududi bo'yicha guruhlangan. Rossiya va Turkiyaning faqat Yevropaga yaqin qismi ko'rinadi. Yillar umumiy ma'lumot sifatida berilgan — darslik bilan solishtiring.</p>
 </div>
+<script src="yevropa-linklar.js"></script>
 <script>
 var INFO={
 "008":{cap:"Tirana",r:"J",y:"1912",e:3,yt:"Usmoniylardan mustaqil bo'ldi",w:"I",t:"1912-yil Vlyorada mustaqillik e'lon qilingan; Birinchi Balkan urushi davrida."},
@@ -174,12 +176,12 @@ function legend(){var S=lset();if(mode===1&&layer>=4){leg.classList.remove('hidd
  Object.keys(S).forEach(function(k){var b=document.createElement('button');b.innerHTML='<i style="background:'+S[k].c+'"></i>'+S[k].n;if(String(focus)===k)b.className='on';
   b.onclick=function(){focus=String(focus)===k?null:k;paint();legend()};leg.appendChild(b)})}
 [].forEach.call(document.querySelectorAll('#lay button'),function(b){b.onclick=function(){window.__tr=0;layer=+b.dataset.l;focus=null;[].forEach.call(document.querySelectorAll('#lay button'),function(x){x.classList.toggle('on',x===b)});
- info.classList.add('hidden');lab.style.display='none';document.getElementById('evp').classList.add('hidden');curC=null;document.getElementById('psp').classList.add('hidden');document.getElementById('bsp').classList.add('hidden');document.getElementById('tsp').classList.add('hidden');paint();legend();drawPer();
+ info.classList.add('hidden');lab.style.display='none';document.getElementById('evp').classList.add('hidden');curC=null;document.getElementById('lsp').classList.add('hidden');document.getElementById('psp').classList.add('hidden');document.getElementById('bsp').classList.add('hidden');document.getElementById('tsp').classList.add('hidden');paint();legend();drawPer();
  msg.innerHTML=layer===6?'Davlatni bosing — shartnomalar ro\'yxati chiqadi':layer===5?'Davlatni bosing — janglar ro\'yxati chiqadi':layer===4?'Davlatni bosing — sanalar ro\'yxati chiqadi':layer===0?'Davlatni bosing':layer===1?'Mintaqani tanlang yoki davlatni bosing':layer===2?'Davr bo\'yicha tanlang yoki davlatni bosing':'Tomonni tanlang yoki davlatni bosing'}});
 function showLab(id,t){var c=C[id];lab.textContent=t||c.n;lab.setAttribute('x',c.cx);lab.setAttribute('y',c.cy-(c.area<400?14:0));lab.style.display='';g.appendChild(lab)}
 var Q=[],qi=0,ok=0,locked=false,N=15,pool=D.c.filter(function(c){return c.area>=100});
 function setMode(m){mode=m;window.__tr=0;[1,2,3,4,5,6,7,8,9].forEach(function(i){document.getElementById('t'+i).classList.toggle('on',i===m)});
- var show=m===1;document.getElementById('lay').classList.toggle('hidden',!show);document.getElementById('evp').classList.add('hidden');document.getElementById('psp').classList.add('hidden');document.getElementById('bsp').classList.add('hidden');document.getElementById('tsp').classList.add('hidden');curC=null;if(m!==1)perEl.classList.add('hidden');else drawPer();info.classList.add('hidden');res.classList.add('hidden');opts.classList.add('hidden');act.innerHTML='';score.textContent='';lab.style.display='none';
+ var show=m===1;document.getElementById('lay').classList.toggle('hidden',!show);document.getElementById('evp').classList.add('hidden');document.getElementById('lsp').classList.add('hidden');document.getElementById('psp').classList.add('hidden');document.getElementById('bsp').classList.add('hidden');document.getElementById('tsp').classList.add('hidden');curC=null;if(m!==1)perEl.classList.add('hidden');else drawPer();info.classList.add('hidden');res.classList.add('hidden');opts.classList.add('hidden');act.innerHTML='';score.textContent='';lab.style.display='none';
  vb={x:0,y:0,w:D.w,h:D.h};setVB();paint();legend();
  if(m===1){msg.innerHTML='Davlatni bosing'}else if(m===5){mstart()}else if(m===6){estart('e')}else if(m===7){estart('p')}else if(m===8){estart('b')}else if(m===9){ystart()}else start()}
 function start(){Q=shuffle(pool).slice(0,N);qi=0;ok=0;res.classList.add('hidden');ask()}
@@ -203,7 +205,7 @@ function fin(){reset();opts.classList.add('hidden');act.innerHTML='';var p=Math.
 function onPick(id){
  if(mode===1){reset();var e0=els[id];e0.setAttribute('class',e0.getAttribute('class')+' sel');showLab(id);var v=INFO[id];msg.innerHTML=C[id].n;
   var h='<div><small>Poytaxti</small>'+v.cap+'</div><div><small>Mintaqa</small>'+REG[v.r].n+'</div><div><small>Davlat tuzilgan / mustaqillik yili</small>'+v.y+'</div><div><small>Izoh</small>'+esc(v.yt)+'</div><div><small>Birinchi jahon urushi (1914)</small>'+WW[v.w].n.split(' (')[0]+'</div>';
-  if(v.t)h+='<div class="w">'+esc(v.t)+'</div>';info.innerHTML=h;info.classList.remove('hidden');var tsb=document.getElementById('tsp');if(TC[id])showTreaties(id,C[id].n,TC[id]);else tsb.classList.add('hidden');var bsb=document.getElementById('bsp');if(BC[id])showBattles(id,C[id].n,BC[id]);else bsb.classList.add('hidden');var psb=document.getElementById('psp');if(PC[id])showPersons(id,C[id].n,PC[id]);else psb.classList.add('hidden');if(EC[id])showEvents(id,C[id].n,EC[id]);else{curC=id;var bx=document.getElementById('evp');bx.classList.remove('hidden');bx.innerHTML='<h3>📅 '+esc(C[id].n)+'</h3><div style="font-weight:600;color:var(--ink-soft)">Bu davlat uchun ma\'lumotnomada alohida sanalar yo\'q. Umumiy voqealar uchun «Yevropa integratsiyasi va harbiy bloklar» tugmasini bosing.</div>'}}
+  if(v.t)h+='<div class="w">'+esc(v.t)+'</div>';info.innerHTML=h;info.classList.remove('hidden');showLinks(id);var tsb=document.getElementById('tsp');if(TC[id])showTreaties(id,C[id].n,TC[id]);else tsb.classList.add('hidden');var bsb=document.getElementById('bsp');if(BC[id])showBattles(id,C[id].n,BC[id]);else bsb.classList.add('hidden');var psb=document.getElementById('psp');if(PC[id])showPersons(id,C[id].n,PC[id]);else psb.classList.add('hidden');if(EC[id])showEvents(id,C[id].n,EC[id]);else{curC=id;var bx=document.getElementById('evp');bx.classList.remove('hidden');bx.innerHTML='<h3>📅 '+esc(C[id].n)+'</h3><div style="font-weight:600;color:var(--ink-soft)">Bu davlat uchun ma\'lumotnomada alohida sanalar yo\'q. Umumiy voqealar uchun «Yevropa integratsiyasi va harbiy bloklar» tugmasini bosing.</div>'}}
  else if(mode===2){if(!Q.length||locked||qi>=Q.length)return;answer(id,null)}
  else if(mode===5)mtoggle(id)}
 [1,2,3,4,5,6,7,8,9].forEach(function(i){document.getElementById('t'+i).onclick=function(){setMode(i)}});
@@ -320,6 +322,17 @@ function openCard(i,seq){var e=EVN[i];curList=seq||[i];curPos=Math.max(0,curList
   if(t.dataset.go){box.remove();setMode(1);onPick(t.dataset.go);document.getElementById('m').scrollIntoView({behavior:'smooth',block:'center'})}}}
 document.getElementById('bint').onclick=function(){setMode(1);curPer=0;var idx=[];EVN.forEach(function(e){if(e.s===12)idx.push(e.i)});info.classList.add('hidden');msg.innerHTML='Yevropa integratsiyasi va harbiy bloklar';showEvents(null,'Yevropa integratsiyasi va harbiy bloklar',idx)};
 document.getElementById('bnote').onclick=function(){setMode(1);var box=document.getElementById('evp');info.classList.add('hidden');msg.innerHTML='Diqqat: darslik matnidagi nozik joylar';box.classList.remove('hidden');box.innerHTML='<h3>⚠️ Diqqat: darslik matnidagi nozik joylar</h3><div class="evl" style="max-height:none">'+NOTES.concat(BNOTES,TNOTES).map(function(n){return '<div style="border:1.5px solid #f2c14e;background:#fff4e0;border-radius:12px;padding:9px 12px;font-weight:600">'+esc(n)+'</div>'}).join('')+'</div>'};
+/* ===== Video va slaydlar ===== */
+function ytId(u){var m=u.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null}
+function embedUrl(l){var id=ytId(l.u);if(id)return 'https://www.youtube-nocookie.com/embed/'+id+'?rel=0';
+ var g=l.u.match(/docs\.google\.com\/presentation\/d\/([^\/?#]+)/);if(g)return 'https://docs.google.com/presentation/d/'+g[1]+'/embed?start=false&loop=false';
+ if(/\.pdf(\?|#|$)/i.test(l.u))return l.u;return null}
+function showLinks(cid){var box=document.getElementById('lsp'),L=(typeof YEV_LINKS!=='undefined'&&YEV_LINKS[cid])||[];box.classList.remove('hidden');
+ var h='<h3>🎬 '+esc(C[cid].n)+' — video va slaydlar'+(L.length?' ('+L.length+')':'')+'</h3>';
+ if(!L.length){box.innerHTML=h+'<div style="font-weight:600;color:var(--ink-soft)">Bu davlat uchun hali video yoki slayd havolasi qo\'yilmagan.</div>';return}
+ h+='<div class="fl" id="lbtn"></div><div id="lview"></div>';box.innerHTML=h;var bt=box.querySelector('#lbtn'),vw=box.querySelector('#lview');
+ L.forEach(function(l,i){var b=document.createElement('button');b.textContent=(l.k==='slayd'?'📊 ':'🎬 ')+l.t;b.onclick=function(){[].forEach.call(bt.children,function(x){x.classList.remove('on')});b.classList.add('on');
+  var e=embedUrl(l);vw.innerHTML=(e?'<div style="position:relative;padding-top:56.25%;margin-top:6px"><iframe src="'+e+'" allowfullscreen loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:14px;background:#000"></iframe></div>':'')+'<div style="margin-top:8px"><a class="pill ghost" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="'+esc(l.u).replace(/"/g,'&quot;')+'">↗ Yangi oynada ochish</a></div>'};bt.appendChild(b);if(i===0&&L.length===1)b.click()})}
 /* ===== Shaxslar ===== */
 function pkey(p){var n=p.n.replace(/\(.*\)/,'').trim(),ks=[n],w=n.split(/[ ,]+/).filter(function(x){return x});if(w.length>1){var l=w[w.length-1];if(l.length>=5&&!/^[IVX]+$/.test(l))ks.push(l)}else if(n.length>=5)ks.push(n);
  if(/Napoleon/.test(n))ks=['Napoleon'];if(/Robespyer/.test(n))ks=['Robespyer','Danton','Marat'];if(/Ferdinand/.test(n))ks=['Ferdinand','Izabella'];return ks}

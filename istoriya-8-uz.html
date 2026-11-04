@@ -14,6 +14,7 @@
 .meta{display:flex;justify-content:space-between;font-weight:700;color:var(--ink-soft)}
 .big{font-size:44px;font-weight:800;margin:6px 0}
 @media(max-width:600px){h1{font-size:28px}.qt{font-size:18px}.op{font-size:16px}.wrap{padding:0 16px 40px}}
+.fig{display:flex;gap:14px;margin:0 0 16px;align-items:flex-start}.fl,.fr{flex:1;display:flex;flex-direction:column;gap:8px}.fb{border:2px solid var(--ink);border-radius:14px;padding:8px 12px;font-weight:800;font-size:16px;text-align:center;background:#fff}.fi{border:1.5px solid var(--line);border-radius:12px;padding:7px 12px;font-weight:600;font-size:15px;background:#fff}@media(max-width:600px){.fig{gap:8px}.fb{font-size:13px;padding:6px 8px}.fi{font-size:13px;padding:6px 8px}}
 </style></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="#" id="back" aria-label="Назад">←</a><span class="brand">ИСТОРИЯ · 8-КЛАСС · УЗБЕКИСТАН</span></div>
@@ -29,14 +30,15 @@ function save(i,s){try{var b=best();if(!(b[i]>=s)){b[i]=s;localStorage.setItem(K
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 var cur=-1,qi=0,score=0,order=[],mode='list';
 back.onclick=function(e){if(mode!=='list'){e.preventDefault();list()}};
-function list(){mode='list';back.setAttribute('href','istoriya.html');H.textContent='8-й класс: История Узбекистана';SUB.textContent='Выберите тему · '+D.length+' тем';
+function list(){mode='list';back.setAttribute('href','istoriya.html');H.textContent='8-й класс: История Узбекистана';SUB.textContent='Выберите тему / Mavzuni tanlang · '+D.length+' тем';
  var b=best(),h='<div class="list">';
  D.forEach(function(t,i){h+='<div class="card row" data-i="'+i+'"><div>'+esc(t[0])+'<small>'+t[1].length+' вопросов'+(b[i]!=null?' · лучший результат: '+b[i]+'/'+t[1].length:'')+'</small></div><span class="arrow">›</span></div>'});
  app.innerHTML=h+'</div>';
  [].forEach.call(app.querySelectorAll('.row'),function(r){r.onclick=function(){start(+r.dataset.i)}});window.scrollTo(0,0)}
 function start(i){cur=i;qi=0;score=0;mode='quiz';order=D[i][1].map(function(_,k){return k});show()}
+function figHtml(g){var h='<div class="fig"><div class="fl">';g[0]&&0;h='<div class="fig"><div class="fl">';g.L.forEach(function(x,i){h+='<div class="fb"><b>'+(i+1)+'.</b> '+esc(x)+'</div>'});h+='</div><div class="fr">';g.R.forEach(function(x,i){h+='<div class="fi">'+'abcdef'[i]+') '+esc(x)+'</div>'});return h+'</div></div>'}
 function show(){var t=D[cur],q=t[1][order[qi]],n=t[1].length;H.textContent=t[0];SUB.textContent='Вопрос '+(qi+1)+' из '+n;
- var h='<div class="meta"><span>'+(qi+1)+' / '+n+'</span><span>Верно: '+score+'</span></div><div class="prog"><i style="width:'+(qi/n*100)+'%"></i></div><div class="card qbox"><p class="qt">'+esc(q[0])+'</p>'+(q[3]?'<img src="'+q[3]+'" alt="" style="max-width:100%;border-radius:12px;margin:0 0 14px">':'')+'';
+ var h='<div class="meta"><span>'+(qi+1)+' / '+n+'</span><span>Верно: '+score+'</span></div><div class="prog"><i style="width:'+(qi/n*100)+'%"></i></div><div class="card qbox"><p class="qt">'+esc(q[0])+'</p>'+(q[3]?'<img src="'+q[3]+'" alt="" style="max-width:100%;border-radius:12px;margin:0 0 14px">':'')+(q[4]?figHtml(q[4]):'');
  q[1].forEach(function(o,k){h+='<button class="op" data-k="'+k+'"><b>'+'ABCD'[k]+')</b> '+esc(o)+'</button>'});
  h+='</div><div class="btnrow"><button class="btn" id="nx" style="display:none">'+(qi+1<n?'Далее →':'Результат')+'</button></div>';
  app.innerHTML=h;window.scrollTo(0,0);

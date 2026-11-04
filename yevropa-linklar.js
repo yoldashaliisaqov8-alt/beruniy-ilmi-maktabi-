@@ -1,6 +1,6 @@
 /* Yevropa xaritasi — davlatlar uchun video va slayd havolalari.
    Shu faylni tahrirlang: har bir davlat kodi ostiga havola qo'shing.
-   k: "video" (YouTube) yoki "slayd" (Google Slides, PDF yoki boshqa havola)
+   k: "video" (YouTube), "slayd" (Google Slides, PDF) yoki "post" (Telegram posti)
    t: havola nomi,  u: havola manzili
 
    Davlat kodlari: Buyuk Britaniya 826, Fransiya 250, Germaniya 276, Italiya 380, Ispaniya 724,
@@ -10,6 +10,9 @@
    Misol (// belgisini olib tashlang):
 */
 var YEV_LINKS={
+  "826":[
+    {k:"post",t:"Buyuk Britaniya — Telegram post",u:"https://t.me/yoldashaliisakov/190"}
+  ],
   // "826":[
   //   {k:"video",t:"Angliya tarixi — 1-dars",u:"https://www.youtube.com/watch?v=XXXXXXXXXXX"},
   //   {k:"slayd",t:"Angliya — slaydlar",u:"https://docs.google.com/presentation/d/XXXXXXXX/edit"}

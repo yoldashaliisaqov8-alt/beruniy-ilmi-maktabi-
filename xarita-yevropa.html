@@ -326,13 +326,14 @@ document.getElementById('bnote').onclick=function(){setMode(1);var box=document.
 function ytId(u){var m=u.match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([A-Za-z0-9_-]{11})/);return m?m[1]:null}
 function embedUrl(l){var id=ytId(l.u);if(id)return 'https://www.youtube-nocookie.com/embed/'+id+'?rel=0';
  var g=l.u.match(/docs\.google\.com\/presentation\/d\/([^\/?#]+)/);if(g)return 'https://docs.google.com/presentation/d/'+g[1]+'/embed?start=false&loop=false';
+ var tg=l.u.match(/^https:\/\/t\.me\/([A-Za-z0-9_]+\/\d+)/);if(tg)return 'https://t.me/'+tg[1]+'?embed=1&mode=tme';
  if(/\.pdf(\?|#|$)/i.test(l.u))return l.u;return null}
 function showLinks(cid){var box=document.getElementById('lsp'),L=(typeof YEV_LINKS!=='undefined'&&YEV_LINKS[cid])||[];box.classList.remove('hidden');
  var h='<h3>🎬 '+esc(C[cid].n)+' — video va slaydlar'+(L.length?' ('+L.length+')':'')+'</h3>';
  if(!L.length){box.innerHTML=h+'<div style="font-weight:600;color:var(--ink-soft)">Bu davlat uchun hali video yoki slayd havolasi qo\'yilmagan.</div>';return}
  h+='<div class="fl" id="lbtn"></div><div id="lview"></div>';box.innerHTML=h;var bt=box.querySelector('#lbtn'),vw=box.querySelector('#lview');
- L.forEach(function(l,i){var b=document.createElement('button');b.textContent=(l.k==='slayd'?'📊 ':'🎬 ')+l.t;b.onclick=function(){[].forEach.call(bt.children,function(x){x.classList.remove('on')});b.classList.add('on');
-  var e=embedUrl(l);vw.innerHTML=(e?'<div style="position:relative;padding-top:56.25%;margin-top:6px"><iframe src="'+e+'" allowfullscreen loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:14px;background:#000"></iframe></div>':'')+'<div style="margin-top:8px"><a class="pill ghost" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="'+esc(l.u).replace(/"/g,'&quot;')+'">↗ Yangi oynada ochish</a></div>'};bt.appendChild(b);if(i===0&&L.length===1)b.click()})}
+ L.forEach(function(l,i){var b=document.createElement('button');b.textContent=(l.k==='slayd'?'📊 ':l.k==='post'?'✈️ ':'🎬 ')+l.t;b.onclick=function(){[].forEach.call(bt.children,function(x){x.classList.remove('on')});b.classList.add('on');
+  var e=embedUrl(l);vw.innerHTML=(e?'<div style="position:relative;padding-top:'+(l.k==='post'?'70':'56.25')+'%;margin-top:6px"><iframe src="'+e+'" allowfullscreen loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:14px;background:#000"></iframe></div>':'')+'<div style="margin-top:8px"><a class="pill ghost" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="'+esc(l.u).replace(/"/g,'&quot;')+'">↗ Yangi oynada ochish</a></div>'};bt.appendChild(b);if(i===0&&L.length===1)b.click()})}
 /* ===== Shaxslar ===== */
 function pkey(p){var n=p.n.replace(/\(.*\)/,'').trim(),ks=[n],w=n.split(/[ ,]+/).filter(function(x){return x});if(w.length>1){var l=w[w.length-1];if(l.length>=5&&!/^[IVX]+$/.test(l))ks.push(l)}else if(n.length>=5)ks.push(n);
  if(/Napoleon/.test(n))ks=['Napoleon'];if(/Robespyer/.test(n))ks=['Robespyer','Danton','Marat'];if(/Ferdinand/.test(n))ks=['Ferdinand','Izabella'];return ks}

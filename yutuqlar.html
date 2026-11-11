@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uz"><head><script src="kirish.js"></script><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mening yutuqlarim — Isakov school</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js"></script>
+<style>
+.hero2{padding:28px 30px;margin-bottom:18px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.lv{font-size:64px;line-height:1}
+.hero2 h2{margin:0;font-size:30px}.hero2 p{margin:4px 0 0;color:var(--ink-soft);font-weight:700}
+.bar{height:14px;background:#e6ecf2;border-radius:10px;overflow:hidden;margin-top:12px}.bar i{display:block;height:100%;background:linear-gradient(90deg,#1a6ee8,#4aa0ff)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.stat{padding:18px 20px;text-align:center}.stat b{display:block;font-size:34px}.stat span{color:var(--ink-soft);font-weight:700;font-size:15px}
+.sec{padding:22px 26px;margin-bottom:18px}.sec h3{margin:0 0 12px;font-size:21px}
+.days{display:flex;gap:6px;flex-wrap:wrap}.dd{width:34px;height:34px;border-radius:10px;background:#eef2f6;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#8795a8}
+.dd.on{background:#ff9f1c;color:#fff}.dd.td{outline:2px solid #1a6ee8}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.bg{border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;gap:12px;align-items:center}
+.bg .e{font-size:30px}.bg b{display:block;font-size:16px}.bg small{color:var(--ink-soft);font-weight:600;font-size:13px}
+.bg.off{opacity:.45;filter:grayscale(1)}
+.lvl{display:flex;gap:10px;flex-wrap:wrap}.lvl div{border:1.5px solid var(--line);border-radius:14px;padding:8px 14px;font-weight:800}.lvl .cur{border-color:#1a6ee8;background:#eaf2ff}
+@media(max-width:600px){.grid3{grid-template-columns:1fr 1fr 1fr}.stat b{font-size:24px}.stat{padding:12px 6px}.lv{font-size:48px}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ISAKOV SCHOOL</span></div>
+<h1>Mening yutuqlarim</h1>
+<p class="sub">Ball, seriya, daraja va nishonlar shu qurilmada saqlanadi</p>
+<div class="card hero2"><div class="lv" id="lv">🌱</div><div style="flex:1;min-width:220px"><h2 id="lvn">Yangi</h2><p id="lvp"></p><div class="bar"><i id="lvb" style="width:0"></i></div></div></div>
+<div class="grid3">
+ <div class="card stat"><b id="sx">0</b><span>⭐ ball</span></div>
+ <div class="card stat"><b id="ss">0</b><span>🔥 kun seriya</span></div>
+ <div class="card stat"><b id="sa">0</b><span>✏️ javob berilgan</span></div>
+</div>
+<div class="card sec"><h3>📅 Kunlik topshiriq</h3><p id="dp" style="margin:0 0 8px;font-weight:700"></p><div class="bar"><i id="db" style="width:0;background:linear-gradient(90deg,#2f9a5f,#6fd39a)"></i></div></div>
+<div class="card sec"><h3>🔥 Oxirgi 14 kun</h3><div class="days" id="days"></div><p style="color:var(--ink-soft);font-weight:600;margin:12px 0 0" id="best"></p></div>
+<div class="card sec"><h3>🏅 Nishonlar</h3><div class="badges" id="bd"></div></div>
+<div class="card sec"><h3>🎓 Darajalar</h3><div class="lvl" id="lvl"></div>
+<p style="color:var(--ink-soft);font-weight:600;margin:14px 0 0">Ball qanday olinadi: har to'g'ri javob (mashq rejimida) +1, testni oxirigacha yechish +10, kunlik topshiriq +20. Bir savol uchun kuniga bir marta ball beriladi.</p></div>
+<button class="btn ghost" id="rs">Natijalarni nolga tushirish</button>
+</div>
+<script>
+(function(){
+var B=window.Bonus,S=B.get(),L=B.level(S.xp);
+function $(i){return document.getElementById(i);}
+$('lv').textContent=L.cur.e;$('lvn').textContent=L.cur.n;
+if(L.next){$('lvp').textContent='Keyingi daraja: '+L.next.e+' '+L.next.n+' — yana '+(L.next.min-S.xp)+' ball';$('lvb').style.width=Math.min(100,(S.xp-L.cur.min)/(L.next.min-L.cur.min)*100)+'%';}
+else{$('lvp').textContent='Eng yuqori darajadasiz!';$('lvb').style.width='100%';}
+$('sx').textContent=S.xp;$('ss').textContent=B.streak();$('sa').textContent=S.total;
+var n=B.dayAnswers();$('dp').textContent='Bugun '+Math.min(n,B.GOAL)+' / '+B.GOAL+' ta savolga javob bering — +'+B.BONUS+' bonus ball'+(n>=B.GOAL?' ✅ bajarildi':'');
+$('db').style.width=Math.min(100,n/B.GOAL*100)+'%';
+var h='',t=new Date();for(var i=13;i>=0;i--){var d=new Date();d.setDate(t.getDate()-i);var k=B.dk(d);h+='<div class="dd'+(S.days[k]?' on':'')+(i===0?' td':'')+'" title="'+k+'">'+d.getDate()+'</div>';}
+$('days').innerHTML=h;$('best').textContent='Eng uzun seriya: '+B.bestStreak()+' kun';
+$('bd').innerHTML=B.BADGES.map(function(b){var on=!!S.badges[b.id];return '<div class="bg'+(on?'':' off')+'"><span class="e">'+b.e+'</span><div><b>'+b.n+'</b><small>'+b.d+(on?' · '+S.badges[b.id]:'')+'</small></div></div>';}).join('');
+$('lvl').innerHTML=B.LEVELS.map(function(l){return '<div class="'+(l.n===L.cur.n?'cur':'')+'">'+l.e+' '+l.n+' <small style="color:#5b6b82">('+l.min+'+)</small></div>';}).join('');
+$('rs').onclick=function(){if(confirm('Barcha ball, seriya va nishonlar o\'chadi. Davom etasizmi?')){B.reset();location.reload();}};
+})();
+</script></body></html>

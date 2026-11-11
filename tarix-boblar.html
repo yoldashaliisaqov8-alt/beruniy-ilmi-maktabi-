@@ -2,7 +2,7 @@
 <html lang="uz"><head><script src="kirish.js"></script><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Boblashgan tarix — Isakov school</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script>
+<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script>
 <style>
 .row small{display:block;font-size:14px;font-weight:600;color:var(--ink-soft);margin-top:2px}
 .qbox{padding:24px 28px;margin-bottom:16px}
@@ -47,7 +47,7 @@ function show(){var S=SETS[cur],q=Q[qi],n=Q.length;H.textContent=S.title;SUB.tex
   [].forEach.call(app.querySelectorAll('.op'),function(x){x.disabled=true;if(+x.dataset.k===q.a)x.classList.add('ok')});
   if(k===q.a)score++;else b.classList.add('no');document.getElementById('nx').style.display='';document.getElementById('tg').style.display='';}});
  document.getElementById('nx').onclick=function(){qi++;qi<n?show():fin()}}
-function fin(){var n=Q.length;save(SETS[cur].id,score);mode='res';SUB.textContent='Natija';
+function fin(){var n=Q.length;save(SETS[cur].id,score);window.Bonus&&Bonus.done(score,n,location.pathname+'#'+SETS[cur].id);mode='res';SUB.textContent='Natija';
  app.innerHTML='<div class="card qbox"><div class="big">'+score+' / '+n+'</div><p class="qt">'+Math.round(score/n*100)+'% to\'g\'ri javob</p></div><div class="btnrow"><button class="btn" id="re">Yangi 30 ta test</button><button class="btn ghost" id="ls">Ro\'yxatga</button></div>';
  document.getElementById('re').onclick=function(){start(cur)};document.getElementById('ls').onclick=list}
 list();

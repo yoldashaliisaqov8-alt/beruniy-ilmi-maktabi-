@@ -162,7 +162,7 @@
     .plan-bottom{font-size:14px; flex-direction:column; gap:4px;}
   }
 </style>
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script></head>
 <body>
 
 <div class="wrap">
@@ -277,6 +277,10 @@
         <span class="circ c-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="8" width="20" height="10" rx="5"/><path d="M7 11v4M5 13h4"/><circle cx="16" cy="12" r="1" fill="currentColor"/><circle cx="18" cy="14.5" r="1" fill="currentColor"/></svg></span>
         O'yinlar
       </a>
+      <a class="tile" href="yutuqlar.html">
+        <span class="circ c-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9Z"/></svg></span>
+        Yutuqlarim
+      </a>
       <a class="tile" href="zakovat.html">
         <span class="circ c-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2Z"/></svg></span>
         Zakovat
@@ -353,10 +357,22 @@
     document.getElementById('totalAns').textContent = s.total;
     document.getElementById('bestStreak').textContent = best;
     document.getElementById('heroScore').textContent = s.correct;
+    if (window.Bonus) {
+      var B = Bonus.get(), td = Math.max(today, Bonus.dayAnswers()), pc = Math.min(100, Math.round(td / GOAL * 100)), st = Math.max(streak, Bonus.streak());
+      document.getElementById('todayCount').textContent = td;
+      document.getElementById('pct').textContent = pc + '%';
+      document.getElementById('ringFill').style.strokeDashoffset = 314.16 * (1 - pc/100);
+      document.getElementById('streakNum').textContent = st;
+      document.getElementById('totalAns').textContent = Math.max(s.total, B.total);
+      document.getElementById('bestStreak').textContent = Math.max(best, Bonus.bestStreak(), st);
+      document.getElementById('heroScore').textContent = B.xp;
+    }
     var b = document.getElementById('wrongBadge');
     if (s.wrong > 0) { b.textContent = s.wrong; b.style.display = 'flex'; }
   }
   render();
+  window.addEventListener('load', render);
+  window.addEventListener('storage', render);
 
   // ---- Maslahatlar ----
   var mottos = [

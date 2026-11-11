@@ -1,2 +1,4 @@
+/* Sayt logotipi: Yo'ldashali rasmi (keshni aylanib o'tish uchun yangi nom) */
+(function(){var f='rasmlar/yoldashali-192.png?v=2';function s(){var h=document.head;if(!h)return;var ls=h.querySelectorAll('link[rel="icon"],link[rel="apple-touch-icon"],link[rel="shortcut icon"]');if(!ls.length){var l=document.createElement('link');l.rel='icon';l.href=f;h.appendChild(l);var a=document.createElement('link');a.rel='apple-touch-icon';a.href=f;h.appendChild(a);return}[].forEach.call(ls,function(l){l.setAttribute('href',f)})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',s);else s();s()})();
 /* Umumiy parol qulfi O'CHIRILGAN (faqat Attestatsiya sahifasi parol bilan himoyalangan: attestatsiya-qulf.js).
    Eski umumiy parolni qayta yoqish kerak bo'lsa, oldingi kirish.js faylini qaytaring. */

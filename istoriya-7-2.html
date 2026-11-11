@@ -2,7 +2,7 @@
 <html lang="ru"><head><script src="kirish.js"></script><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>7-класс: Всемирная история 2 — Isakov school</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script>
+<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script>
 <style>
 .row small{display:block;font-size:14px;font-weight:600;color:var(--ink-soft);margin-top:2px}
 .qbox{padding:24px 28px;margin-bottom:16px}
@@ -44,7 +44,7 @@ function show(){var t=D[cur],q=t[1][order[qi]],n=t[1].length;H.textContent=t[0];
   [].forEach.call(app.querySelectorAll('.op'),function(x){x.disabled=true;if(+x.dataset.k===q[2])x.classList.add('ok')});
   if(k===q[2])score++;else b.classList.add('no');document.getElementById('nx').style.display='';}});
  document.getElementById('nx').onclick=function(){qi++;qi<n?show():fin()}}
-function fin(){var n=D[cur][1].length;save(cur,score);mode='res';SUB.textContent='Результат';
+function fin(){var n=D[cur][1].length;save(cur,score);window.Bonus&&Bonus.done(score,n,location.pathname+'#'+cur);mode='res';SUB.textContent='Результат';
  var p=Math.round(score/n*100);
  app.innerHTML='<div class="card qbox"><div class="big">'+score+' / '+n+'</div><p class="qt">'+p+'% правильных ответов</p></div><div class="btnrow"><button class="btn" id="re">Пройти заново</button><button class="btn ghost" id="ls">К списку тем</button></div>';
  document.getElementById('re').onclick=function(){start(cur)};document.getElementById('ls').onclick=list}

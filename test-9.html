@@ -251,7 +251,7 @@
   .brand{font-weight:800; letter-spacing:.5px;}
   .q-text,.test-head h1{font-weight:800;}
 </style>
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script></head>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script></head>
 <body>
 
 <header class="wrap">
@@ -23554,6 +23554,7 @@ JAVOB: D
     document.getElementById('quizScreen').classList.add('hidden');
     document.getElementById('resultArea').classList.remove('hidden');
     document.getElementById('scoreText').textContent = `${score} / ${questions.length}`;
+    window.Bonus && Bonus.done(score, questions.length, location.pathname + '#' + (typeof currentTopicKey !== 'undefined' ? currentTopicKey : ''));
   }
 
   function restartQuiz() {

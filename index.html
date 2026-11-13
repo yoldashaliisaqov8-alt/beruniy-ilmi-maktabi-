@@ -178,13 +178,16 @@
   .pm b{display:block;font-size:26px;font-weight:800}.pm span{font-size:14px;font-weight:600;opacity:.85}
   .pm .x b{color:#ffcf6b}.pm .y b{color:#a9c4ff}.pm .z b{color:#ffb86b}
   .pg{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;border-top:1px solid rgba(255,255,255,.2);padding-top:14px}
-  .pg .gl{cursor:pointer;opacity:.9;font-weight:800;background:none;border:none;color:#d9ccff;font:800 15px var(--font)}
+  .pg .gl{min-height:40px;padding:8px 4px;cursor:pointer;opacity:.9;font-weight:800;background:none;border:none;color:#d9ccff;font:800 15px var(--font)}
   .pb{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0 4px}
   .pb i{display:block;height:9px;border-radius:5px;background:rgba(255,255,255,.2)}.pb i.on{background:#7be0a8}.pb i.goal{background:#c9b8ff}
   .pl{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;font-size:15px;font-weight:800;text-align:center;opacity:.9;position:relative}
   .pl span{padding-top:2px}.pl span.fl:before{content:'\2691';display:block;font-size:15px;color:#d9ccff;line-height:1}
   .pcta{display:block;width:100%;margin-top:16px;border:2px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff;border-radius:18px;padding:16px;font:800 19px var(--font);text-align:center;cursor:pointer}
   .pcta:hover{background:rgba(255,255,255,.22)}
+  .path .ph{flex-wrap:wrap}.path .exam{min-height:40px}
+  @media(max-width:420px){.path h2{font-size:21px}.path .exam{font-size:14px;padding:9px 14px}.today h3{font-size:19px}.pm{gap:8px}.pm div{padding:10px}}
+  a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
   @media(max-width:700px){.path{padding:18px 16px;border-radius:26px}.path h2{font-size:23px}.path .big b{font-size:44px}.pm b{font-size:22px}}
 
   /* Siz uchun bugun */
@@ -492,6 +495,7 @@
     if(pts[0].i<cur)h+='<path d="'+part+'" fill="none" stroke="#5ee0a6" stroke-width="12" stroke-linecap="round"/>';
     pts.forEach(function(p,j){var x=st[p.i];if(!x)return;var href='tarix-boblar.html?set='+x.t.s+'&mavzu='+x.t.v+'&n=10';
       h+='<a href="'+href+'"><g class="nd"><title>'+x.t.v+'-mavzu. '+x.t.t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+' ('+x.ok+'/'+x.t.n+')</title>';
+      h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="40" fill="transparent"/>';
       if(p.i===cur){h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="17" fill="rgba(255,255,255,.28)"/><circle cx="'+p.x+'" cy="'+p.y+'" r="11" fill="#fff"/>';
         h+='<path d="M'+(p.x-9)+' '+(p.y-30)+' L'+p.x+' '+(p.y-18)+' L'+(p.x+9)+' '+(p.y-30)+'Z" fill="#fff"/><circle cx="'+p.x+'" cy="'+(p.y-50)+'" r="27" fill="#fff"/><text x="'+p.x+'" y="'+(p.y-43)+'" text-anchor="middle" font-size="28">\u{1F9D7}</text>'}
       else if(x.done)h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="17" fill="#5ee0a6"/><path d="M'+(p.x-7)+' '+p.y+' l5 6 l10 -11" fill="none" stroke="#10325a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';

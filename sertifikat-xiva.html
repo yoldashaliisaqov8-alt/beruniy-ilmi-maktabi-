@@ -20,7 +20,7 @@ button.alt{background:#fff;color:#1a6ee8;border:2px solid #1a6ee8}
 .ok{background:#e3f6e8;color:#14683a}.no{background:#fde8e8;color:#9b1c1c}
 #timer{position:sticky;top:0;z-index:5;background:#1a6ee8;color:#fff;text-align:center;font-weight:800;font-size:18px;border-radius:0 0 12px 12px;padding:8px;margin:0 0 8px}#timer.low{background:#d33}
 #score{font-size:18px;font-weight:800;text-align:center}
-</style><script src="xatolar.js"></script><script src="shrift.js"></script></head><body><div class="wrap">
+</style><script src="xatolar.js"></script><script src="shrift.js"></script><script src="ulash.js"></script></head><body><div class="wrap">
 <p><a href="milliy-sertifikat.html" style="color:#1a6ee8;font-weight:800;text-decoration:none">← Milliy sertifikat</a></p>
 <h1>XIVA XONLIGI MANSABLARI</h1>
 <p class="sub">15 ta yopiq savol (A–D) va 5 ta yozma savol (javobni klaviaturada yozing) — jami 20 ball. Test vaqti: 30 daqiqa. Sertifikat natijaga qarab beriladi: 18–20 to'g'ri — A+, 16–17 — A, 14–15 — B+, 11–13 — B, 9–10 — C+, 7–8 — C.</p>
@@ -84,7 +84,7 @@ function saveAll(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true}
 function collect(){var ans=[],sc=0;if(window.Xato)Q.forEach(function(q,i){if(q.t=='t'&&picked[i]!=null)Xato.rec("Xiva xonligi mansablari",{text:q.text.replace(/<<|>>/g,''),opts:q.opts,ans:q.ans,izoh:q.man||''},!!res[i])});Q.forEach(function(q,i){var r=res[i]||0;sc+=r;var w=wt(q);ans.push({g:given(i),ok:r==w?'To\'g\'ri':(r==0?'Noto\'g\'ri':r+'/'+w)})});
  var d=new Date(),p=function(x){return(x<10?'0':'')+x};
  LAST={vaqt:d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()),ism:NAME,ball:sc,jami:TOTAL,ans:ans};
- var all=loadAll();all.push(LAST);var ok=saveAll(all);document.getElementById('xl').style.display='block';var cb=document.getElementById('cert'),lv=window.certLevel?certLevel(sc,TOTAL):null;cb.style.display=lv?'block':'none';cb.textContent=lv?'🏅 Sertifikatni yuklash ('+lv+' daraja, PDF, A4 vertikal)':'';
+ var all=loadAll();all.push(LAST);var ok=saveAll(all);document.getElementById('xl').style.display='block';window.Ulash&&Ulash.add(document.getElementById('xl'),{score:sc,total:Q.length,title:"Xiva xonligi mansablari"});var cb=document.getElementById('cert'),lv=window.certLevel?certLevel(sc,TOTAL):null;cb.style.display=lv?'block':'none';cb.textContent=lv?'🏅 Sertifikatni yuklash ('+lv+' daraja, PDF, A4 vertikal)':'';
  document.getElementById('xinfo').textContent=ok?'Natija shu qurilmaga saqlandi (jami '+all.length+' ta urinish).':'Natijani qurilmaga saqlab bo\'lmadi; "Natijamni Excelga yuklash" ni bosing.'}
 function rowsFor(list){var head=['Vaqt','Ism-familiya','Ball','Jami'];for(var i=0;i<Q.length;i++)head.push((i+1)+'-javob','Holat');
  var rows=[head];list.forEach(function(r){var row=[r.vaqt,r.ism,r.ball,r.jami];r.ans.forEach(function(a){row.push(a.g,a.ok)});rows.push(row)});return rows}

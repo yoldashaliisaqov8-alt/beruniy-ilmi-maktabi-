@@ -15,7 +15,7 @@
 .big{font-size:44px;font-weight:800;margin:6px 0}
 @media(max-width:600px){h1{font-size:28px}.qt{font-size:18px}.op{font-size:16px}.wrap{padding:0 16px 40px}}
 .qi{max-width:100%;border-radius:12px;margin:0 0 14px;display:block}.tg{font-size:13px;font-weight:700;color:var(--ink-soft);margin-top:10px}
-</style><script src="shrift.js"></script></head>
+</style><script src="shrift.js"></script><script src="ulash.js"></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="#" id="back" aria-label="Orqaga">←</a><span class="brand">BOBLASHGAN TARIX</span></div>
 <h1 id="h">Boblashgan tarix</h1>
@@ -64,7 +64,7 @@ function show(){var S=SETS[cur],q=Q[qi],n=Q.length;H.textContent=wrongMode?'Xato
 function recDay(){try{var d=new Date(),k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),P=JSON.parse(localStorage.getItem('tm_dayDone')||'{}');if(P.d!==k)P={d:k,x:{}};var key=topicMv?SETS[cur].id+':'+topicMv:'mix';P.x[key]=1;localStorage.setItem('tm_dayDone',JSON.stringify(P));var pl=JSON.parse(localStorage.getItem('tm_plan')||'null');if(pl&&pl.d===k){var ks=[pl.a.s+':'+pl.a.v,pl.b.mix?'mix':pl.b.s+':'+pl.b.v];if(ks.indexOf(key)>=0&&window.Bonus&&Bonus.planDone)Bonus.planDone()}}catch(e){}}
 function fin(){var n=Q.length;if(n>=5&&!wrongMode)recDay();if(!topicMv&&!wrongMode)save(SETS[cur].id,score);window.Bonus&&Bonus.done(score,n,location.pathname+'#'+(wrongMode?'xatolar':SETS[cur].id+(topicMv?'-m'+topicMv:'')));mode='res';SUB.textContent='Natija';
  app.innerHTML='<div class="card qbox"><div class="big">'+score+' / '+n+'</div><p class="qt">'+Math.round(score/n*100)+'% to\'g\'ri javob</p>'+(wrongMode?'<p class="qt">Daftarda qolgan xatolar: '+wrPool().length+' ta</p>':'')+'</div><div class="btnrow"><button class="btn" id="re">'+(wrongMode?'Xatolarni yana takrorlash':'Yangi '+n+' ta test')+'</button><button class="btn ghost" id="ls">Ro\'yxatga</button></div>';
- document.getElementById('re').onclick=function(){if(wrongMode){startWrong();return}topicMv?startTopic(cur,topicMv,topicN):start(cur)};document.getElementById('ls').onclick=list}
+ window.Ulash&&Ulash.add(document.querySelector('#app .btnrow'),{score:score,total:n,title:wrongMode?'Xatolar daftari':SETS[cur].title});document.getElementById('re').onclick=function(){if(wrongMode){startWrong();return}topicMv?startTopic(cur,topicMv,topicN):start(cur)};document.getElementById('ls').onclick=list}
 list();
 (function(){try{var u=new URLSearchParams(location.search),id=u.get('set'),mv=+u.get('mavzu'),n=+u.get('n')||10;if(u.get('xatolar')){startWrong();return}
  if(id&&mv){for(var i=0;i<SETS.length;i++)if(SETS[i].id===id){startTopic(i,mv,n);break}}}catch(e){}})();

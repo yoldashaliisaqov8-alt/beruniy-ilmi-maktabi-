@@ -24,7 +24,7 @@
 .tp .pc{font-weight:800;font-size:19px;flex:0 0 52px;text-align:right}
 .wk{background:#fff3f3;border:1.5px solid #f3b5b8;border-radius:16px;padding:12px 14px;margin:0 0 10px;font-weight:700}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.seg button{font:800 16px var(--font);padding:14px 4px;min-height:48px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}.seg button.on{background:var(--blue);border-color:var(--blue);color:#fff}
-</style><script src="shrift.js"></script></head>
+</style><script src="shrift.js"></script><script src="ulash.js"></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ISAKOV SCHOOL</span></div>
 <h1>Profil</h1><p class="sub">Ism, imtihon sanasi va maqsad bahosi</p>
@@ -78,6 +78,7 @@
   function fsx(){var v=window.FS?FS.get():0;[].forEach.call(document.querySelectorAll('#fsSeg button'),function(b){b.className=(+b.dataset.v===v)?'on':'';b.onclick=function(){FS.set(+b.dataset.v);fsx()}})}
   fsx();
   stat();
+  window.Ulash&&Ulash.add(document.querySelector('#wl').parentNode,{});
   try{var w=Object.keys(JSON.parse(TM.get('tm_wrong','{}'))).length,w2=window.Xato?Xato.count():0;if(w){$('wn').textContent='Boblashgan tarix xatolari: '+w+' ta.';$('wl').style.display=''}if(w2){$('wn').innerHTML=($('wn').textContent?$('wn').textContent+'<br>':'')+'Attestatsiya va sertifikat xatolari: '+w2+' ta. <a href="xatolar.html" style="color:#1a6ee8;font-weight:800">Takrorlash \u203a</a>'}}catch(e){}
 })();
 </script></body></html>

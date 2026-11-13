@@ -15,7 +15,7 @@
 .meta{display:flex;justify-content:space-between;font-weight:700;color:var(--ink-soft);margin-bottom:8px}
 .big{font-size:44px;font-weight:800;margin:6px 0}
 @media(max-width:600px){h1{font-size:28px}.qt{font-size:18px}.op{font-size:16px}.wrap{padding:0 16px 40px}}
-</style><script src="shrift.js"></script></head>
+</style><script src="shrift.js"></script><script src="ulash.js"></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="#" id="back" aria-label="Orqaga">←</a><span class="brand">XATOLAR DAFTARI</span></div>
 <h1 id="h">Xatolar daftari</h1><p class="sub" id="sub">Attestatsiya va Milliy sertifikat testlaridagi xatolaringiz</p>
@@ -57,7 +57,7 @@
   function fin(){mode='res';var n=Q.length;SUB.textContent='Natija';
     window.Bonus&&n>=5&&Bonus.done(score,n,location.pathname+'#'+(lastSrc||'hammasi'));
     app.innerHTML='<div class="card qb"><div class="big">'+score+' / '+n+'</div><p class="qt">Daftarda qolgan xatolar: '+Xato.count()+' ta</p></div><div class="btnrow"><button class="btn" id="re">Yana takrorlash</button><button class="btn ghost" id="ls">Ro\'yxatga</button></div>';
-    document.getElementById('re').onclick=function(){start(lastSrc)};document.getElementById('ls').onclick=list}
+    window.Ulash&&Ulash.add(document.querySelector('#app .btnrow'),{score:score,total:n,title:'Xatolar daftari'});document.getElementById('re').onclick=function(){start(lastSrc)};document.getElementById('ls').onclick=list}
   list();
 })();
 </script></body></html>

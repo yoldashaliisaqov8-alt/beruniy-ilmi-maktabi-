@@ -23,7 +23,8 @@
 .tp .bar2{height:8px;border-radius:5px;background:#e6ecf2;margin-top:6px;overflow:hidden}.tp .bar2 i{display:block;height:100%;border-radius:5px}
 .tp .pc{font-weight:800;font-size:19px;flex:0 0 52px;text-align:right}
 .wk{background:#fff3f3;border:1.5px solid #f3b5b8;border-radius:16px;padding:12px 14px;margin:0 0 10px;font-weight:700}
-</style></head>
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.seg button{font:800 16px var(--font);padding:14px 4px;min-height:48px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}.seg button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+</style><script src="shrift.js"></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ISAKOV SCHOOL</span></div>
 <h1>Profil</h1><p class="sub">Ism, imtihon sanasi va maqsad bahosi</p>
@@ -39,6 +40,9 @@
  <p class="nt">Reytingda faqat ismingiz va to'plagan XP ko'rinadi.</p>
  <p class="ok" id="ok"></p>
 </div>
+<div class="card pf"><h3>Shrift o'lchami</h3>
+ <div class="seg" id="fsSeg"><button type="button" data-v="0">Oddiy</button><button type="button" data-v="1">Katta</button><button type="button" data-v="2">Juda katta</button></div>
+ <p class="nt" style="font-size:16px;margin-top:12px">Namuna: Amir Temur 1370-yilda Movarounnahrda hokimiyatni qo'lga oldi.</p></div>
 <div class="card pf"><h3>Mavzular bo'yicha natija</h3><div id="wkBox"></div><div id="tpList"></div><p class="nt">Foiz — shu mavzudagi javoblaringizning to'g'riligi. Kamida 5 ta javobdan keyin ko'rinadi. Eng zaif mavzu kunlik rejadagi «takrorlash» vazifasiga tushadi.</p></div>
 <div class="card pf"><h3>Mening natijam</h3><div class="hd"><div style="font-size:44px" id="le">🌱</div><div><b id="xn">0 XP</b><span id="xs"></span></div></div>
  <p class="nt" id="wn" style="margin:14px 0 0"></p>
@@ -71,6 +75,8 @@
    $('tpList').innerHTML=h;
    if(weak)$('wkBox').innerHTML='<div class="wk">Eng zaif mavzu: '+weak.x.v+'-mavzu \u2014 '+weak.p+'%<br><a href="tarix-boblar.html?set='+weak.x.s+'&mavzu='+weak.x.v+'&n=10" style="color:#1a6ee8">Hozir mashq qilish \u203a</a></div>'}
   topics();
+  function fsx(){var v=window.FS?FS.get():0;[].forEach.call(document.querySelectorAll('#fsSeg button'),function(b){b.className=(+b.dataset.v===v)?'on':'';b.onclick=function(){FS.set(+b.dataset.v);fsx()}})}
+  fsx();
   stat();
   try{var w=Object.keys(JSON.parse(TM.get('tm_wrong','{}'))).length,w2=window.Xato?Xato.count():0;if(w){$('wn').textContent='Boblashgan tarix xatolari: '+w+' ta.';$('wl').style.display=''}if(w2){$('wn').innerHTML=($('wn').textContent?$('wn').textContent+'<br>':'')+'Attestatsiya va sertifikat xatolari: '+w2+' ta. <a href="xatolar.html" style="color:#1a6ee8;font-weight:800">Takrorlash \u203a</a>'}}catch(e){}
 })();

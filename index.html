@@ -219,7 +219,7 @@
     <section class="path" id="pathCard" aria-label="Tarix yo'lingiz">
       <div class="ph"><h2>Tarix yo'lingiz</h2><button class="exam" id="pExam" type="button"></button></div>
       <div class="big"><b id="pMast">0</b><span>savol o'zlashtirildi</span><small id="pOf"></small></div>
-      <svg class="pw" id="pSvg" viewBox="0 0 600 190" role="img" aria-label="Mavzular yo'li"></svg>
+      <svg class="pw" id="pSvg" viewBox="0 -28 600 218" role="img" aria-label="Everest tog'iga yo'l"></svg>
       <div class="pm"><div class="x"><b id="pXp">+0</b><span>XP bugun</span></div><div class="y"><b id="pPlan">0/20</b><span>reja (savol)</span></div><div class="z"><b id="pStr">0</b><span>kun seriya</span></div></div>
       <div class="pg"><span id="pProg">Prognoz: aniqlanmoqda</span><button class="gl" id="pGoal" type="button" title="Maqsadni o'zgartirish"></button></div>
       <div class="pb" id="pBar"></div><div class="pl" id="pLab"></div>
@@ -470,7 +470,7 @@
       var mv=P[key]; if(!mv||mv===1&&false)return;
       for(var i=0;i<res.length;i++)if(res[i].t.s===sid&&res[i].t.v===mv){res[i].ok++;break}});
     return res}
-  function nodeX(i){return [45,175,300,425,555][i]} function nodeY(i){return [118,70,106,66,114][i]}
+  function nodeX(i){return [48,170,290,410,528][i]} function nodeY(i){return [146,122,96,70,40][i]}
   function build(){
     var st=topicStat(),mast=0,cur=-1;
     st.forEach(function(x,i){mast+=x.ok; x.done=x.ok>=Math.ceil(x.t.n*0.7); if(cur<0&&!x.done)cur=i});
@@ -483,15 +483,20 @@
     function seg(a,b){var dx=(b.x-a.x)/2;return 'C'+(a.x+dx)+' '+a.y+' '+(b.x-dx)+' '+b.y+' '+b.x+' '+b.y}
     var full='M'+pts[0].x+' '+pts[0].y,part='M'+pts[0].x+' '+pts[0].y;
     for(var q=1;q<5;q++){full+=seg(pts[q-1],pts[q]);if(pts[q].i<=cur)part+=seg(pts[q-1],pts[q])}
+    h+='<path d="M0 160 L70 118 L120 138 L205 74 L262 112 L335 58 L392 100 L470 44 L528 12 L575 64 L600 52 L600 160Z" fill="rgba(255,255,255,.10)"/>';
+    h+='<path d="M395 62 L470 44 L528 12 L575 64 L548 56 L528 70 L505 54 L482 66 L452 52Z" fill="rgba(255,255,255,.28)"/>';
+    h+='<path d="M0 160 L48 132 L96 152 L150 112 L205 150 L250 128 L300 160Z" fill="rgba(255,255,255,.07)"/>';
+    h+='<text x="596" y="-12" text-anchor="end" font-size="13" font-weight="800" fill="#fff" opacity=".8">Everest \u00b7 8849 m</text>';
     h+='<path d="'+full+'" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="22" stroke-linecap="round"/>';
     h+='<path d="'+full+'" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 11"/>';
     if(pts[0].i<cur)h+='<path d="'+part+'" fill="none" stroke="#5ee0a6" stroke-width="12" stroke-linecap="round"/>';
     pts.forEach(function(p,j){var x=st[p.i];if(!x)return;var href='tarix-boblar.html?set='+x.t.s+'&mavzu='+x.t.v+'&n=10';
       h+='<a href="'+href+'"><g class="nd"><title>'+x.t.v+'-mavzu. '+x.t.t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+' ('+x.ok+'/'+x.t.n+')</title>';
       if(p.i===cur){h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="17" fill="rgba(255,255,255,.28)"/><circle cx="'+p.x+'" cy="'+p.y+'" r="11" fill="#fff"/>';
-        h+='<path d="M'+(p.x-9)+' '+(p.y-30)+' L'+p.x+' '+(p.y-18)+' L'+(p.x+9)+' '+(p.y-30)+'Z" fill="#fff"/><circle cx="'+p.x+'" cy="'+(p.y-52)+'" r="27" fill="#fff"/><text x="'+p.x+'" y="'+(p.y-43)+'" text-anchor="middle" font-size="28">\u{1F3DB}</text>'}
+        h+='<path d="M'+(p.x-9)+' '+(p.y-30)+' L'+p.x+' '+(p.y-18)+' L'+(p.x+9)+' '+(p.y-30)+'Z" fill="#fff"/><circle cx="'+p.x+'" cy="'+(p.y-50)+'" r="27" fill="#fff"/><text x="'+p.x+'" y="'+(p.y-43)+'" text-anchor="middle" font-size="28">\u{1F9D7}</text>'}
       else if(x.done)h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="17" fill="#5ee0a6"/><path d="M'+(p.x-7)+' '+p.y+' l5 6 l10 -11" fill="none" stroke="#10325a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
       else h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="16" fill="#2a3aa8" stroke="rgba(255,255,255,.7)" stroke-width="4"/>';
+      if(j===4&&p.i!==cur)h+='<text x="'+p.x+'" y="'+(p.y-22)+'" text-anchor="middle" font-size="22">\u{1F6A9}</text>';
       h+='<text class="lbl'+(p.i===cur?' cur':'')+'" x="'+p.x+'" y="178" text-anchor="middle">'+x.t.v+'-mavzu</text></g></a>'});
     svg.innerHTML=h;
     // mini kartalar

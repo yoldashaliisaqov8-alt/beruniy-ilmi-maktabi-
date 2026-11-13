@@ -35,7 +35,8 @@
  <p class="ok" id="ok"></p>
 </div>
 <div class="card pf"><h3>Mening natijam</h3><div class="hd"><div style="font-size:44px" id="le">🌱</div><div><b id="xn">0 XP</b><span id="xs"></span></div></div>
- <div class="btnrow"><a class="btn ghost" href="yutuqlar.html" style="text-decoration:none">Yutuqlarim</a><a class="btn" href="reyting.html" style="text-decoration:none">Reyting</a></div></div>
+ <p class="nt" id="wn" style="margin:14px 0 0"></p>
+ <div class="btnrow"><a class="btn ghost" id="wl" href="tarix-boblar.html?xatolar=1" style="text-decoration:none;display:none">❌ Xatolarim</a><a class="btn ghost" href="yutuqlar.html" style="text-decoration:none">Yutuqlarim</a><a class="btn" href="reyting.html" style="text-decoration:none">Reyting</a></div></div>
 </div>
 <script>
 (function(){
@@ -56,5 +57,6 @@
     var L=[['🌱','Yangi',0],['🎓','Bilimdon',100],['🏆','Ekspert',500],['👑','Ustoz',1500]],c=L[0];L.forEach(function(x){if(B.xp>=x[2])c=x});
     $('le').textContent=c[0];$('xs').textContent=c[1]+' · '+Bonus.streak()+' kun seriya'}
   stat();
+  try{var w=Object.keys(JSON.parse(TM.get('tm_wrong','{}'))).length;if(w){$('wn').textContent='Xatolar daftarida '+w+' ta savol bor.';$('wl').style.display=''}}catch(e){}
 })();
 </script></body></html>

@@ -54,7 +54,8 @@ function show(){var S=SETS[cur],q=Q[qi],n=Q.length;H.textContent=S.title;SUB.tex
   [].forEach.call(app.querySelectorAll('.op'),function(x){x.disabled=true;if(+x.dataset.k===q.a)x.classList.add('ok')});
   if(k===q.a){score++;rec(q)}else b.classList.add('no');document.getElementById('nx').style.display='';document.getElementById('tg').style.display='';}});
  document.getElementById('nx').onclick=function(){qi++;qi<n?show():fin()}}
-function fin(){var n=Q.length;if(!topicMv)save(SETS[cur].id,score);window.Bonus&&Bonus.done(score,n,location.pathname+'#'+SETS[cur].id+(topicMv?'-m'+topicMv:''));mode='res';SUB.textContent='Natija';
+function recDay(){try{var d=new Date(),k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),P=JSON.parse(localStorage.getItem('tm_dayDone')||'{}');if(P.d!==k)P={d:k,x:{}};P.x[topicMv?SETS[cur].id+':'+topicMv:'mix']=1;localStorage.setItem('tm_dayDone',JSON.stringify(P))}catch(e){}}
+function fin(){var n=Q.length;if(n>=5)recDay();if(!topicMv)save(SETS[cur].id,score);window.Bonus&&Bonus.done(score,n,location.pathname+'#'+SETS[cur].id+(topicMv?'-m'+topicMv:''));mode='res';SUB.textContent='Natija';
  app.innerHTML='<div class="card qbox"><div class="big">'+score+' / '+n+'</div><p class="qt">'+Math.round(score/n*100)+'% to\'g\'ri javob</p></div><div class="btnrow"><button class="btn" id="re">Yangi '+n+' ta test</button><button class="btn ghost" id="ls">Ro\'yxatga</button></div>';
  document.getElementById('re').onclick=function(){topicMv?startTopic(cur,topicMv,topicN):start(cur)};document.getElementById('ls').onclick=list}
 list();

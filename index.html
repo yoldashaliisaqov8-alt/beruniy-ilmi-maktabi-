@@ -186,6 +186,22 @@
   .pcta{display:block;width:100%;margin-top:16px;border:2px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff;border-radius:18px;padding:16px;font:800 19px var(--font);text-align:center;cursor:pointer}
   .pcta:hover{background:rgba(255,255,255,.22)}
   @media(max-width:700px){.path{padding:18px 16px;border-radius:26px}.path h2{font-size:23px}.path .big b{font-size:44px}.pm b{font-size:22px}}
+
+  /* Siz uchun bugun */
+  .today{background:#fff;border:1.5px solid #cfe3f7;border-radius:28px;padding:22px 24px;margin:0 0 24px;box-shadow:0 8px 24px -16px rgba(16,34,61,.25)}
+  .today .th{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .today h3{margin:0;font-size:24px;font-weight:800}.today .cnt{color:var(--ink-soft);font-weight:700;font-size:16px}
+  .today .msg{margin:10px 0 4px;font-weight:700;font-size:17px;color:var(--ink)}
+  .today .msg.ok{color:#1f8a52}
+  .tk{display:flex;align-items:center;gap:14px;padding:14px 4px;border-top:1px solid var(--line);color:var(--ink);text-decoration:none}
+  .tk:first-of-type{margin-top:8px}
+  .tk .ck{flex:0 0 44px;height:44px;border-radius:50%;background:#eef2f6;border:2px solid #d5dde8;display:flex;align-items:center;justify-content:center;font-size:22px;color:#98a6ba}
+  .tk.done .ck{background:#e0f5ea;border-color:#bfe8d1;color:#1f8a52}
+  .tk b{display:block;font-size:19px;font-weight:800;line-height:1.25}
+  .tk small{display:block;margin-top:3px;font-size:15px;font-weight:700;color:#2a6bd1}
+  .tk.done small{color:var(--ink-soft)}
+  .tk .go{margin-left:auto;font-size:26px;color:#9fb0c6}
+  @media(max-width:700px){.today{padding:18px 16px;border-radius:24px}.today h3{font-size:21px}.tk b{font-size:17px}}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script></head>
 <body>
@@ -209,6 +225,12 @@
       <div class="pb" id="pBar"></div><div class="pl" id="pLab"></div>
       <a class="pcta" id="pCta" href="tarix-boblar.html"></a>
     </section>
+    <section class="today" id="todayCard" aria-label="Siz uchun bugun">
+      <div class="th"><h3>Siz uchun bugun</h3><span class="cnt" id="tCnt">0/2 bajarildi</span></div>
+      <p class="msg" id="tMsg">Bugungi reja: 2 ta vazifa</p>
+      <div id="tList"></div>
+    </section>
+    
     <div class="dash">
 
       <section class="hero">
@@ -492,6 +514,7 @@
     var c=st[cur],cta=document.getElementById('pCta');
     cta.textContent='Yana 10 ta test \u2013 '+c.t.v+'-mavzu';
     cta.href='tarix-boblar.html?set='+c.t.s+'&mavzu='+c.t.v+'&n=10';
+    window.__lastPath=[st,cur,TOP];if(window.planBuild)window.planBuild(st,cur,TOP);
     // imtihon
     var ex=document.getElementById('pExam'),d=ls('tm_exam','');
     if(d){var days=Math.ceil((new Date(d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);
@@ -501,6 +524,39 @@
       i.onchange=function(){if(i.value){sv('tm_exam',i.value);build()}};try{i.showPicker&&i.showPicker()}catch(e){}i.focus();ex.onclick=null}
   }
   build();window.addEventListener('load',build);window.addEventListener('storage',build);
+})();
+</script>
+
+<script>
+(function(){
+  function ls(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function day(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  window.planBuild=function(st,cur,TOP){
+    var d=day(),plan=null;
+    try{plan=JSON.parse(ls('tm_plan')||'null')}catch(e){}
+    if(!plan||plan.d!==d){
+      var a=TOP[cur],b=cur>0?TOP[cur-1]:null;
+      plan={d:d,a:{s:a.s,v:a.v},b:b?{s:b.s,v:b.v,rep:1}:{mix:1}};
+      try{localStorage.setItem('tm_plan',JSON.stringify(plan))}catch(e){}
+    }
+    var DD={};try{DD=JSON.parse(ls('tm_dayDone')||'{}')}catch(e){}
+    var X=(DD.d===d&&DD.x)?DD.x:{};
+    function find(o){for(var i=0;i<TOP.length;i++)if(TOP[i].s===o.s&&TOP[i].v===o.v)return TOP[i]}
+    var tasks=[];
+    var ta=find(plan.a);
+    tasks.push({done:!!X[plan.a.s+':'+plan.a.v],t:ta.v+'-mavzu. '+ta.t,sub:'Mashq \u00b7 10 ta test, taxminan 10 daqiqa',href:'tarix-boblar.html?set='+ta.s+'&mavzu='+ta.v+'&n=10'});
+    if(plan.b.mix)tasks.push({done:!!X.mix,t:'Aralash mashq: Boblashgan tarix',sub:'30 ta test, taxminan 20 daqiqa',href:'tarix-boblar.html'});
+    else{var tb=find(plan.b);tasks.push({done:!!X[plan.b.s+':'+plan.b.v],t:'Takrorlash: '+tb.v+'-mavzu. '+tb.t,sub:'Takrorlash \u00b7 10 ta test, taxminan 10 daqiqa',href:'tarix-boblar.html?set='+tb.s+'&mavzu='+tb.v+'&n=10'})}
+    var n=tasks.filter(function(x){return x.done}).length,h='';
+    tasks.forEach(function(x){h+='<a class="tk'+(x.done?' done':'')+'" href="'+x.href+'"><span class="ck">'+(x.done?'\u2713':'\u25cb')+'</span><span><b>'+esc(x.t)+'</b><small>'+esc(x.sub)+'</small></span><span class="go">\u203a</span></a>'});
+    document.getElementById('tList').innerHTML=h;
+    document.getElementById('tCnt').textContent=n+'/'+tasks.length+' bajarildi';
+    var m=document.getElementById('tMsg');
+    if(n===tasks.length){var s=Math.max(1,window.Bonus?Bonus.streak():1);m.className='msg ok';m.textContent='Bugungi reja bajarildi \u2013 '+s+' kun ketma-ket!'}
+    else{m.className='msg';m.textContent=n===0?'Bugungi reja: 2 ta vazifa. Boshlaymizmi?':'Yana 1 ta vazifa qoldi'}
+  };
+  if(window.__lastPath)planBuild.apply(null,window.__lastPath);
 })();
 </script>
 </body>

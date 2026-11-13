@@ -161,6 +161,31 @@
     .bottom .tile .circ svg{width:26px; height:26px;}
     .plan-bottom{font-size:14px; flex-direction:column; gap:4px;}
   }
+
+  /* Tarix yo'lingiz kartasi */
+  .path{position:relative;border-radius:30px;color:#fff;padding:22px 22px 22px;margin:0 0 24px;background:linear-gradient(160deg,#1b2a8f 0%,#2b3bb8 55%,#3b2a9a 100%);box-shadow:0 22px 40px -22px rgba(30,40,150,.65)}
+  .path .ph{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .path h2{margin:0;font-size:26px;font-weight:800;white-space:nowrap}
+  .path .exam{white-space:nowrap;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;border-radius:999px;padding:8px 16px;font:800 15px var(--font);cursor:pointer}
+  .path .exam input{border:none;background:transparent;color:#fff;font:800 15px var(--font);color-scheme:dark}
+  .path .big{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 0 0}
+  .path .big b{font-size:52px;line-height:1;font-weight:800}.path .big span{font-size:20px;font-weight:800}.path .big small{font-size:16px;font-weight:600;opacity:.8}
+  .pw{width:100%;height:auto;display:block;margin:6px 0 0;overflow:visible}
+  .pw .lbl{font:800 14px var(--font);fill:#fff;opacity:.75}.pw .lbl.cur{opacity:1}
+  .pw g.nd{cursor:pointer}
+  .pm{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0 16px}
+  .pm div{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:18px;padding:12px 14px}
+  .pm b{display:block;font-size:26px;font-weight:800}.pm span{font-size:14px;font-weight:600;opacity:.85}
+  .pm .x b{color:#ffcf6b}.pm .y b{color:#a9c4ff}.pm .z b{color:#ffb86b}
+  .pg{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;border-top:1px solid rgba(255,255,255,.2);padding-top:14px}
+  .pg .gl{cursor:pointer;opacity:.9;font-weight:800;background:none;border:none;color:#d9ccff;font:800 15px var(--font)}
+  .pb{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0 4px}
+  .pb i{display:block;height:9px;border-radius:5px;background:rgba(255,255,255,.2)}.pb i.on{background:#7be0a8}.pb i.goal{background:#c9b8ff}
+  .pl{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;font-size:15px;font-weight:800;text-align:center;opacity:.9;position:relative}
+  .pl span{padding-top:2px}.pl span.fl:before{content:'\2691';display:block;font-size:15px;color:#d9ccff;line-height:1}
+  .pcta{display:block;width:100%;margin-top:16px;border:2px solid rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff;border-radius:18px;padding:16px;font:800 19px var(--font);text-align:center;cursor:pointer}
+  .pcta:hover{background:rgba(255,255,255,.22)}
+  @media(max-width:700px){.path{padding:18px 16px;border-radius:26px}.path h2{font-size:23px}.path .big b{font-size:44px}.pm b{font-size:22px}}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script></head>
 <body>
@@ -175,6 +200,15 @@
   </header>
 
   <main>
+    <section class="path" id="pathCard" aria-label="Tarix yo'lingiz">
+      <div class="ph"><h2>Tarix yo'lingiz</h2><button class="exam" id="pExam" type="button"></button></div>
+      <div class="big"><b id="pMast">0</b><span>savol o'zlashtirildi</span><small id="pOf"></small></div>
+      <svg class="pw" id="pSvg" viewBox="0 0 600 190" role="img" aria-label="Mavzular yo'li"></svg>
+      <div class="pm"><div class="x"><b id="pXp">+0</b><span>XP bugun</span></div><div class="y"><b id="pPlan">0/20</b><span>reja (savol)</span></div><div class="z"><b id="pStr">0</b><span>kun seriya</span></div></div>
+      <div class="pg"><span id="pProg">Prognoz: aniqlanmoqda</span><button class="gl" id="pGoal" type="button" title="Maqsadni o'zgartirish"></button></div>
+      <div class="pb" id="pBar"></div><div class="pl" id="pLab"></div>
+      <a class="pcta" id="pCta" href="tarix-boblar.html"></a>
+    </section>
     <div class="dash">
 
       <section class="hero">
@@ -398,6 +432,76 @@
       toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2600);
     });
   });
+</script>
+
+<script>
+(function(){
+  var TOP=[{"s": "j8_1_5", "v": 1, "n": 21, "t": "Fransiyada markazlashgan davlatning tashkil topishi. General shtatlar"}, {"s": "j8_1_5", "v": 2, "n": 22, "t": "Yuz yillik urush: sabablari, yakunlari va oqibatlari"}, {"s": "j8_1_5", "v": 3, "n": 13, "t": "Fransiyani birlashtirishning tugallanishi va uning natijalari"}, {"s": "j8_1_5", "v": 4, "n": 16, "t": "Angliyada markazlashgan davlatning tashkil topishi"}, {"s": "j8_1_5", "v": 5, "n": 28, "t": "XIV–XV asrlarda Angliya"}, {"s": "j8_6_10", "v": 6, "n": 17, "t": "Germaniyada ijtimoiy-siyosiy va iqtisodiy hayot"}, {"s": "j8_6_10", "v": 7, "n": 17, "t": "Italiya: shahar-respublikalar va Rim papalari davlati"}, {"s": "j8_6_10", "v": 8, "n": 18, "t": "Pireney yarimoroli mamlakatlari: Ispaniya va Portugaliya"}, {"s": "j8_6_10", "v": 9, "n": 17, "t": "Rus knyazliklarida ijtimoiy-siyosiy hayot"}, {"s": "j8_6_10", "v": 10, "n": 31, "t": "Bolqon mamlakatlari, Markaziy va Sharqiy Yevropa"}], GR=['C','C+','B','B+','A','A+'], TOTAL=0;
+  TOP.forEach(function(t){TOTAL+=t.n});
+  function ls(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}}
+  function lj(k){try{return JSON.parse(localStorage.getItem(k)||'{}')||{}}catch(e){return {}}}
+  function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function topicStat(){var P=lj('tm_path'),res=[];
+    TOP.forEach(function(t){res.push({t:t,ok:0})});
+    Object.keys(P).forEach(function(key){var a=key.split(':'),sid=a[0],k=+a[1];
+      // savol qaysi mavzuga tegishli: tarix-boblar.html dagi kabi tartib (mavzu boshlanishi indeksi bo'yicha emas, shu sahifada saqlangan xarita orqali)
+      var mv=P[key]; if(!mv||mv===1&&false)return;
+      for(var i=0;i<res.length;i++)if(res[i].t.s===sid&&res[i].t.v===mv){res[i].ok++;break}});
+    return res}
+  function nodeX(i){return [45,175,300,425,555][i]} function nodeY(i){return [118,70,106,66,114][i]}
+  function build(){
+    var st=topicStat(),mast=0,cur=-1;
+    st.forEach(function(x,i){mast+=x.ok; x.done=x.ok>=Math.ceil(x.t.n*0.7); if(cur<0&&!x.done)cur=i});
+    if(cur<0)cur=st.length-1;
+    document.getElementById('pMast').textContent=mast;
+    document.getElementById('pOf').textContent='8-sinf kitobidagi '+TOTAL+' tadan';
+    // yo'l
+    var T=st.length,s0=Math.max(0,Math.min(cur-1,T-5)),svg=document.getElementById('pSvg'),h='';
+    var pts=[];for(var j=0;j<5;j++)pts.push({x:nodeX(j),y:nodeY(j),i:s0+j});
+    function seg(a,b){var dx=(b.x-a.x)/2;return 'C'+(a.x+dx)+' '+a.y+' '+(b.x-dx)+' '+b.y+' '+b.x+' '+b.y}
+    var full='M'+pts[0].x+' '+pts[0].y,part='M'+pts[0].x+' '+pts[0].y;
+    for(var q=1;q<5;q++){full+=seg(pts[q-1],pts[q]);if(pts[q].i<=cur)part+=seg(pts[q-1],pts[q])}
+    h+='<path d="'+full+'" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="22" stroke-linecap="round"/>';
+    h+='<path d="'+full+'" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 11"/>';
+    if(pts[0].i<cur)h+='<path d="'+part+'" fill="none" stroke="#5ee0a6" stroke-width="12" stroke-linecap="round"/>';
+    pts.forEach(function(p,j){var x=st[p.i];if(!x)return;var href='tarix-boblar.html?set='+x.t.s+'&mavzu='+x.t.v+'&n=10';
+      h+='<a href="'+href+'"><g class="nd"><title>'+x.t.v+'-mavzu. '+x.t.t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+' ('+x.ok+'/'+x.t.n+')</title>';
+      if(p.i===cur){h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="17" fill="rgba(255,255,255,.28)"/><circle cx="'+p.x+'" cy="'+p.y+'" r="11" fill="#fff"/>';
+        h+='<path d="M'+(p.x-9)+' '+(p.y-30)+' L'+p.x+' '+(p.y-18)+' L'+(p.x+9)+' '+(p.y-30)+'Z" fill="#fff"/><circle cx="'+p.x+'" cy="'+(p.y-52)+'" r="27" fill="#fff"/><text x="'+p.x+'" y="'+(p.y-43)+'" text-anchor="middle" font-size="28">\u{1F3DB}</text>'}
+      else if(x.done)h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="17" fill="#5ee0a6"/><path d="M'+(p.x-7)+' '+p.y+' l5 6 l10 -11" fill="none" stroke="#10325a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
+      else h+='<circle cx="'+p.x+'" cy="'+p.y+'" r="16" fill="#2a3aa8" stroke="rgba(255,255,255,.7)" stroke-width="4"/>';
+      h+='<text class="lbl'+(p.i===cur?' cur':'')+'" x="'+p.x+'" y="178" text-anchor="middle">'+x.t.v+'-mavzu</text></g></a>'});
+    svg.innerHTML=h;
+    // mini kartalar
+    var B=window.Bonus?Bonus.get():null,td=B?Bonus.dayAnswers():0,GOAL=B?Bonus.GOAL:20,t=B?Bonus.today():'';
+    var xp=B?((B.ansXp&&B.ansXp[t])||0)+((B.dailyDone_&&B.dailyDone_[t])?Bonus.BONUS:0)+(function(){var n=0;for(var k in (B.done||{}))if(B.done[k]===t)n++;return n*10})():0;
+    document.getElementById('pXp').textContent='+'+xp;
+    document.getElementById('pPlan').textContent=Math.min(td,GOAL)+'/'+GOAL;
+    document.getElementById('pStr').textContent=B?Bonus.streak():0;
+    // prognoz
+    var tot=B?B.total:0,cor=B?B.correct:0,acc=tot?cor/tot:0,N=30,idx=-1;
+    var goal=Math.max(0,Math.min(5,+ls('tm_goal',5)));
+    if(tot>=N){idx=acc<.5?0:acc<.6?1:acc<.7?2:acc<.8?3:acc<.9?4:5;
+      document.getElementById('pProg').textContent='Prognoz: '+GR[idx]+' ('+Math.round(acc*100)+'% to\'g\'ri)'}
+    else document.getElementById('pProg').textContent='Prognoz: aniqlanmoqda '+Math.min(tot,N)+'/'+N;
+    var bar='',lab='';for(var g=0;g<6;g++){bar+='<i class="'+(idx>=0&&g<=idx?'on':(g===goal?'goal':''))+'"></i>';lab+='<span class="'+(g===goal?'fl':'')+'">'+GR[g]+'</span>'}
+    document.getElementById('pBar').innerHTML=bar;document.getElementById('pLab').innerHTML=lab;
+    document.getElementById('pGoal').textContent='Maqsad '+GR[goal];
+    document.getElementById('pGoal').onclick=function(){sv('tm_goal',(goal+1)%6);build()};
+    // tugma
+    var c=st[cur],cta=document.getElementById('pCta');
+    cta.textContent='Yana 10 ta test \u2013 '+c.t.v+'-mavzu';
+    cta.href='tarix-boblar.html?set='+c.t.s+'&mavzu='+c.t.v+'&n=10';
+    // imtihon
+    var ex=document.getElementById('pExam'),d=ls('tm_exam','');
+    if(d){var days=Math.ceil((new Date(d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);
+      ex.textContent=days>0?'Imtihonga '+days+' kun':(days===0?'Imtihon bugun!':'Imtihon o\'tdi');}
+    else ex.textContent='📅 Imtihon sanasi';
+    ex.onclick=function(){ex.innerHTML='<input type="date" id="pDate" value="'+d+'">';var i=document.getElementById('pDate');
+      i.onchange=function(){if(i.value){sv('tm_exam',i.value);build()}};try{i.showPicker&&i.showPicker()}catch(e){}i.focus();ex.onclick=null}
+  }
+  build();window.addEventListener('load',build);window.addEventListener('storage',build);
+})();
 </script>
 </body>
 </html>

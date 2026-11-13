@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reyting — Isakov school</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png">
+<script src="menyu.js"></script><script src="pwa.js" defer></script><script src="bonus.js" defer></script>
+<style>
+.rk{padding:8px 8px;margin-bottom:16px}
+.r{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px}
+.r+.r{border-top:1px solid var(--line)}
+.r .n{flex:0 0 36px;height:36px;border-radius:50%;background:#eef2f6;display:flex;align-items:center;justify-content:center;font-weight:800;color:#5b6b82}
+.r:nth-child(1) .n{background:#ffe9a8;color:#8a5a00}.r:nth-child(2) .n{background:#e3e8ee;color:#4a5668}.r:nth-child(3) .n{background:#ffd9bd;color:#8a4417}
+.r .nm{flex:1;font-weight:800;font-size:18px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .xp{font-weight:800;font-size:18px;color:#1a6ee8}
+.r.me{background:#eaf2ff}
+.me2{padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.me2 b{font-size:22px}.me2 span{color:var(--ink-soft);font-weight:700}
+.info{padding:16px 18px;color:var(--ink-soft);font-weight:700;margin-bottom:16px}
+.info a{color:var(--blue)}
+.em{padding:24px;text-align:center;color:var(--ink-soft);font-weight:700}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ISAKOV SCHOOL</span></div>
+<h1>Reyting</h1><p class="sub">O'quvchilar XP bo'yicha jadvali</p>
+<div class="card me2"><div style="font-size:40px" id="mi">🌱</div><div style="flex:1"><b id="mn">Siz</b><br><span id="mx"></span></div><a class="btn ghost" href="profil.html" style="text-decoration:none;padding:10px 18px;font-size:16px">Profil</a></div>
+<div class="card info" id="inf" style="display:none"></div>
+<div class="card rk" id="lst"><div class="em">Yuklanmoqda…</div></div>
+</div>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  function id(){var v=TM.get('tm_uid','');if(!v){v='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);TM.set('tm_uid',v)}return v}
+  function info(h){var e=$('inf');e.style.display=h?'block':'none';e.innerHTML=h||''}
+  function init(){
+    if(!window.Bonus)return setTimeout(init,120);
+    var B=Bonus.get(),name=TM.get('tm_name','').trim(),on=TM.get('tm_rank_on','1')==='1',xp=B.xp;
+    var L=[['🌱',0],['🎓',100],['🏆',500],['👑',1500]],c=L[0];L.forEach(function(x){if(xp>=x[1])c=x});
+    $('mi').textContent=c[0];$('mn').textContent=name||'Ismingizni kiriting';$('mx').textContent=xp+' XP · '+Bonus.streak()+' kun seriya';
+    if(!name)info('Reytingda ko\'rinish uchun <a href="profil.html">Profil</a> sahifasida ismingizni kiriting.');
+    var url=window.RANK_URL;
+    if(!url){
+      $('lst').innerHTML='<div class="r me"><span class="n">1</span><span class="nm">'+esc(name||'Siz')+'</span><span class="xp">'+xp+' XP</span></div>';
+      info((name?'':$('inf').innerHTML+'<br>')+'Umumiy reyting hali ulanmagan: hozircha faqat sizning natijangiz ko\'rinadi. Boshqa o\'quvchilar bilan solishtirish uchun saytga reyting serveri ulanishi kerak.');
+      return}
+    var q=url+(url.indexOf('?')<0?'?':'&');
+    var go=(name&&on)?fetch(q+'a=set&id='+encodeURIComponent(id())+'&n='+encodeURIComponent(name)+'&xp='+xp).catch(function(){}):Promise.resolve();
+    go.then(function(){return fetch(q+'a=top')}).then(function(r){return r.json()}).then(function(d){
+      var a=(d&&d.top)||[];if(!a.length){$('lst').innerHTML='<div class="em">Hozircha reytingda hech kim yo\'q</div>';return}
+      var me=id(),h='';a.forEach(function(x,i){h+='<div class="r'+(x.id===me?' me':'')+'"><span class="n">'+(i+1)+'</span><span class="nm">'+esc(x.n)+'</span><span class="xp">'+x.xp+' XP</span></div>'});
+      $('lst').innerHTML=h;
+      if(!on)info('Siz reytingda qatnashmayapsiz (Profil sahifasida yoqishingiz mumkin).');
+    }).catch(function(){$('lst').innerHTML='<div class="em">Reytingni yuklab bo\'lmadi. Internetni tekshirib, qayta urinib ko\'ring.</div>'});
+  }
+  init();
+})();
+</script></body></html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profil — Isakov school</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png">
+<script src="menyu.js"></script><script src="pwa.js" defer></script><script src="bonus.js" defer></script>
+<style>
+.pf{padding:22px 22px;margin-bottom:16px}.pf h3{margin:0 0 12px;font-size:20px}
+.pf label{display:block;font-weight:800;font-size:15px;color:var(--ink-soft);margin:14px 0 6px}
+.pf input[type=text],.pf input[type=date]{width:100%;font:700 18px var(--font);padding:13px 14px;border:1.5px solid var(--line);border-radius:14px;color:var(--ink);background:#fff}
+.pf input:focus{outline:none;border-color:var(--blue)}
+.gs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.gs button{font:800 17px var(--font);padding:12px 0;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+.gs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.av{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#1a6ee8,#6a4fe0);color:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;flex:0 0 72px}
+.hd{display:flex;gap:16px;align-items:center}.hd b{font-size:24px;display:block}.hd span{color:var(--ink-soft);font-weight:700}
+.sw{display:flex;gap:12px;align-items:center;font-weight:700;margin-top:16px}.sw input{width:22px;height:22px}
+.ok{color:#1f8a52;font-weight:800;margin:10px 0 0;min-height:22px}
+.nt{color:var(--ink-soft);font-weight:600;font-size:14px;margin:6px 0 0}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ISAKOV SCHOOL</span></div>
+<h1>Profil</h1><p class="sub">Ism, imtihon sanasi va maqsad bahosi</p>
+<div class="card pf"><div class="hd"><div class="av" id="av">?</div><div><b id="hn">Ismingizni kiriting</b><span id="hl"></span></div></div></div>
+<div class="card pf">
+ <label for="nm" style="margin-top:0">Ism (reytingda shu ko'rinadi)</label>
+ <input type="text" id="nm" maxlength="24" placeholder="Masalan: Aziza" autocomplete="nickname">
+ <label for="ex">Imtihon sanasi</label>
+ <input type="date" id="ex">
+ <label>Maqsad bahosi</label>
+ <div class="gs" id="gs"></div>
+ <div class="sw"><input type="checkbox" id="rk"><label for="rk" style="margin:0;color:var(--ink)">Umumiy reytingda qatnashaman</label></div>
+ <p class="nt">Reytingda faqat ismingiz va to'plagan XP ko'rinadi.</p>
+ <p class="ok" id="ok"></p>
+</div>
+<div class="card pf"><h3>Mening natijam</h3><div class="hd"><div style="font-size:44px" id="le">🌱</div><div><b id="xn">0 XP</b><span id="xs"></span></div></div>
+ <div class="btnrow"><a class="btn ghost" href="yutuqlar.html" style="text-decoration:none">Yutuqlarim</a><a class="btn" href="reyting.html" style="text-decoration:none">Reyting</a></div></div>
+</div>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)},GR=TM.GR,t;
+  var goal=Math.max(0,Math.min(5,+TM.get('tm_goal',5)));
+  $('nm').value=TM.get('tm_name','');$('ex').value=TM.get('tm_exam','');$('rk').checked=TM.get('tm_rank_on','1')==='1';
+  function ok(m){$('ok').textContent=m;clearTimeout(t);t=setTimeout(function(){$('ok').textContent=''},1800)}
+  function head(){var n=TM.get('tm_name','').trim();$('av').textContent=n?n[0].toUpperCase():'?';$('hn').textContent=n||'Ismingizni kiriting';
+    var e=TM.get('tm_exam','');var s='Maqsad: '+GR[goal];
+    if(e){var d=Math.ceil((new Date(e+'T00:00:00')-new Date(new Date().toDateString()))/864e5);s+=' · '+(d>0?'imtihonga '+d+' kun':d===0?'imtihon bugun':'imtihon o\'tdi')}$('hl').textContent=s}
+  function gs(){var h='';GR.forEach(function(g,i){h+='<button type="button" data-i="'+i+'" class="'+(i===goal?'on':'')+'">'+g+'</button>'});$('gs').innerHTML=h;
+    [].forEach.call($('gs').querySelectorAll('button'),function(b){b.onclick=function(){goal=+b.dataset.i;TM.set('tm_goal',goal);gs();head();ok('Saqlandi')}})}
+  $('nm').oninput=function(){TM.set('tm_name',$('nm').value.trim());head();ok('Saqlandi')};
+  $('ex').onchange=function(){TM.set('tm_exam',$('ex').value);head();ok('Saqlandi')};
+  $('rk').onchange=function(){TM.set('tm_rank_on',$('rk').checked?'1':'0');ok('Saqlandi')};
+  gs();head();
+  function stat(){if(!window.Bonus){return setTimeout(stat,150)}var B=Bonus.get();$('xn').textContent=B.xp+' XP';
+    var L=[['🌱','Yangi',0],['🎓','Bilimdon',100],['🏆','Ekspert',500],['👑','Ustoz',1500]],c=L[0];L.forEach(function(x){if(B.xp>=x[2])c=x});
+    $('le').textContent=c[0];$('xs').textContent=c[1]+' · '+Bonus.streak()+' kun seriya'}
+  stat();
+})();
+</script></body></html>

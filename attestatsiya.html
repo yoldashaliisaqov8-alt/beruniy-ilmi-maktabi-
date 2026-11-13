@@ -67,7 +67,7 @@
   .veil.on{display:flex}
   @media (max-width:900px){.qlay{grid-template-columns:1fr}.qcard{padding:18px}.qtop{flex-wrap:wrap}}
   @media (max-width:700px){.modes{grid-template-columns:1fr;}.qcard .opt{font-size:17px;padding:14px;}}
-</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script><script src="sert-kartasi.js" defer></script></head>
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="pwa.js" defer></script><script src="bonus.js" defer></script><script src="sert-kartasi.js" defer></script><script src="xatolar.js"></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ATTESTATSIYA</span></div>
 
@@ -24876,6 +24876,7 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
     d.onclick=function(){pick(i);};list.appendChild(d);
   });
 
+  window.Xato&&Xato.badge(list);
   // ---- statistika ----
   function rec(ok){try{var st;try{st=JSON.parse(localStorage.getItem('tm_stats'));}catch(e){}
     if(!st||!st.days)st={total:0,correct:0,wrong:0,best:0,days:{}};
@@ -24954,13 +24955,13 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
   function go(d){var n=cur+d;if(n>=0&&n<Q.length){cur=n;render();}}
   function choose(i){
     if(finished)return;
-    if(mode==='P'){if(shown[cur])return;picked[cur]=i;shown[cur]=true;rec(i===Q[cur].ans);}
+    if(mode==='P'){if(shown[cur])return;picked[cur]=i;shown[cur]=true;rec(i===Q[cur].ans);window.Xato&&Xato.rec(S.title,Q[cur],i===Q[cur].ans);}
     else picked[cur]=i;
     render();
   }
   function finish(){
     if(finished)return;finished=true;clearInterval(tmr);
-    var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++;if(mode==='E'&&picked[i]>=0)rec(picked[i]===q.ans);});
+    var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++;if(mode==='E'&&picked[i]>=0){rec(picked[i]===q.ans);window.Xato&&Xato.rec(S.title,q,picked[i]===q.ans)}});
     var pct=Math.round(ok/Q.length*100);window.Bonus&&Bonus.done(ok,Q.length,'att:'+S.title+':'+mode,true);
     document.getElementById('rScore').textContent=ok+' / '+Q.length;var rc=document.getElementById('rCert'),lv=window.certLevel?certLevel(ok,Q.length):null;rc.style.display=lv?'':'none';if(lv)rc.textContent='🏅 Sertifikat ('+lv+')';
     document.getElementById('rPct').textContent=pct+'%';

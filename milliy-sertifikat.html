@@ -33,7 +33,7 @@
   .warn{background:rgba(229,72,77,.08);border:1px solid var(--red);color:#9a3a30;padding:14px 18px;border-radius:14px;margin-bottom:14px;font-weight:600;}
   @media (max-width:700px){.modes{grid-template-columns:1fr;}.opt{font-size:18px;padding:14px;}}
   @media (min-width:1000px){.opt{font-size:24px;padding:20px 26px;}}
-</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="sert-kartasi.js" defer></script><script src="menyu.js"></script><script src="pwa.js" defer></script><script src="bonus.js" defer></script></head>
+</style><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png"><script src="sert-kartasi.js" defer></script><script src="menyu.js"></script><script src="pwa.js" defer></script><script src="bonus.js" defer></script><script src="xatolar.js"></script></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">MILLIY SERTIFIKAT</span></div>
 
@@ -8879,6 +8879,7 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
     d.onclick=function(){pick(i);};list.appendChild(d);
   });
 
+  window.Xato&&Xato.badge(list);
   // ---- statistika ----
   function rec(ok){try{var st;try{st=JSON.parse(localStorage.getItem('tm_stats'));}catch(e){}
     if(!st||!st.days)st={total:0,correct:0,wrong:0,best:0,days:{}};
@@ -8947,13 +8948,13 @@ IZOH: Qabul qilingan sana — 8-dekabr, bu sana Konstitutsiya kuni sifatida nish
   function go(d){var n=cur+d;if(n>=0&&n<Q.length){cur=n;render();}}
   function choose(i){
     if(finished)return;
-    if(mode==='P'){if(shown[cur])return;picked[cur]=i;shown[cur]=true;rec(i===Q[cur].ans);}
+    if(mode==='P'){if(shown[cur])return;picked[cur]=i;shown[cur]=true;rec(i===Q[cur].ans);window.Xato&&Xato.rec(S.title,Q[cur],i===Q[cur].ans);}
     else picked[cur]=i;
     render();
   }
   function finish(){
     if(finished)return;finished=true;clearInterval(tmr);
-    var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++;if(mode==='E'&&picked[i]>=0)rec(picked[i]===q.ans);});
+    var ok=0;Q.forEach(function(q,i){if(picked[i]===q.ans)ok++;if(mode==='E'&&picked[i]>=0){rec(picked[i]===q.ans);window.Xato&&Xato.rec(S.title,q,picked[i]===q.ans)}});
     var pct=Math.round(ok/Q.length*100);
     document.getElementById('rScore').textContent=ok+' / '+Q.length;
     document.getElementById('rPct').textContent=pct+'%';

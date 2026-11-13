@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uz"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xatolar daftari — Isakov school</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png">
+<script src="xatolar.js"></script><script src="menyu.js"></script><script src="pwa.js" defer></script><script src="bonus.js" defer></script>
+<style>
+.g{padding:16px 18px;margin-bottom:12px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.g div{flex:1;min-width:0}.g b{display:block;font-size:17px;line-height:1.3}.g small{color:var(--ink-soft);font-weight:700}
+.g .n{flex:0 0 auto;min-width:44px;height:44px;border-radius:22px;background:#ffe9ea;color:#c0262c;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center;padding:0 10px}
+.qb{padding:20px 20px}.qt{font-size:20px;font-weight:800;line-height:1.35;margin:0 0 14px;white-space:pre-line}
+.op{display:block;width:100%;text-align:left;font:700 17px var(--font);padding:14px 16px;margin:0 0 10px;border-radius:16px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;min-height:48px}
+.op.ok{background:#e0f5ea;border-color:#7bcf9f}.op.no{background:#ffe9ea;border-color:#f3a0a4}
+.iz{margin-top:10px;font-weight:700;color:var(--ink-soft);font-size:15px}.src{font-size:13px;font-weight:700;color:var(--ink-soft);margin-top:10px}
+.meta{display:flex;justify-content:space-between;font-weight:700;color:var(--ink-soft);margin-bottom:8px}
+.big{font-size:44px;font-weight:800;margin:6px 0}
+@media(max-width:600px){h1{font-size:28px}.qt{font-size:18px}.op{font-size:16px}.wrap{padding:0 16px 40px}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="#" id="back" aria-label="Orqaga">←</a><span class="brand">XATOLAR DAFTARI</span></div>
+<h1 id="h">Xatolar daftari</h1><p class="sub" id="sub">Attestatsiya va Milliy sertifikat testlaridagi xatolaringiz</p>
+<div id="app"></div></div>
+<script>
+(function(){
+  var app=document.getElementById('app'),H=document.getElementById('h'),SUB=document.getElementById('sub'),back=document.getElementById('back');
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+  function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+  var Q=[],qi=0,score=0,mode='list',lastSrc=null;
+  back.onclick=function(e){if(mode!=='list'){e.preventDefault();list()}};
+  back.setAttribute('href','index.html');
+  function list(){mode='list';H.textContent='Xatolar daftari';SUB.textContent='Attestatsiya va Milliy sertifikat testlaridagi xatolaringiz';back.setAttribute('href','index.html');
+    var all=Xato.all(),ids=Object.keys(all),by={};ids.forEach(function(id){var s=all[id].s||'Boshqa';by[s]=(by[s]||0)+1});
+    if(!ids.length){app.innerHTML='<div class="card qb"><p class="qt">Daftar hozircha bo\'sh</p><p class="iz">Attestatsiya yoki Milliy sertifikat testida noto\'g\'ri javob bersangiz, savol shu yerga tushadi. To\'g\'ri takrorlasangiz, daftardan o\'chadi.</p></div><div class="btnrow"><a class="btn" href="attestatsiya.html" style="text-decoration:none">Attestatsiya</a><a class="btn ghost" href="milliy-sertifikat.html" style="text-decoration:none">Milliy sertifikat</a></div>';return}
+    var h='<div class="card g" id="all" style="border-color:#f3b5b8"><div><b>Hammasini takrorlash</b><small>Tasodifiy 20 tagacha savol</small></div><span class="n">'+ids.length+'</span></div>';
+    Object.keys(by).sort(function(a,b){return by[b]-by[a]}).forEach(function(s,i){h+='<div class="card g" data-s="'+esc(s)+'"><div><b>'+esc(s)+'</b><small>Faqat shu testdan</small></div><span class="n">'+by[s]+'</span></div>'});
+    h+='<div class="btnrow"><button class="btn ghost" id="clr">Daftarni tozalash</button></div>';
+    app.innerHTML=h;
+    document.getElementById('all').onclick=function(){start(null)};
+    [].forEach.call(app.querySelectorAll('.g[data-s]'),function(e){e.onclick=function(){start(e.getAttribute('data-s'))}});
+    document.getElementById('clr').onclick=function(){if(confirm('Xatolar daftari to\'liq o\'chiriladi. Davom etasizmi?')){Xato.clear();list()}};
+    window.scrollTo(0,0)}
+  function start(src){lastSrc=src;var all=Xato.all(),pool=[];Object.keys(all).forEach(function(id){var q=all[id];if(src===null||(q.s||'Boshqa')===src)pool.push({id:id,q:q})});
+    if(!pool.length){list();return}
+    Q=shuf(pool).slice(0,20).map(function(x){var idx=shuf(x.q.o.map(function(_,i){return i}));return{id:x.id,t:x.q.t,i:x.q.i,s:x.q.s,o:idx.map(function(k){return x.q.o[k]}),a:idx.indexOf(x.q.a)}});
+    qi=0;score=0;mode='quiz';show()}
+  function show(){var q=Q[qi],n=Q.length;H.textContent='Takrorlash';SUB.textContent='Savol '+(qi+1)+' / '+n;
+    var h='<div class="meta"><span>'+(qi+1)+' / '+n+'</span><span>To\'g\'ri: '+score+'</span></div><div class="card qb"><p class="qt">'+esc(q.t)+'</p>';
+    q.o.forEach(function(o,k){h+='<button class="op" data-k="'+k+'"><b>'+'ABCDEF'[k]+')</b> '+esc(o)+'</button>'});
+    h+='<div id="fb"></div></div><div class="btnrow"><button class="btn" id="nx" style="display:none">'+(qi+1<n?'Keyingisi →':'Natija')+'</button></div>';
+    app.innerHTML=h;window.scrollTo(0,0);
+    [].forEach.call(app.querySelectorAll('.op'),function(b){b.onclick=function(){var k=+b.dataset.k;
+      [].forEach.call(app.querySelectorAll('.op'),function(x){x.disabled=true;if(+x.dataset.k===q.a)x.classList.add('ok')});
+      var fb='';if(k===q.a){score++;Xato.remove(q.id);fb='<div class="iz" style="color:#1f8a52">To\'g\'ri! Savol daftardan o\'chirildi.</div>'}else{b.classList.add('no');fb='<div class="iz" style="color:#c0262c">Noto\'g\'ri. Savol daftarda qoladi.</div>'}
+      if(q.i)fb+='<div class="iz">Izoh: '+esc(q.i)+'</div>';fb+='<div class="src">'+esc(q.s||'')+'</div>';
+      document.getElementById('fb').innerHTML=fb;document.getElementById('nx').style.display=''}});
+    document.getElementById('nx').onclick=function(){qi++;qi<n?show():fin()}}
+  function fin(){mode='res';var n=Q.length;SUB.textContent='Natija';
+    window.Bonus&&n>=5&&Bonus.done(score,n,location.pathname+'#'+(lastSrc||'hammasi'));
+    app.innerHTML='<div class="card qb"><div class="big">'+score+' / '+n+'</div><p class="qt">Daftarda qolgan xatolar: '+Xato.count()+' ta</p></div><div class="btnrow"><button class="btn" id="re">Yana takrorlash</button><button class="btn ghost" id="ls">Ro\'yxatga</button></div>';
+    document.getElementById('re').onclick=function(){start(lastSrc)};document.getElementById('ls').onclick=list}
+  list();
+})();
+</script></body></html>

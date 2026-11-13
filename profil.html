@@ -3,7 +3,7 @@
 <title>Profil — Isakov school</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="stil.css"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#1a6ee8"><link rel="icon" href="rasmlar/icon-192.png"><link rel="apple-touch-icon" href="rasmlar/icon-192.png">
-<script src="menyu.js"></script><script src="pwa.js" defer></script><script src="bonus.js" defer></script>
+<script src="xatolar.js"></script><script src="menyu.js"></script><script src="pwa.js" defer></script><script src="bonus.js" defer></script>
 <style>
 .pf{padding:22px 22px;margin-bottom:16px}.pf h3{margin:0 0 12px;font-size:20px}
 .pf label{display:block;font-weight:800;font-size:15px;color:var(--ink-soft);margin:14px 0 6px}
@@ -72,6 +72,6 @@
    if(weak)$('wkBox').innerHTML='<div class="wk">Eng zaif mavzu: '+weak.x.v+'-mavzu \u2014 '+weak.p+'%<br><a href="tarix-boblar.html?set='+weak.x.s+'&mavzu='+weak.x.v+'&n=10" style="color:#1a6ee8">Hozir mashq qilish \u203a</a></div>'}
   topics();
   stat();
-  try{var w=Object.keys(JSON.parse(TM.get('tm_wrong','{}'))).length;if(w){$('wn').textContent='Xatolar daftarida '+w+' ta savol bor.';$('wl').style.display=''}}catch(e){}
+  try{var w=Object.keys(JSON.parse(TM.get('tm_wrong','{}'))).length,w2=window.Xato?Xato.count():0;if(w){$('wn').textContent='Boblashgan tarix xatolari: '+w+' ta.';$('wl').style.display=''}if(w2){$('wn').innerHTML=($('wn').textContent?$('wn').textContent+'<br>':'')+'Attestatsiya va sertifikat xatolari: '+w2+' ta. <a href="xatolar.html" style="color:#1a6ee8;font-weight:800">Takrorlash \u203a</a>'}}catch(e){}
 })();
 </script></body></html>

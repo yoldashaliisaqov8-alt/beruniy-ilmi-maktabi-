@@ -20,7 +20,7 @@ button.alt{background:#fff;color:#1a6ee8;border:2px solid #1a6ee8}
 .ok{background:#e3f6e8;color:#14683a}.no{background:#fde8e8;color:#9b1c1c}
 #timer{position:sticky;top:0;z-index:5;background:#1a6ee8;color:#fff;text-align:center;font-weight:800;font-size:18px;border-radius:0 0 12px 12px;padding:8px;margin:0 0 8px}#timer.low{background:#d33}
 #score{font-size:18px;font-weight:800;text-align:center}
-</style></head><body><div class="wrap">
+</style><script src="xatolar.js"></script></head><body><div class="wrap">
 <p><a href="fanlar.html" style="color:#1a6ee8;font-weight:800;text-decoration:none">← Fanlar</a></p>
 <h1>HUQUQSHUNOSLIK MILLIY SERTIFIKAT DEMO TEST 2</h1>
 <p class="sub">45 ta savol: 1–35 yopiq (A–D), 36–45 yozma (javobni klaviaturada yozing). Namuna test. Test vaqti: 1 soat 20 minut (80 daqiqa). Sertifikat: 40–45 ta to'g'ri — A+, 35–39 — A, 30–34 — B+, 25–29 — B, 20–24 — C+, 15–19 — C.</p>
@@ -78,7 +78,7 @@ document.getElementById('start').onclick=function(){var f=document.getElementByI
 var LAST=null,KEY='sert_results_demo2';
 function loadAll(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
 function saveAll(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true}catch(e){return false}}
-function collect(){var ans=[],sc=0;Q.forEach(function(q,i){var ok=!!res[i];if(ok)sc++;ans.push({g:given(i),ok:ok?'To\'g\'ri':'Noto\'g\'ri'})});
+function collect(){var ans=[],sc=0;if(window.Xato)Q.forEach(function(q,i){if(q.t=='t'&&picked[i]!=null)Xato.rec("Huquqshunoslik Milliy sertifikat demo test 2",{text:q.text.replace(/<<|>>/g,''),opts:q.opts,ans:q.ans,izoh:q.man||''},!!res[i])});Q.forEach(function(q,i){var ok=!!res[i];if(ok)sc++;ans.push({g:given(i),ok:ok?'To\'g\'ri':'Noto\'g\'ri'})});
  var d=new Date(),p=function(x){return(x<10?'0':'')+x};
  LAST={vaqt:d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()),ism:NAME,ball:sc,jami:Q.length,ans:ans};
  var all=loadAll();all.push(LAST);var ok=saveAll(all);document.getElementById('xl').style.display='block';var cb=document.getElementById('cert'),lv=window.certLevel?certLevel(sc,Q.length):null;cb.style.display=lv?'block':'none';cb.textContent=lv?'🏅 Sertifikatni yuklash ('+lv+' daraja, PDF, A4 vertikal)':'';

@@ -18,6 +18,11 @@
 @media(max-width:380px){.gs{grid-template-columns:repeat(3,1fr)}.hd b{font-size:21px}}
 .ok{color:#1f8a52;font-weight:800;margin:10px 0 0;min-height:22px}
 .nt{color:var(--ink-soft);font-weight:600;font-size:14px;margin:6px 0 0}
+.tp{display:flex;align-items:center;gap:12px;padding:12px 2px;border-top:1px solid var(--line);color:var(--ink);text-decoration:none}
+.tp:first-of-type{border-top:0}.tp .nm{flex:1;min-width:0}.tp .nm b{display:block;font-size:16px;line-height:1.25}.tp .nm small{color:var(--ink-soft);font-weight:700;font-size:13px}
+.tp .bar2{height:8px;border-radius:5px;background:#e6ecf2;margin-top:6px;overflow:hidden}.tp .bar2 i{display:block;height:100%;border-radius:5px}
+.tp .pc{font-weight:800;font-size:19px;flex:0 0 52px;text-align:right}
+.wk{background:#fff3f3;border:1.5px solid #f3b5b8;border-radius:16px;padding:12px 14px;margin:0 0 10px;font-weight:700}
 </style></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html" aria-label="Orqaga">←</a><span class="brand">ISAKOV SCHOOL</span></div>
@@ -34,6 +39,7 @@
  <p class="nt">Reytingda faqat ismingiz va to'plagan XP ko'rinadi.</p>
  <p class="ok" id="ok"></p>
 </div>
+<div class="card pf"><h3>Mavzular bo'yicha natija</h3><div id="wkBox"></div><div id="tpList"></div><p class="nt">Foiz — shu mavzudagi javoblaringizning to'g'riligi. Kamida 5 ta javobdan keyin ko'rinadi. Eng zaif mavzu kunlik rejadagi «takrorlash» vazifasiga tushadi.</p></div>
 <div class="card pf"><h3>Mening natijam</h3><div class="hd"><div style="font-size:44px" id="le">🌱</div><div><b id="xn">0 XP</b><span id="xs"></span></div></div>
  <p class="nt" id="wn" style="margin:14px 0 0"></p>
  <div class="btnrow"><a class="btn ghost" id="wl" href="tarix-boblar.html?xatolar=1" style="text-decoration:none;display:none">❌ Xatolarim</a><a class="btn ghost" href="yutuqlar.html" style="text-decoration:none">Yutuqlarim</a><a class="btn" href="reyting.html" style="text-decoration:none">Reyting</a></div></div>
@@ -56,6 +62,15 @@
   function stat(){if(!window.Bonus){return setTimeout(stat,150)}var B=Bonus.get();$('xn').textContent=B.xp+' XP';
     var L=[['🌱','Yangi',0],['🎓','Bilimdon',100],['🏆','Ekspert',500],['👑','Ustoz',1500]],c=L[0];L.forEach(function(x){if(B.xp>=x[2])c=x});
     $('le').textContent=c[0];$('xs').textContent=c[1]+' · '+Bonus.streak()+' kun seriya'}
+  var TOP=[{"s": "j8_1_5", "v": 1, "t": "Fransiyada markazlashgan davlatning tashkil topishi. General shtatlar"}, {"s": "j8_1_5", "v": 2, "t": "Yuz yillik urush: sabablari, yakunlari va oqibatlari"}, {"s": "j8_1_5", "v": 3, "t": "Fransiyani birlashtirishning tugallanishi va uning natijalari"}, {"s": "j8_1_5", "v": 4, "t": "Angliyada markazlashgan davlatning tashkil topishi"}, {"s": "j8_1_5", "v": 5, "t": "XIV–XV asrlarda Angliya"}, {"s": "j8_6_10", "v": 6, "t": "Germaniyada ijtimoiy-siyosiy va iqtisodiy hayot"}, {"s": "j8_6_10", "v": 7, "t": "Italiya: shahar-respublikalar va Rim papalari davlati"}, {"s": "j8_6_10", "v": 8, "t": "Pireney yarimoroli mamlakatlari: Ispaniya va Portugaliya"}, {"s": "j8_6_10", "v": 9, "t": "Rus knyazliklarida ijtimoiy-siyosiy hayot"}, {"s": "j8_6_10", "v": 10, "t": "Bolqon mamlakatlari, Markaziy va Sharqiy Yevropa"}];
+  function topics(){var TS={};try{TS=JSON.parse(TM.get('tm_tstat','{}'))}catch(e){}var rows=TOP.map(function(x){var r=TS[x.s+':'+x.v]||[0,0];return {x:x,n:r[0],p:r[0]>=5?Math.round(r[1]/r[0]*100):-1}});
+   rows.sort(function(a,b){if(a.p<0&&b.p<0)return a.x.v-b.x.v;if(a.p<0)return 1;if(b.p<0)return -1;return a.p-b.p});
+   var h='',weak=rows.filter(function(r){return r.p>=0&&r.p<80})[0];
+   rows.forEach(function(r){var c=r.p<0?'#c3cddb':r.p<50?'#e5484d':r.p<75?'#f0a020':'#2f9a5f';var href='tarix-boblar.html?set='+r.x.s+'&mavzu='+r.x.v+'&n=10';
+    h+='<a class="tp" href="'+href+'"><div class="nm"><b>'+r.x.v+'-mavzu. '+r.x.t.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</b><small>'+(r.p<0?(r.n?r.n+' ta javob \u00b7 hali yetarli emas':'hali boshlanmagan'):r.n+' ta javob')+'</small><div class="bar2"><i style="width:'+Math.max(r.p,0)+'%;background:'+c+'"></i></div></div><span class="pc" style="color:'+(r.p<0?'#98a6ba':c)+'">'+(r.p<0?'\u2014':r.p+'%')+'</span></a>'});
+   $('tpList').innerHTML=h;
+   if(weak)$('wkBox').innerHTML='<div class="wk">Eng zaif mavzu: '+weak.x.v+'-mavzu \u2014 '+weak.p+'%<br><a href="tarix-boblar.html?set='+weak.x.s+'&mavzu='+weak.x.v+'&n=10" style="color:#1a6ee8">Hozir mashq qilish \u203a</a></div>'}
+  topics();
   stat();
   try{var w=Object.keys(JSON.parse(TM.get('tm_wrong','{}'))).length;if(w){$('wn').textContent='Xatolar daftarida '+w+' ta savol bor.';$('wl').style.display=''}}catch(e){}
 })();

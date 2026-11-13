@@ -545,8 +545,10 @@
     var d=day(),plan=null;
     try{plan=JSON.parse(ls('tm_plan')||'null')}catch(e){}
     if(!plan||plan.d!==d){
-      var a=TOP[cur],b=cur>0?TOP[cur-1]:null;
-      plan={d:d,a:{s:a.s,v:a.v},b:b?{s:b.s,v:b.v,rep:1}:{mix:1}};
+      var a=TOP[cur],b=cur>0?TOP[cur-1]:null,weak=null;
+      try{var TS=JSON.parse(ls('tm_tstat')||'{}'),best=101;TOP.forEach(function(x){var r=TS[x.s+':'+x.v];if(!r||r[0]<5||(x.s===a.s&&x.v===a.v))return;var p=Math.round(r[1]/r[0]*100);if(p<80&&p<best){best=p;weak=x}})}catch(e){}
+      if(weak)b=weak;
+      plan={d:d,a:{s:a.s,v:a.v},b:b?{s:b.s,v:b.v,rep:1,w:weak?1:0}:{mix:1}};
       try{localStorage.setItem('tm_plan',JSON.stringify(plan))}catch(e){}
     }
     var DD={};try{DD=JSON.parse(ls('tm_dayDone')||'{}')}catch(e){}
@@ -556,7 +558,7 @@
     var ta=find(plan.a);
     tasks.push({done:!!X[plan.a.s+':'+plan.a.v],t:ta.v+'-mavzu. '+ta.t,sub:'Mashq \u00b7 10 ta test, taxminan 10 daqiqa',href:'tarix-boblar.html?set='+ta.s+'&mavzu='+ta.v+'&n=10'});
     if(plan.b.mix)tasks.push({done:!!X.mix,t:'Aralash mashq: Boblashgan tarix',sub:'30 ta test, taxminan 20 daqiqa',href:'tarix-boblar.html'});
-    else{var tb=find(plan.b);tasks.push({done:!!X[plan.b.s+':'+plan.b.v],t:'Takrorlash: '+tb.v+'-mavzu. '+tb.t,sub:'Takrorlash \u00b7 10 ta test, taxminan 10 daqiqa',href:'tarix-boblar.html?set='+tb.s+'&mavzu='+tb.v+'&n=10'})}
+    else{var tb=find(plan.b);var tr=null;try{tr=JSON.parse(ls('tm_tstat')||'{}')[tb.s+':'+tb.v]}catch(e){}tasks.push({done:!!X[plan.b.s+':'+plan.b.v],t:(plan.b.w?'Zaif mavzu: ':'Takrorlash: ')+tb.v+'-mavzu. '+tb.t,sub:(plan.b.w&&tr?'Takrorlash \u00b7 hozir '+Math.round(tr[1]/tr[0]*100)+'% \u00b7 10 ta test':'Takrorlash \u00b7 10 ta test, taxminan 10 daqiqa'),href:'tarix-boblar.html?set='+tb.s+'&mavzu='+tb.v+'&n=10'})}
     var n=tasks.filter(function(x){return x.done}).length,h='';
     if(n>=1){if(window.Bonus&&Bonus.planDone){Bonus.planDone();var ps=document.getElementById('pStr');if(ps)ps.textContent=Bonus.streak()}else if(!window.__pdw){window.__pdw=1;document.addEventListener('DOMContentLoaded',function(){planBuild(st,cur,TOP)})}}
     tasks.forEach(function(x){h+='<a class="tk'+(x.done?' done':'')+'" href="'+x.href+'"><span class="ck">'+(x.done?'\u2713':'\u25cb')+'</span><span><b>'+esc(x.t)+'</b><small>'+esc(x.sub)+'</small></span><span class="go">\u203a</span></a>'});

@@ -10,9 +10,9 @@
     {id:'b_500',e:'📚',n:'500 ta savol',d:'500 ta savolga javob bering'},
     {id:'b_q10',e:'✅',n:'10 ta test yakunlandi',d:'10 ta testni oxirigacha yeching'},
     {id:'b_att90',e:'🎯',n:'Attestatsiya 90%+',d:'Attestatsiya variantida 90% va undan yuqori natija'},
-    {id:'b_s3',e:'🔥',n:'3 kunlik seriya',d:'3 kun ketma-ket test yeching'},
-    {id:'b_s7',e:'🔥',n:'7 kunlik seriya',d:'7 kun ketma-ket test yeching'},
-    {id:'b_s30',e:'🌋',n:'30 kunlik seriya',d:'30 kun ketma-ket test yeching'},
+    {id:'b_s3',e:'🔥',n:'3 kunlik seriya',d:'3 kun ketma-ket kunlik rejani bajaring'},
+    {id:'b_s7',e:'🔥',n:'7 kunlik seriya',d:'7 kun ketma-ket kunlik rejani bajaring'},
+    {id:'b_s30',e:'🌋',n:'30 kunlik seriya',d:'30 kun ketma-ket kunlik rejani bajaring'},
     {id:'b_d7',e:'⚡',n:'Kunlik topshiriq ×7',d:'Kunlik topshiriqni 7 marta bajaring'}
   ];
   function pad(n){return String(n).padStart(2,'0');}
@@ -60,19 +60,19 @@
     if(label)toast('+'+n+' ⭐ '+label,big);
     if(after.n!==before)toast(after.e+' Yangi daraja: '+after.n+'!',true);}
   function markDay(){S.days[today()]=1;}
+  function planDone(){var t=today();if(S.days[t])return;markDay();save();checkBadges();save();chip();toast('🔥 Seriya: '+streak()+' kun',true);}
   function dailyCheck(){var t=today();if(dayAnswers()>=DAILY_GOAL&&!S.dailyDone_[t]){S.dailyDone_[t]=1;S.dailyDays++;addXp(DAILY_BONUS,'Kunlik topshiriq bajarildi!',true);}}
   if(!S.dailyDone_)S.dailyDone_={};
 
   function answered(qkey,isCorrect){
     var t=today();if(S.qday!==t){S.qseen={};S.qday=t;}
     if(qkey&&S.qseen[qkey])return;if(qkey)S.qseen[qkey]=1;
-    markDay();S.total++;S.daily[t]=(S.daily[t]||0)+1;
+    S.total++;S.daily[t]=(S.daily[t]||0)+1;
     for(var k in S.daily)if(k<dk(new Date(Date.now()-14*864e5)))delete S.daily[k];
     if(isCorrect){S.correct++;var used=S.ansXp[t]||0;if(used<DAY_CAP){S.ansXp[t]=used+1;addXp(1,'to\'g\'ri javob');}}
     dailyCheck();checkBadges();save();chip();}
   function done(score,total,key,isAtt){
     if(!total||total<5)return;var t=today(),k=String(key||location.pathname);
-    markDay();
     if(S.done[k]!==t){S.done[k]=t;S.quizzes++;addXp(DONE_BONUS,'test yakunlandi',true);}
     if(isAtt&&score/total>=0.9&&!S.badges.b_att90){S.badges.b_att90=t;toast('🏅 Yangi nishon: Attestatsiya 90%+',true);}
     for(var d in S.done)if(S.done[d]<dk(new Date(Date.now()-3*864e5)))delete S.done[d];
@@ -100,7 +100,7 @@
   },true);
 
   /* ---------- ochiq API ---------- */
-  window.Bonus={done:done,get:function(){return S;},level:level,streak:streak,bestStreak:bestStreak,
+  window.Bonus={done:done,planDone:planDone,get:function(){return S;},level:level,streak:streak,bestStreak:bestStreak,
     LEVELS:LEVELS,BADGES:BADGES,GOAL:DAILY_GOAL,BONUS:DAILY_BONUS,dayAnswers:dayAnswers,today:today,dk:dk,
     reset:function(){S=fresh();S.dailyDone_={};save();chip();},refresh:function(){load();chip();}};
   window.addEventListener('storage',function(e){if(e.key===KEY){load();chip();}});

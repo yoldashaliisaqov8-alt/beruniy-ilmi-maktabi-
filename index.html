@@ -554,6 +554,7 @@
     if(plan.b.mix)tasks.push({done:!!X.mix,t:'Aralash mashq: Boblashgan tarix',sub:'30 ta test, taxminan 20 daqiqa',href:'tarix-boblar.html'});
     else{var tb=find(plan.b);tasks.push({done:!!X[plan.b.s+':'+plan.b.v],t:'Takrorlash: '+tb.v+'-mavzu. '+tb.t,sub:'Takrorlash \u00b7 10 ta test, taxminan 10 daqiqa',href:'tarix-boblar.html?set='+tb.s+'&mavzu='+tb.v+'&n=10'})}
     var n=tasks.filter(function(x){return x.done}).length,h='';
+    if(n>=1){if(window.Bonus&&Bonus.planDone){Bonus.planDone();var ps=document.getElementById('pStr');if(ps)ps.textContent=Bonus.streak()}else if(!window.__pdw){window.__pdw=1;document.addEventListener('DOMContentLoaded',function(){planBuild(st,cur,TOP)})}}
     tasks.forEach(function(x){h+='<a class="tk'+(x.done?' done':'')+'" href="'+x.href+'"><span class="ck">'+(x.done?'\u2713':'\u25cb')+'</span><span><b>'+esc(x.t)+'</b><small>'+esc(x.sub)+'</small></span><span class="go">\u203a</span></a>'});
     document.getElementById('tList').innerHTML=h;
     document.getElementById('tCnt').textContent=n+'/'+tasks.length+' bajarildi';

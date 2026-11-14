@@ -7,7 +7,7 @@ body{font-family:Nunito,system-ui,sans-serif;background:#eef3fb;margin:0;color:#
 .wrap{max-width:720px;margin:0 auto;padding:16px}
 h1{font-size:21px;margin:8px 0}.sub{color:#5a6b8c;font-size:14px;margin:0 0 14px}
 .q{background:#fff;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 1px 4px #0001}
-.num{font-weight:800;color:#1a6ee8}.man{font-size:12px;color:#6b7a99;font-style:italic;margin-top:6px}
+.num{font-weight:800;color:#1a6ee8}.man{display:none;font-size:12px;color:#6b7a99;font-style:italic;margin-top:6px}
 .stem{white-space:pre-line;line-height:1.5}
 .opt{display:block;width:100%;text-align:left;padding:10px;margin:6px 0;border:2px solid #d5deee;border-radius:10px;background:#fff;font:inherit;color:inherit;cursor:pointer}
 .opt.sel{border-color:#1a6ee8;background:#e8f0ff}.opt.good{border-color:#1f9d55;background:#e3f6e8}.opt.bad{border-color:#d33;background:#fde8e8}
@@ -57,7 +57,7 @@ Q.forEach(function(q,i){
  d.innerHTML=h;app.appendChild(d)});
 app.addEventListener('click',function(e){var b=e.target.closest('.opt');if(!b||b.disabled)return;var i=b.dataset.i;picked[i]=+b.dataset.k;
  app.querySelectorAll('.opt[data-i="'+i+'"]').forEach(function(x){x.classList.toggle('sel',x===b)})});
-function show(i,cls,msg){var r=document.getElementById('r'+i);r.style.display='block';r.className='res '+cls;r.innerHTML=msg}
+function show(i,cls,msg){var r=document.getElementById('r'+i);r.style.display='block';var mn=r.nextElementSibling;if(mn&&mn.classList.contains('man'))mn.style.display='block';r.className='res '+cls;r.innerHTML=msg}
 function given(i){var q=Q[i];if(q.t=='t')return picked[i]!=null?'ABCDEF'[picked[i]]:'';var out=[];q.parts.forEach(function(p,k){var el=app.querySelector('input[data-i="'+i+'"][data-p="'+k+'"]');out.push(el?el.value.trim():'')});return out.join(' | ')}
 function partOk(i,k){var q=Q[i],el=app.querySelector('input[data-i="'+i+'"][data-p="'+k+'"]');var v=norm(el?el.value:'');if(!v)return false;
  return q.parts[k].forms.some(function(f){f=norm(f);return v==f||(f.length>=6&&lev(v,f)<=1)})}

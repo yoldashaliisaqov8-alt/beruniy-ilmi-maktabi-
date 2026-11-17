@@ -54,7 +54,7 @@ svg#m .lab{font-family:Nunito,Arial,sans-serif;font-weight:800;fill:#10223d;pain
 <div id="lay" class="chips"><button data-l="0" class="on">Oddiy xarita</button><button data-l="1">Mintaqalar</button><button data-l="2">Davlat tuzilgan davr</button></div>
 <div id="leg" class="leg hidden"></div>
 <div class="mapbox"><svg id="m" viewBox="0 0 960 740" xmlns="http://www.w3.org/2000/svg"><g id="g"></g></svg>
-<div class="zoom"><button id="zi" aria-label="Kattalashtirish">+</button><button id="zo" aria-label="Kichraytirish">&minus;</button><button id="zr" aria-label="Asl holat" style="font-size:16px">&#8634;</button></div></div>
+<div class="zoom"><button id="zi" aria-label="Kattalashtirish">+</button><button id="zo" aria-label="Kichraytirish">&minus;</button><button id="zr" aria-label="Asl holat" style="font-size:16px">&#8634;</button><button id="snd" aria-label="Ovoz" title="Davlat nomini ovozli aytish" style="font-size:16px">&#128266;</button></div></div>
 <div id="opts" class="opts hidden"></div>
 <div class="act" id="act"></div>
 <div id="res" class="card res hidden"></div>
@@ -131,8 +131,13 @@ function fin(){reset();opts.classList.add('hidden');act.innerHTML='';var p=Math.
  bonus(ok,Q.length,'xarita_osiyo:'+mode);
  msg.textContent='Test yakunlandi';score.textContent='';res.classList.remove('hidden');res.innerHTML='<div class="big">'+ok+' / '+Q.length+'</div><div style="font-weight:800;font-size:20px">'+p+'% to\'g\'ri</div><div style="color:var(--ink-soft);font-weight:700;margin-top:6px">Eng yaxshi natija: '+best+' / '+Q.length+'</div><div class="act" style="justify-content:center"><button class="pill" id="again">Qayta boshlash</button><button class="pill ghost" id="learn">O\'rganish rejimi</button></div>';
  document.getElementById('again').onclick=start;document.getElementById('learn').onclick=function(){setMode(1)}}
+var SND=(function(){try{return localStorage.getItem('tm_sound')!=='0'}catch(e){return true}})(),curA=null;
+function sndSlug(n){return n.toLowerCase().replace(/['‘’ʻ`]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function sayName(n){if(!SND)return;try{if(curA){curA.pause();curA=null}var a=new Audio('audio/osiyo/'+sndSlug(n)+'.mp3');curA=a;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+function sndPaint(){var b=document.getElementById('snd');if(b){b.innerHTML=SND?'&#128266;':'&#128263;';b.style.opacity=SND?'1':'.55'}}
+document.getElementById('snd').onclick=function(){SND=!SND;try{localStorage.setItem('tm_sound',SND?'1':'0')}catch(e){}if(!SND&&curA){curA.pause()}sndPaint()};sndPaint();
 function onPick(id){
- if(mode===1){reset();var e0=els[id];e0.setAttribute('class',e0.getAttribute('class')+' sel');showLab(id);var v=INFO[id];msg.innerHTML=C[id].n;
+ if(mode===1){reset();sayName(C[id].n);var e0=els[id];e0.setAttribute('class',e0.getAttribute('class')+' sel');showLab(id);var v=INFO[id];msg.innerHTML=C[id].n;
   var h='<div><small>Poytaxti</small>'+esc(v.cap)+'</div><div><small>Mintaqa</small>'+REG[v.r].n+'</div><div><small>Davlat tuzilgan / mustaqillik yili</small>'+esc(v.y)+'</div><div><small>Izoh</small>'+esc(v.yt)+'</div>';
   if(v.t)h+='<div class="w">'+esc(v.t)+'</div>';info.innerHTML=h;info.classList.remove('hidden')}
  else if(mode===2){if(!Q.length||locked||qi>=Q.length)return;answer(id,null)}

@@ -1,0 +1,3 @@
+1. `zk-darslik-tarix.html` fayliga `zk-darslik-tarix-qoraxoniylar-blok.html` ichidagi `<script type="text/plain" class="set" ...>...</script>` blokini qo'shing.
+2. `zk-darslik.html` sahifasidagi Tarix kartochkasida mavjud to'plamlar ro'yxati va soniga "Alifboli svoyak: Qoraxoniylar (30-31-mavzular)" (125 savol) ni qo'shing.
+3. `sw.js` faylidagi `VERSION` qiymatini 1 birlikka oshiring (masalan: `beruniy-v197` -> `beruniy-v198`), shunda oflayn kesh yangilanadi.
